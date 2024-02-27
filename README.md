@@ -2,7 +2,7 @@
 
 ## Dataset
 
-Content of the data directory:
+### Content of the data directory:
   - different_domains: benchmark datasets from DeepMatcher and Magellan. Include source-target dataset pairs from different domains (e.g., Movies-Product)
   - similar_domains: benchmark datasets from from DeepMatcher and Magellan. Include source-target dataset pairs from the same domains (e.g., Product-Product)
   - wdc: WDC product datasets from e-commerce websites. Four categories: computers, cameras, watches and shoes. Source-Target dataset pairs are all permutations of the distict 4 categories (excluding Source-Target pairs like computers-computers)
@@ -18,3 +18,19 @@ Each source_target directory contains the files:
 - target_unlabelled.csv : Training set of the target dataset (here the labels are dropped)
 - dev_target.csv : Development (dev) set of the target dataset.
 - test_target.csv : Test set of the target dataset.
+
+### Abbreviations
+
+- ab: Abt-Buy
+- wa1: Walmart-Amazon
+- ds: DBLP-Scholar
+- da: DBLP-ACM
+- fz: Fodors-Zagats
+- dzy: Zomato-Yelp
+- ia: iTunes-Amazon
+- ri: RottenTomatoes-IMDB
+- b2: Books2
+- computers: WDC-Computers
+- cameras: WDC-Cameras
+- watches: WDC-Watches
+- shoes: WDC-Shoes
