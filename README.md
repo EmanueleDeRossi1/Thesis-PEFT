@@ -2,7 +2,7 @@
 
 ## Dataset
 
-data:
+Content of the data directory:
   - different_domains: benchmark datasets from DeepMatcher and Magellan. Include source-target dataset pairs from different domains (e.g., Movies-Product)
   - similar_domains: benchmark datasets from from DeepMatcher and Magellan. Include source-target dataset pairs from the same domains (e.g., Product-Product)
   - wdc: WDC product datasets from e-commerce websites. Four categories: computers, cameras, watches and shoes. Source-Target dataset pairs are all permutations of the distict 4 categories (excluding Source-Target pairs like computers-computers)
