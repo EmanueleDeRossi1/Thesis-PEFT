@@ -1,7 +1,7 @@
 (notes written before the meeting)
 - What I did:
 	setting up the environment of UDAPTER
-  divide the dataset into training, val and test ACCORDING TO UDAPTER PAPER
+  	divide the dataset into training, val and test ACCORDING TO UDAPTER PAPER
 
 - Next:
 	- passing the datasets through the model (predict)
