@@ -74,22 +74,45 @@ In Reconstruction-based Methods, the Feature Aligner is realized as a Decoder, w
 Encoder-Decoder (ED): in the Encoder-Decoder approach, the Feature Extractor is treated as Encoder, and the Feature Aligner as Decoder. The Feature Extractor (Encoder) generates hidden represetations for the original input text, which are then inputted into the Feature Aligner (Decoder) to generate the reconstructed text. The reconstruction loss Lrec can be calculated between the generated and the original text, i.e., the entity pairs. This approach is similar to Bart.
 
 
-## DADER Algorithm
+## Results
 
-- Initialize Feature Extractor, Matcher and Feature Aligner
-- For each iteration:
-	- sample one mini-batch from labeled source and one mini-batch from unlabeled target
-	- compute loss of the Matcher (equation 4?)
-	- use back-propagation to tune the Matcher
+Two settings are considered for evaluation:
+- Similar Domains.
+- Different Domains.
+In both settings, DA demonstrates significant improvements compared to NoDA (no domain adaptation), even when datasets are from similar domains (sometimes in similar domains there can be variations in attributes or textual styles, causing domain shift effects). But in different domains the improvements are more noticeble. 
 
-	if Discrepancy or Reconstruction-based methods then:
-	- Procedure 1 NoAdvAdapt: 
-		- Compute Alignment Loss (using MMD or K-order)
-		- Backpropagate to tune Feature Aligner if FA is a NN, otherwise if FA is a fixed function do not execute backpropagation
-		- Backpropagate to tune Feature Extractor
-	if GRL-based method then:
-	- Procedure 2 GRLAdapt:
-		- Compute Aligment Loss (equation 9?)
-		- Backpropagate to tune Feature Aligner
-		- Backpropagate to tune Feature Extractor, where gradient for F.E. from F.A. has been reversed by multiplying a parameter −{beta}
- 
+t-SNE is used for visualizing high-dimensional feature distributions of source and target datasets
+
+- But improvement is not always significant. In some cases, such as DBLP-Scholar → DBLP-ACM, DA yields no improvement over NoDA because models trained on the source dataset already perform well on the target dataset. 
+
+- Evaluation on WDC datasets reveals that the gain from DA is not prominent, indicating that the data distribution among different datasets is very similar.
+- NoDA achieves high performance on target datasets, even outperforming state-of-the-art models trained on their own training sets. This suggests that domain shift may not be significant in this scenario, limiting the potential for improvement through DA.
+
+
+- Using MMD, we can calculate the distance between dataset (smaller MMD = similar datasets)
+- F1 scores are higher when MMD is smaller
+
+- When source and target datasets are from similar domains, DA gets better results than from different domains (duh). 
+
+## Analysis
+
+### Evalution of Feature Aligner
+
+- Succesful Cases Analysis:
+
+- MMD and InvGAN+KD outperform NoDA in nearly all the cases
+- Discrepancy-based DA performs well to be convergent with enough training epochs and achieves obvious improvements, while adversarial-based DA may be oscillate. The oscillation may be reduced by reducing learning rate, which may lead to more training epochs
+- InvGAN+KD is sensitive to the learning rate
+
+- Failure Cases Analysis
+
+- InvGAN is worse than NoDA is many cases. This is because the Feature Extractor in InvGAN make the target features as similar to the source features as possible, whether the features thus obtained are discriminative or not. This is proved by the fact that the Matcher becomes much worse even on the source dataset. InvGAN+KD, instead, is much more stable and performative.
+
+- ED also achieves inferior performance in all cases. Maybe enconder-deconder approach fail to capture and reconstruct the textual information of original entity pairs
+
+- GRL is generally good, but sometimes NoDa outperforms it (e.g., Book2 → Zomato-Yelp.). GRL training is generally not stable.
+
+### Evaluation on Feature Extractor
+
+Two F.E. used: Bert and a bidirectional RNN, but Bert outperforms RNN in all 3 datasets. RRN fails to transfer efficiently, so that the model trained on source Ds relies heavily on itself and does not work well on the target dataset
+
