@@ -41,7 +41,7 @@ In low-data settings, instead, prefix-tuning outperforms fine-tuning on both tas
 
 ## Results:
 
-#### Table-to-text Generation:
+### Table-to-text Generation:
 
 - Prefix-tuning, with just 0.1% task-specific parameter updates, outperforms other lightweight baselines like ADAPTER and FT-TOP2, even with updating 30 times fewer parameters, and achieves comparable results to full fine-tuning.
 
@@ -49,19 +49,19 @@ In low-data settings, instead, prefix-tuning outperforms fine-tuning on both tas
 - Even compared to full fine-tuning (100%) and adapter-tuning (3.0%), which update significantly more parameters than prefix-tuning, prefix-tuning achieves comparable or better results, showcasing its Pareto efficiency.
 - Prefix-tuning shows promising results in generalizing to tables with diverse domains and a large number of relations, as demonstrated by good performance on DART dataset.
 
-#### Summarization:
+### Summarization:
 
 - Prefix-tuning achieves slightly lower performance compared to full fine-tuning in summarization tasks, particularly with only 0.1% of parameters.
 - The advantages of prefix-tuning observed in table-to-text generation may not directly translate to summarization tasks due to differences in dataset characteristics, such as length and complexity.
 
-#### Low-data Setting:
+### Low-data Setting:
 
 - Prefix-tuning demonstrates a comparative advantage over fine-tuning, especially in low-data settings, outperforming fine-tuning by 2.9 BLEU on average.
 
 - The gap between prefix-tuning and fine-tuning narrows as the dataset size increases.
 - Qualitatively, prefix-tuning tends to be more faithful than fine-tuning, especially in low-data regimes.
 
-#### Extrapolation:
+### Extrapolation:
 
 - Prefix-tuning exhibits better extrapolation performance to unseen topics compared to fine-tuning, in both table-to-text and summarization tasks.
 - Adapter-tuning also achieves good extrapolation performance, comparable to prefix-tuning, suggesting that preserving LM parameters positively impacts extrapolation.
