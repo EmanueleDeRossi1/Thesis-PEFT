@@ -12,12 +12,12 @@ Prefix-tuning is very efficient computationally: we only need to store one singl
 #### For table-to-table task:
 
 Evaluated on 3 standard neural generation datasets:
-	- E2E (restaurant reviews)
-	- WebNLG (14 domains)
-	- Dart (open domain - Wikipedia)
+- E2E (restaurant reviews)
+- WebNLG (14 domains)
+- Dart (open domain - Wikipedia)
 
 #### For summarization:
-	- XSUM dataset (an abstractive summarization dataset on news articles)
+- XSUM dataset (an abstractive summarization dataset on news articles)
 
 ## Evaluation and Results
 
@@ -26,9 +26,9 @@ Prefix-tuning evaluated on table-to-text generation (using CPT-2) and abstractiv
 #### For table-to-text generation:
 
 Compared prefix-tuning against:
-	- full fine-tuning
-	- fine-tuning only the top 2 layers
-	- adapter-tuning
+- full fine-tuning
+- fine-tuning only the top 2 layers
+- adapter-tuning
 
 #### For summarization:
 
