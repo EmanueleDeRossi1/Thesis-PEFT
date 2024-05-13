@@ -9,14 +9,14 @@ Prefix-tuning is very efficient computationally: we only need to store one singl
 
 ## Datasets
 
-For table-to-table task:
+#### For table-to-table task:
 
 Evaluated on 3 standard neural generation datasets:
 	- E2E (restaurant reviews)
 	- WebNLG (14 domains)
 	- Dart (open domain - Wikipedia)
 
-For summarization:
+#### For summarization:
 	- XSUM dataset (an abstractive summarization dataset on news articles)
 
 ## Evaluation and Results
