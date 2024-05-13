@@ -34,10 +34,7 @@ Compared prefix-tuning against:
 
 Compared prefix-tuning against BART
 
-When trained on full datasets, prefix-tuning and fine-tuning obtain similar results for table-to-text. In the summarization task, prefix tuning perform slighly worse. (u should put some numbers in here)
-
-In low-data settings, instead, prefix-tuning outperforms fine-tuning on both tasks, and extrapolates better to tables (for table-to-text) and articles (for summarization) with unseen topics (put some numbers)
-
+When trained on full datasets, prefix-tuning and fine-tuning obtain similar results for table-to-text. In the summarization task, prefix tuning perform slighly worse. On low-data settings, instead, prefix-tuning outperforms fine-tuning on both tasks, and extrapolates better to tables (for table-to-text) and articles (for summarization) with unseen topics
 
 ## Results:
 
