@@ -13,6 +13,9 @@
 
 ## Dataset
 
+The datasets are the one use on DADER. However, I changed its structure to make it more similar to the datasets used on UDAPTER, so we can more easily use the dataset of DADER on UDAPTER. 
+The files have the same name and the same extension of the UDAPTER datasets, and the variables are called the same. Additionaly, the division of data into training, testing, and development sets follows the same proportions as those in UDAPTER.
+
 ### Content of the data directory:
   - different_domains: benchmark datasets from DeepMatcher and Magellan. Include source-target dataset pairs from different domains (e.g., Movies-Product)
   - similar_domains: benchmark datasets from from DeepMatcher and Magellan. Include source-target dataset pairs from the same domains (e.g., Product-Product)
