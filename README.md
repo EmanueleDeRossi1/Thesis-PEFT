@@ -1,5 +1,16 @@
 # Thesis-Adapters
 
+# Scheduling
+
+- Replicare risultati DADER: inserire una tabella di confronto tra risultati del paper e quelli riprodotti da noi (riportare i settings)
+- Replicare risultati UDAPTER (sui loro dataset): tabella analoga alla punto precedente (riportare i settings)
+- Eseguire Udapter sui dataset di DADER
+  - Salvare F1 scores
+  - Salvare i runtimes
+- Calcolare runtime per DADER
+- Sperimentazione con Lora
+
+
 ## Dataset
 
 ### Content of the data directory:
