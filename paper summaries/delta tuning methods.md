@@ -85,8 +85,7 @@ More tunable parameters does not always lead to better performance, and the desi
 3. Prompt-tuning performs much worse that other delta-tuning methods. When the size of the PLM is bigger, performance improves sharply.
 
 #### Analysis of convergence
-
-1. From the fastest to the slowest method to converge:
+From the fastest to the slowest method to converge:
 
 1. Finetuning
 2. Adapter and LoRA
