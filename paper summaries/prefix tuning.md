@@ -23,14 +23,14 @@ Evaluated on 3 standard neural generation datasets:
 
 Prefix-tuning evaluated on table-to-text generation (using CPT-2) and abstractive summarization (using BART).
 
-For table-to-text generation:
+#### For table-to-text generation:
 
 Compared prefix-tuning against:
 	- full fine-tuning
 	- fine-tuning only the top 2 layers
 	- adapter-tuning
 
-For summarization:
+#### For summarization:
 
 Compared prefix-tuning against BART
 
