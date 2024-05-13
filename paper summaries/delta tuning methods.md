@@ -92,4 +92,4 @@ From the fastest to the slowest method to converge:
 3. Prefix-tuning
 4. Prompt-tuning (far behind the 3 other methods)
 
-2. Generally, performance and convergence is not that sensitive to the size, but rather to the structure of the methods, and as the size of the PLM increases, the convergence accelerates
+Generally, performance and convergence is not that sensitive to the size, but rather to the structure of the methods, and as the size of the PLM increases, the convergence accelerates
