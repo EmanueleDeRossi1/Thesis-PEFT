@@ -19,7 +19,7 @@
 
 ### Literature
 - Read the paper by the Sebastian Schelter group (Amsterdam):
-  - Zeyu Zhang, Paul Groth, Iacer Calixto, and Sebastian Schelter. "Directions Towards Efficient and Automated Data Wrangling with Large Language Models" - [link](https://www.wis.ewi.tudelft.nl/assets/files/dbml2024/DBML24_paper_1.pdf)
+  - [Zeyu Zhang, Paul Groth, Iacer Calixto, and Sebastian Schelter. "Directions Towards Efficient and Automated Data Wrangling with Large Language Models"](https://www.wis.ewi.tudelft.nl/assets/files/dbml2024/DBML24_paper_1.pdf) 
   - [GitHub repository](https://github.com/Jantory/cpwrangle)
   - Which models are they using?
       - [PEFT, from HuggingFace](https://huggingface.co/docs/peft/index)
