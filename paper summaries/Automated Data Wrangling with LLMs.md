@@ -34,8 +34,8 @@ The study conducts empirical evaluations to assess:
 
 ## Analysis
 - **Efficiency vs. Performance**: PEFT methods achieve performance close to full fine-tuning with fewer parameter updates but still have high training compute costs.
-- **Zero-Shot Potential**: Preliminary evidence shows that PEFT methods can transfer well in zero-shot settings for entity matching, suggesting potential for further reduction in deployment costs without labeled training data.
 
+  
+## Zero-Match
 
-
-
+Talk about this.
