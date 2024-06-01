@@ -1,118 +1,100 @@
-# TITLE OF THE PAPER
+# Domain Adaptation for Deep Entity Resolution
 
-## What the apper says in few words
+## Overview
+The paper explores the use of domain adaptation (DA) techniques to enhance deep learning-based entity resolution (ER) models. It addresses the challenge of training models on a labeled source dataset to perform well on an unlabeled or sparsely labeled target dataset, minimizing the need for extensive labeling in new domains.
 
-## Datasets 
-There are two datasets used:
+## Datasets
+Two primary datasets are used for evaluation:
 
-- The benchmark datasets from DeepMatcher and Magellan, which covers various domains such as product, citation, and restaurant. Each dataset comprises entities from two relational tables with multiple attributes and a set of labeled matching/non-matching entity pairs.
+1. **Benchmark Datasets from DeepMatcher and Magellan**:
+   - These datasets cover various domains such as products, citations, and restaurants. Each dataset comprises entities from two relational tables with multiple attributes and a set of labeled matching/non-matching entity pairs.
+   - For example, the DBLP-Scholar (DS) dataset consists of two tables extracted from DBLP and Scholar, each with four aligned attributes (Title, Authors, Venue, Year). This dataset contains 28,707 entity pairs, including 5,347 matching pairs.
 
-For instance, the DBLP-Scholar (DS) dataset consists of two tables extracted from DBLP and Scholar, each with four aligned attributes (Title, Authors, Venue, Year). This dataset contains 28,707 entity pairs, including 5,347 matching pairs.
+2. **WDC Product Datasets**:
+   - Collected from e-commerce websites, these datasets contain four categories: computers, cameras, watches, and shoes, with 1100 labeled entity pairs per category.
 
 
-- The WDC product datasets, collected from e-commerce websites, each containing four categories: computers, cameras, watches, and shoes, with 1100 labeled entity pairs per category.
-
-### Dataset split and evaluation
-
-There are two datasets: a labeled source dataset and an unlabeled target dataset. The model is trained on both datasets, using the source dataset to learn the task-specific features, and the target dataset to learn domain-specific features. Since we train the model on the unlabeled target training set, we can use that set to perform the evaluation of the model at the end. This means that the target dataset is split into a validation set (10%) and a test/training set (90%), which is used for training (since it's unlabeled) and for the evaluation (using the labels).
-
-Model snapshots are evaluated on the validation set, and the best-performing snapshot is chosen. The optimized model is then used to make predictions on the test set for evaluation.
-The evaluation metric used is the F1 score, which combines precision (the ratio of true positive to the actual positive cases: TP / (TP + FP)) and recall (the ratio of the true positive to all the cases identified as positive: TP + (TP + FN)) into a single value. 
+### Dataset Split and Evaluation
+- The model is trained on both a labeled source dataset and an unlabeled target dataset.
+- The target dataset is split into a validation set (10%) and a test/training set (90%).
+- Model snapshots are evaluated on the validation set, and the best-performing snapshot is chosen for final evaluation on the test set.
+- The evaluation metric used is the F1 score.
 
 ## Framework 
 
-The framework consists of three main modules. 
+The framework consists of three main modules:
 
-(1) A Feature Extractor, which converts entity pairs to high-dimensional vectors (a.k.a. features). 
-The Feature Extractor used is a Bert model (bert-base-multilingual-cased) with 12 transformer layers and output a 768 dimensional feature vector. The max sequence length fed into Bert is 256 (for WDC datasets) and 128 (for other datasets)
+1. **Feature Extractor**:
+   - Converts entity pairs to high-dimensional vectors.
+   - Implemented using a BERT model (bert-base-multilingual-cased) with 12 transformer layers, outputting a 768-dimensional feature vector. The max sequence length is 256 for WDC datasets and 128 for others.
 
+2. **Matcher**:
+   - A binary classifier that takes the features of entity pairs as input and predicts whether they match or not.
+   - Consists of one fully connected layer and a Softmax output layer.
 
-(2) A Matcher, a binary classifier that takes the features of entity pairs as input, and predicts whether they match or not. The Matcher consists of one fully connected layer and a Softmax output layer.
+3. **Feature Aligner**:
+   - Designed to alleviate the effect of domain shift by adjusting the Feature Extractor to align distributions of source and target ER datasets.
+   - Implemented using three categories of solutions:
+     - **Discrepancy-based**: Measures domain distribution discrepancy using MMD and K-order.
+     - **Adversarial-based**: Uses a domain classifier to distinguish features from source or target. Implementations include GRL, InvGAN, and InvGAN+KD.
+     - **Reconstruction-based**: Utilizes an Encoder-Decoder approach for feature alignment.
 
-(3) A Feature Aligner, the key module for domain adaptation, which is designed to alleviate the effect of domain shift. To achieve this, Feature Aligner adjusts Feature Extractor to align distributions of source and target ER datasets, which then reduces domain shift between source and target. Moreover, it updates Matcher accordingly to minimize the matching errors in the adjusted feature space.
-
-Feature Aligner is implemented by three categories of solutions: (1) discrepancy-based, (2) adversarial-based, and (3) reconstruction-based.
-
-- For implementing discrepancy-based Feature Aligner, MMD and K-order are calculated directly on the ouptu layer of Feautre Extractor F
-
-- For adversial-based Feature Aligner, one fully connected layer with Sigmod activation function in GRL is used, which is followed by three fully connected layers with LeakyReLU as activation function and a Sigmod layer for InvGAN and InvGAN+KD
-
-- For reconstruction-based Feature Aligner, a pre-trained model Bart with its default settings is used to realize the reconstruction task in ED
-
-A more extensive description of the Feature Aligner architectures is presented in the next section.
-
-Validation set of target is used for choosing hyper-parameters. More information on hyper-parameters tuning on page 9, left-top corner. (ADD)
 
 ## Description of Feature Aligner methods
 
-### Discrepancy-based Methods (MMD and 𝐾-order MMD)
+## Description of Feature Aligner Methods
 
-Using statistical metrics to minimize the domain distribution discrepancy between source and target. The Feature Aligner is basically a fixed function to calculate the discrepancy value and does not have parameters.
+### Discrepancy-based Methods (MMD and K-order MMD)
+These methods use statistical metrics to minimize the domain distribution discrepancy between source and target. The Feature Aligner is essentially a fixed function to calculate the discrepancy value and does not have parameters.
 
-During training, the Feature Extractor generates features Xs and Xt which have feature space Ps and Pt. The Feature Aligner then computes a distrubution discrepancy (Alignment Loss) between Ps and Pt. Finally, a Matcher gives ER label prediction and computes the matching loss Lm over labeled data Ds. The goal is to reduce simultaneously La and Lm.
+- **MMD**: Measures the discrepancy between two probability distributions by quantifying the difference in mean embeddings of data points from two distributions in a reproducing kernel Hilbert space (RKHS).
+- **K-order MMD**: Extends the concept of MMD by considering higher-order moments in addition to the mean, providing a more comprehensive measure of distribution discrepancy.
 
-MMD is a method used to measure the discrepancy between two probability distributions. It quantifies the difference in mean embeddings of data points from two distributions in a reproducing kernel Hilbert space (RKHS). The 𝐾-order MMD extends this concept by considering higher-order moments in addition to the mean, providing a more comprehensive measure of distribution discrepancy.
+During training, the Feature Extractor generates features \( X_s \) and \( X_t \), which have feature spaces \( P_s \) and \( P_t \). The Feature Aligner computes a distribution discrepancy (Alignment Loss) between \( P_s \) and \( P_t \). Finally, a Matcher gives ER label prediction and computes the matching loss \( L_m \) over labeled data \( D_s \). The goal is to reduce both \( L_a \) and \( L_m \) simultaneously.
 
-### Adversial-based Methods (GRL, InvGAN, InvGAN+KD)
+### Adversarial-based Methods (GRL, InvGAN, InvGAN+KD)
+These methods use a domain classifier to distinguish features from source or target. The Feature Aligner is a binary classifier implemented by fully connected layers. The goal is to generate features that are similar enough that the feature aligner cannot correctly predict their domain.
 
-Using a domain classifier to distinguish features from source or target. Feature Aligner is a binary classifier implemented by fully-connected layers. Basically the goal is to generate features that are more similar so that the feature aligner cannot correctly predict them (explain this better)
+- **GRL (Gradient Reversal Layer)**: Incorporates a gradient reversal layer into the model architecture. The GRL acts as an identity transformation in forward-propagation and has no parameters to update. During training, the gradient from the Feature Aligner multiplies a negative constant in the GRL, effectively confusing the Domain Classifier.
 
-GRL (Gradient Reversal Layer):   GRL incorporates a gradient reversal layer into the model architecture. The GRL has no parameters to update, and acts as an identity transformation in forward-propagation.
+- **InvGAN (Inverted Labels GAN)**: Consists of a Generator (the feature extractor) and a Discriminator (Feature Aligner). The Generator is trained to make the features from both domains indistinguishable, while the Discriminator differentiates between them. The "real data" are the target features, and the "fake data" are the source features.
 
-The Feature Aligner predicts the domain of Xs and Xt and computes domain classification loss La. During back-propagation, the gradient from the Feature Aligner multiplies a negative constant in the GRL. Meanwhile, the labeled Xs is inputted into the Matcher and computes the matching loss Lm.
+- **InvGAN+KD (Inverted Labels GAN + Knowledge Distillation)**: Extends InvGAN by incorporating knowledge distillation (KD), which involves training a new "student" model from an existing "teacher" model to retain the classification ability of the teacher model. KD helps prevent the loss of discriminative information while maintaining domain invariance.
 
-During training, the Feature Extractor should generate features that confuse the Domain Classifier, while the Domain Classifier aims to correctly classify the domain of the input features. This is why it's called adversial training, and the training continues until the Feature Extractor correctly fools the Domain Classifier.
-
-InvGAN: GAN is made of two parts: a Generator, which generates "fake data" and a Discriminator, which has to distinguish between the fake data and the real data. In this scenario, the "real data" is the target features, and the "fake data" is the source features. The generator (the feature extractor) is trained to make the features from both domains indistinguishable, while training a Discriminator (Feature Aligner) to differentiate between them.
-
-InvGAN+KD (Inverted Labels GAN + Knowledge Distillation): InvGAN+KD extends the InvGAN approach by incorporating knowledge distillation (KD). KD involves training a new "student" model (F') from an existing "teacher" model (F) to retain the classification ability of the teacher model. KD helps to prevent the loss of discriminative information in the features generated by the generator (F') while maintaining domain invariance. It achieves this by ensuring that the features generated by F' can still be distinguished by the original model (M), while also learning domain-invariant features through adversarial training.
 
 ### Reconstruction-based Methods (ED)
+In these methods, the Feature Aligner is realized as a Decoder, which reconstructs the input data \( D_s \) and \( D_t \). The reconstruction learns a shared hidden representation space between domains. The reconstruction loss \( L_{rec} \) ensures that the shared Feature Extractor extracts the most important information from both domains, while the matching loss \( L_m \) ensures that the Matcher works for the shared feature.
 
-In Reconstruction-based Methods, the Feature Aligner is realized as a Decoder, which reconstructs the input data Ds and Dt. The reconstruction learns a shared hidden representation space between domains. The recostrunction loss Lrec ensures that the shared Feature Extracor extracts the most important information from both domains, while the matching loss Lm ensures that M works for the shared feature.
+- **Encoder-Decoder (ED)**: The Feature Extractor is treated as an Encoder, and the Feature Aligner as a Decoder. The Feature Extractor generates hidden representations for the original input text, which are then inputted into the Feature Aligner to generate the reconstructed text. The reconstruction loss \( L_{rec} \) can be calculated between the generated and the original text (the entity pairs). This approach is similar to Bart.
 
-Encoder-Decoder (ED): in the Encoder-Decoder approach, the Feature Extractor is treated as Encoder, and the Feature Aligner as Decoder. The Feature Extractor (Encoder) generates hidden represetations for the original input text, which are then inputted into the Feature Aligner (Decoder) to generate the reconstructed text. The reconstruction loss Lrec can be calculated between the generated and the original text, i.e., the entity pairs. This approach is similar to Bart.
+## Experiments
+The two methods, discrepancy-based and adversarial-based, are evaluated on:
 
+- **Sentiment Analysis** using the Multi Domain Sentiment Analysis Dataset.
+- **Natural Language Inference** using the MNLI corpus.
+
+For each dataset, 20 domain adaptation scenarios are considered, resulting in a total of 40 scenarios across both datasets. Each experiment is run three times, and the mean and standard deviation of the F1 scores are reported.
 
 ## Results
-
-Two settings are considered for evaluation:
-- Similar Domains.
-- Different Domains.
-In both settings, DA demonstrates significant improvements compared to NoDA (no domain adaptation), even when datasets are from similar domains (sometimes in similar domains there can be variations in attributes or textual styles, causing domain shift effects). But in different domains the improvements are more noticeble. 
-
-t-SNE is used for visualizing high-dimensional feature distributions of source and target datasets
-
-- But improvement is not always significant. In some cases, such as DBLP-Scholar → DBLP-ACM, DA yields no improvement over NoDA because models trained on the source dataset already perform well on the target dataset. 
-
-- Evaluation on WDC datasets reveals that the gain from DA is not prominent, indicating that the data distribution among different datasets is very similar.
-- NoDA achieves high performance on target datasets, even outperforming state-of-the-art models trained on their own training sets. This suggests that domain shift may not be significant in this scenario, limiting the potential for improvement through DA.
-
-
-- Using MMD, we can calculate the distance between dataset (smaller MMD = similar datasets)
-- F1 scores are higher when MMD is smaller
-
-- When source and target datasets are from similar domains, DA gets better results than from different domains (duh). 
+- **Similar Domains**: When source and target datasets are from similar domains, DA perforws well (as expected). For example, DA improved performance by 6.8 and 14.2 F1 points for Walmart-Amazon → Abt-Buy and vice versa, respectively. Using MMD, we can calculate the distance between dataset (smaller MMD = similar datasets). Sometimes, the domains are too similar, and the improvement is therefore not significant: in DBLP-Scholar → DBLP-ACM, DA yields no improvement over NoDA because models trained on the source dataset already perform well on the target dataset.
+- **Different Domains**: When source and target datasets are from different domains, DA is significantly better than when the model trained only on the source, with improvements ranging from 11.0 to 43.9 F1 points.
+- **WDC Datasets**: The gain from DA is less prominent, indicating similar data distributions among different categories within the same domain.
 
 ## Analysis
+### Evaluation of Feature Aligner
+- **Successful Cases**:
+  - MMD and InvGAN+KD outperform NoDA in nearly all cases.
+  - Discrepancy-based DA shows consistent improvements with enough training epochs, while adversarial-based DA may exhibit oscillation.
+- **Failure Cases**:
+  - InvGAN performs worse than NoDA in many cases due to the generation of non-discriminative features.
+  - Reconstruction-based methods like ED achieve inferior performance, likely due to the failure to capture and reconstruct the textual information of entity pairs.
 
-### Evalution of Feature Aligner
+### Evaluation of Feature Extractor
+- BERT outperforms bidirectional RNN in all datasets.
+- The bidirectional RNN fails to transfer efficiently, leading to heavy reliance on the source dataset and poor performance on the target dataset.
 
-- Succesful Cases Analysis:
+### t-SNE Visualization
+- t-SNE plots show that lower layers of the pretrained model are domain-invariant, while higher layers are domain-variant. The proposed methods effectively reduce divergence in higher layers, improving alignment between source and target datasets.
 
-- MMD and InvGAN+KD outperform NoDA in nearly all the cases
-- Discrepancy-based DA performs well to be convergent with enough training epochs and achieves obvious improvements, while adversarial-based DA may be oscillate. The oscillation may be reduced by reducing learning rate, which may lead to more training epochs
-- InvGAN+KD is sensitive to the learning rate
-
-- Failure Cases Analysis
-
-- InvGAN is worse than NoDA is many cases. This is because the Feature Extractor in InvGAN make the target features as similar to the source features as possible, whether the features thus obtained are discriminative or not. This is proved by the fact that the Matcher becomes much worse even on the source dataset. InvGAN+KD, instead, is much more stable and performative.
-
-- ED also achieves inferior performance in all cases. Maybe enconder-deconder approach fail to capture and reconstruct the textual information of original entity pairs
-
-- GRL is generally good, but sometimes NoDa outperforms it (e.g., Book2 → Zomato-Yelp.). GRL training is generally not stable.
-
-### Evaluation on Feature Extractor
-
-Two F.E. used: Bert and a bidirectional RNN, but Bert outperforms RNN in all 3 datasets. RRN fails to transfer efficiently, so that the model trained on source Ds relies heavily on itself and does not work well on the target dataset
-
+## Conclusion
+The study presents different domain adaptation techniques to improve the performance of deep learning-based entity resolution models by reducing domain shift between source and target datasets. The proposed framework, DADER, explores various DA techniques for ER, analyzing the benefits and limitations of each method.
