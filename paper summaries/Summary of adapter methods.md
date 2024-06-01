@@ -1,14 +1,18 @@
 #  Parameter-efficient fine-tuning of large-scale pre-trained language models
 (https://www.nature.com/articles/s42256-023-00626-4)
 
-The paper discuss and analyse the design and performances of adapters architectures (here called "delta-tuning" methods, reffering to the portion ("delta") of parameters of the adapter that are changed during training)
+The paper discuss and analyse the design and performances of parameter-efficient architectures (here called "delta-tuning" methods, reffering to the portion ("delta") of parameters of the adapter that are changed during training).
+The paper categorizes delta-tuning methods into addition-based, specification-based, and reparameterization-based approaches, and evaluates their performance, convergence, and efficiency across over 100 NLP tasks.
+
 
 ## Hint on terminology:
 
-Sometimes on the literature the term "adapter" refers only to those "bottleneck" architectures, where two layers, the first that reduces the dimension of the input, and the second that projects the input in the original dimension, are added at the end of the attention block of the transformer. This is the case of the present paper.
-But other times the term "adapter" refers to all those methods that introduce a small number of new parameters and only update these while keeping the pre-trained model weights fixed (e.g., LoRA, prompt-tuning, Compacter etc.)
+Most of the times on the literature the term "adapter" refers only to those "bottleneck" architectures, where two layers, the first that reduces the dimension of the input, and the second that projects the input in the original dimension, are added at the end of the attention block of the transformer. This is the case of the present paper.
+But in most rare cases, the term "adapter" refers to all those methods that introduce a small number of new parameters and only update these while keeping the pre-trained model weights fixed (e.g., LoRA, prompt-tuning, Compacter etc.).
 
-## Types of methods
+Usually those methods are called in literature PEFT (Parameter-Efficient Fine-Tuning) or in the case of the present paper, Delta-Tuning.
+
+## Types of Delta-tuning (PEFT) Methods
 
 ### Addition-based methods 
 
