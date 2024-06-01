@@ -22,6 +22,9 @@
   - Zeyu Zhang, Paul Groth, Iacer Calixto, and Sebastian Schelter. "Directions Towards Efficient and Automated Data Wrangling with Large Language Models" - [link](https://www.wis.ewi.tudelft.nl/assets/files/dbml2024/DBML24_paper_1.pdf)
   - [GitHub repository](https://github.com/Jantory/cpwrangle)
 
+### Next
+- Start experimenting with LoRA
+
 ## Dataset
 
 The datasets are the one use on DADER. However, I changed its structure to make it more similar to the datasets used on UDAPTER, so we can more easily use the dataset of DADER on UDAPTER. 
