@@ -1,17 +1,49 @@
-\subsubsection{UDAPTER}
+# UDAPTER - Efficient Domain Adaptation Using Adapters
 
-The idea of using adapters for domain adaptation has been proposed previously. In UDAPTER \cite{udapter}, two methods for enhancing parameter efficiency in unsupervised domain adaptation (UDA) using pre-trained language models are presented. The architecture of the two methods is borrowed from \citet{adapter-fusion}. 
+## Dataset
+The evaluation approach uses two representative datasets with different tasks, both in English. Each dataset has 5 domains, resulting in 20 domain adaptation scenarios per dataset. The details of the datasets are as follows:
 
-The first method, called Two-Steps Domain and Task Adapter (TS-DT Adapter) consists of two separate adapters: a \textit{domain adapter}, which is used to learn domain-invariant features, and a \textit{task adapter}, that learns the task. The two adapters are trained separately, in a two-step manner. First the domain adapter is trained to generate domain-invariant representations (Fig. \ref{fig:udapter} a), and then the task adapter is stacked on top and trained separately, while the domain adapter is left frozen (Fig. \ref{fig:udapter} b). The loss function of the domain adapter is calculated by using MK-MMD \cite{mk-mmd}, a function that calculates the distribution discrepancy between the probability distribution of the source and target data by comparing the means of samples from different distributions using multiple kernels. The task adapter stacked on top of the domain adapter is used to learn task-specific representations, and the loss is calculated using cross-entropy loss between the source label and the source prediction.  
+- **AMAZON**: The Multi Domain Sentiment Analysis Dataset contains Amazon product reviews for five different types of products (domains): Apparel (A), Baby (BA), Books (BO), Camera_Photo (C), and Movie Reviews (MR). Each review is labeled as positive or negative.
+- **MNLI**: The Multigenre Natural Language Inference (MNLI) corpus contains hypothesis–premise pairs covering a variety of genres: Travel (TR), Fiction (F), Telephone (TE), Government (G), and Slate (S). Each pair of sentences is labeled Entailment, Neutral, or Contradiction.
 
-The second method, called Joint Domain Task Adapter uses a single adapter instead of two. This adapter (Fig. \ref{fig:udapter} c) learns domain-invariant and task-specific representations jointly. The trade-off between the two losses is then regularized by an adaptation factor  $\lambda$.
+## Models
+Two methods are proposed to enhance parameter efficiency in unsupervised domain adaptation (UDA) using pre-trained language models:
 
-\begin{figure}[h]
+1. **Two-Steps Domain and Task Adapter (TS-DT Adapter)**:
+   - Consists of two separate adapters: a domain adapter and a task adapter.
+   - The domain adapter is trained first to generate domain-invariant representations.
+   - The task adapter is then stacked on top of the domain adapter and trained separately while the domain adapter is left frozen.
+   - The domain adapter uses MK-MMD to calculate the distribution discrepancy between the source and target data.
+   - The task adapter uses cross-entropy loss between the source label and the source prediction.
 
-    \includegraphics[width=0.5\textwidth]{figures/udapter.png}
-    \caption{The two UDAPTER architectures: Two-Steps Domain and Task Adapter (\textit{a} and \textit{b}) and Joint Domain Task Adapter (\textit{c})}
-    \label{fig:udapter}
-\end{figure}
+2. **Joint Domain Task Adapter**:
+   - Uses a single adapter to learn domain-invariant and task-specific representations jointly.
+   - The trade-off between the two losses is regularized by an adaptation factor.
 
+## Experiments
+The two methods are evaluated on the following tasks:
 
-The two methods are then evaluated on two different tasks: sentiment analysis, using the Multi Domain Sentiment Analysis Dataset \cite{mdsad}, and natural language inference, using the Multigenre Natural Language Inference (MNLI) corpus \cite{mnli}. Each dataset has 5 domains, which results in 20 domain adaptation scenarios per dataset. In our project, though, we won't consider these datasets, since we are interested in the task of Entity Resolution.
+- **Sentiment Analysis** using the Multi Domain Sentiment Analysis Dataset.
+- **Natural Language Inference** using the MNLI corpus.
+
+For each dataset, 20 domain adaptation scenarios are considered, resulting in a total of 40 scenarios across both datasets. Each experiment is run three times, and the mean and standard deviation of the F1 scores are reported.
+
+## Results
+The methods, TS-DT Adapter and Joint Domain Task Adapter, perform well in both datasets:
+
+- **AMAZON**: The methods outperform other baselines, including DANN and DSN, and achieve competitive performance with fully fine-tuned UDA methods.
+- **MNLI**: Similar results are observed, with the methods performing close to fully fine-tuned models and outperforming other adapter-based and UDA methods.
+
+## Analysis
+Several key findings and observations are made from the experiments:
+
+- **Adapter Reduction Factor**: The bottleneck size of the adapters plays an important role in the final performance. Smaller reduction factors generally perform well in both datasets.
+- **Removal of Adapters from Continuous Layer Spans**: Adapters added to higher layers are more effective, and removing adapters from the first few layers still preserves performance.
+- **Composability**: The two-step method TS-DT Adapter shows composability, where task adapters can be reused for different domain pairs with minimal performance loss.
+
+## Further Analysis
+- **t-SNE Plots**: Visualizations of the t-SNE plots show that the lower layers of the pretrained model are domain-invariant, while higher layers are domain-variant. The methods effectively reduce divergence in higher layers.
+- **Comparison with Baselines**: Simply replacing feature extractors in existing UDA methods with adapters is not sufficient. The proposed methods demonstrate better performance with minimal modifications to hyperparameters.
+
+## Conclusion
+UDAPTER is proposed to make unsupervised domain adaptation more parameter-efficient. The methods outperform strong baselines and perform competitively with other UDA methods while fine-tuning only a fraction of the parameters. This work demonstrates the potential of adapters for efficient domain adaptation in NLP tasks.
