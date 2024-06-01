@@ -1,7 +1,7 @@
 # Directions Towards Efficient and Automated Data Wrangling with Large Language Models
 
 
-This paper explores the use of large language models (LLMs) for data wrangling tasks such as entity matching, error detection, and data imputation. It evaluates parameter-efficient fine-tuning (PEFT) methods to reduce the computational and storage costs associated with full model fine-tuning. The study finds that PEFT methods achieve performance close to full fine-tuning while being more parameter-efficient. However, they are not necessarily compute-efficient. The training time remain high because PEFT models still require backpropagation through all model layers.  
+This paper explores the use of large language models (LLMs) for data wrangling tasks such as entity matching, error detection, and data imputation. It evaluates parameter-efficient fine-tuning (PEFT) methods to reduce the computational and storage costs associated with full model fine-tuning. The study finds that PEFT methods achieve performance close to full fine-tuning while being more parameter-efficient. However, parameter-efficient does not necessarily mean compute-efficient: the training time still remains high because PEFT models still require backpropagation through all model layers.  
 
 ## Dataset
 The study evaluates ten benchmark datasets from various domains, including:
@@ -16,13 +16,13 @@ The study uses Google T5 in three variants (T5-small, T5-base, T5-large) and com
 - **Prefix-Tuning**
 - **LoRA**
 
-Baselines include:
+Baselines:
 - **Zero-shot GPT-3** (OpenAI)
 - **AutoML (autogluon)**
 - **Fully fine-tuned T5 models**
 
 ## Experiments
-The study conducts extensive empirical evaluations to assess:
+The study conducts empirical evaluations to assess:
 - **Prediction Quality**: F1 and accuracy scores across datasets.
 - **Parameter Efficiency**: Number of parameter updates required.
 - **Computational Efficiency**: Training and inference times on a single GTX 1080 ti GPU.
