@@ -71,10 +71,7 @@ They measured performance, convergence and efficacy of 4 fine-tuning methods: pr
 - 100 representative tasks from Huggingface datasets, such as text classification (sentiment analysis, NLI...), question asnwering, conditional generation (summarization, dialogue...) etc.
 
 ### Analysis of performance
-
-1. Performance of the delta-tuning emthods are in general comparable to fine-tuning
-
-2. Despite difference in design, PT, PF, LR, and AP are also comparable to each other in performance, with difference on particular tasks.
+Performance of the delta-tuning emthods are in general comparable to fine-tuning
 
 If we were to make a list of the most performing methods according to the avarage results:
 
@@ -85,8 +82,7 @@ If we were to make a list of the most performing methods according to the avarag
 5. Prompt-tuning
 
 More tunable parameters does not always lead to better performance, and the design of the structure of delta-tuning plays a greater role
-
-3. Prompt-tuning performs much worse that other delta-tuning methods. When the size of the PLM is bigger, performance improves sharply.
+Prompt-tuning performs much worse that other delta-tuning methods, especially with smaller PLM. However, when the size of the PLM is bigger, performance improves sharply.
 
 #### Analysis of convergence
 
@@ -98,3 +94,12 @@ More tunable parameters does not always lead to better performance, and the desi
 4. Prompt-tuning (far behind the 3 other methods)
 
 2. Generally, performance and convergence is not that sensitive to the size, but rather to the structure of the methods, and as the size of the PLM increases, the convergence accelerates
+
+### Efficiency Analysis
+
+1. Delta-tuning generally reduces memory and computational costs.
+2. Combining delta-tuning methods often yields better results than using a single method, with the optimal combination varying by task and model.
+
+## Conclusion
+
+Delta-tuning presents a promising approach for adapting large-scale PLMs efficiently. The paper highlights the importance of method structure over the number of tunable parameters and evaluates delta-tuning methods with various datasets and tasks.
