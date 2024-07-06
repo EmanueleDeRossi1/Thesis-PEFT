@@ -127,28 +127,22 @@ import time
 def measure_inference_time(model, data_loader, device='cuda'):
     # Measure the inference time for a single prediction
     model.eval()
-    total_time = 0
-    total_predictions = 0
     with torch.no_grad():
-        for batch in data_loader:
-            batch = tuple(t.to(device) for t in batch)
-            input_ids = batch[0] # which corresponds to all_input_ids in function get_data_loader()
-            attention_mask = batch[1] # which corresponds to all_input_mask in get_data_loader()
+        batch = next(iter(data_loader))
+        batch = tuple(t.to(device) for t in batch)
+        input_ids = batch[0] # which corresponds to all_input_ids in function get_data_loader()
+        attention_mask = batch[1] # which corresponds to all_input_mask in get_data_loader()
 
-            # Measure time for each prediction in the batch
-            for i in range(input_ids.size(0)):
-                inputs = (input_ids[i].unsqueeze(0), attention_mask[i].unsqueeze(0))
+        inputs = (input_ids, attention_mask)
+        start_time = time.time()
+        outputs = model(*inputs)
+        end_time = time.time()
+        total_time = end_time - start_time
 
-                start_time = time.time()
-                outputs = model(*inputs)                
-                end_time = time.time()
-
-                total_time += (end_time - start_time)
-                total_predictions += 1
-
-            break  # Measure only for one batch
-
-    avg_inference_time = total_time / total_predictions
+    # calculate number of instances in a batch
+    num_instances = input_ids.size(0)
+    # calculate time for predicting single instance
+    avg_inference_time = total_time / num_instances
 
     return avg_inference_time
 
