@@ -256,33 +256,32 @@ def train_domain_task_adapter(
     gc.collect()
 
 def measure_inference_time(model, data_loader, device='cuda'):
-    # Measure the inference time for a single prediction
+    # Measure the inference time for a single batch
     model.to(device)
-    model.eval()
-    total_time = 0
-    total_predictions = 0
+    print("\n using device: ", device)
+    model.eval()  # Set the model to evaluation mode
+
     with torch.no_grad():
-        for batch in data_loader:
-            input_ids = batch['source_input_ids'].to(device)
-            attention_mask = batch['source_attention_mask'].to(device)
+        # get the first (and only) batch from dataloader
+        batch = next(iter(data_loader))
+        input_ids = batch['source_input_ids'].to(device)
+        attention_mask = batch['source_attention_mask'].to(device)
 
-            # Measure time for each prediction in the batch
-            for i in range(input_ids.size(0)):
-                inputs = (input_ids[i].unsqueeze(0), attention_mask[i].unsqueeze(0))
+        inputs = (input_ids, attention_mask)
 
-                start_time = time.time()
-                outputs = model(*inputs)
-                end_time = time.time()
+        start_time = time.time()
 
-                total_time += (end_time - start_time)
-                total_predictions += 1
+        outputs = model(*inputs)
 
-            break  # Measure only for one batch
+        end_time = time.time()
 
-    avg_inference_time = total_time / total_predictions
+        total_time = end_time - start_time
+
+    # number of instances in a batch
+    num_instances = input_ids.size(0)
+    avg_inference_time = total_time / num_instances
 
     return avg_inference_time
-
 
 if __name__ == "__main__":
     train_domain_task_adapter()
