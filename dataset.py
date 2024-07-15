@@ -9,6 +9,8 @@ import csv
 
 from transformers import BertTokenizer
 
+# add comments and description functions to this file
+
 class DatasetProcessor:
     def __init__(self, dataset_name, tokenizer=None, max_seq_length=128):
         self.dataset_name = dataset_name
