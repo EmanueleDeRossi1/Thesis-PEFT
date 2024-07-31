@@ -47,7 +47,7 @@ def convert_in_dict(reader):
     for row in reader:
         id_value = row[0]
         # convert comma-separated values in a single string
-        instance = "".join(row[1:])
+        instance = " ".join(row[1:])
         table[id_value] = instance
     return table
 

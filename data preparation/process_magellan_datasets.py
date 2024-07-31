@@ -17,7 +17,7 @@ def convert_in_dict(reader):
     for row in reader:
         id_value = row[0]
         # convert comma-separated values in a single string
-        instance = "".join(row[1:])
+        instance = " ".join(row[1:])
         table[id_value] = instance
     return table
 
@@ -154,6 +154,7 @@ duplicates = check_duplicate_id_zomato_yelp(zomato_yelp_folder)
 
 input_folder = os.path.join(current_folder, "magellan datasets")
 
-#preprocess_and_split_magellan(input_folder)
+# preprocess_and_split_magellan(input_folder)
 
 split_data(input_folder)
+
