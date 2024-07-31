@@ -1,3 +1,4 @@
+import pytorch_lightning as pl
 from peft import get_peft_model
 from sklearn.model_selection import train_test_split
 from pathlib import Path
@@ -11,8 +12,9 @@ from transformers import BertTokenizer
 
 # add comments and description functions to this file
 
-class DatasetProcessor:
+class DatasetProcessor(pl.LightningDataModule):
     def __init__(self, dataset_name, tokenizer=None, max_seq_length=128):
+        super().__init__()
         self.dataset_name = dataset_name
         self.tokenizer = tokenizer if tokenizer else BertTokenizer.from_pretrained('bert-base-uncased')
         self.max_seq_length = max_seq_length

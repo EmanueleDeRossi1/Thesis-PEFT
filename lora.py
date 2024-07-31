@@ -13,6 +13,8 @@ def LoRA_model(base_model_name = "bert-base-multilingual-cased"):
     
     # small reminder: queries -> 
     
+    # you should use FEATURE_EXTRACTION for task_type for domain adapatation (measure difference between batches)
+    
     # peft_config = LoraConfig(task_type=TaskType.SEQ_CLS, r=kwargs['r'], lora_alpha=kwargs['la'],
     #                              lora_dropout=0.1, bias="lora_only", target_modules=["q", "v"])
     # model = get_peft_model(base_model, peft_config)
