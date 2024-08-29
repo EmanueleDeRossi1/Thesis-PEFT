@@ -1,0 +1,5238 @@
+=== Argument Setting ===
+src: ab
+tgt: ri
+seed: 42
+train_seed: 3000
+model_type: bert
+max_seq_length: 256
+batch_size: 32
+pre_epochs: 5
+num_epochs: 20
+AD weight: 1.0
+KD weight: 5.0
+temperature: 20
+=== Processing datasets ===
+Some weights of the model checkpoint at bert-base-uncased were not used when initializing BertModel: ['cls.seq_relationship.bias', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.decoder.weight', 'cls.predictions.transform.dense.weight', 'cls.predictions.transform.dense.bias', 'cls.predictions.bias', 'cls.predictions.transform.LayerNorm.bias', 'cls.seq_relationship.weight']
+- This IS expected if you are initializing BertModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of the model checkpoint at bert-base-uncased were not used when initializing BertModel: ['cls.seq_relationship.bias', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.decoder.weight', 'cls.predictions.transform.dense.weight', 'cls.predictions.transform.dense.bias', 'cls.predictions.bias', 'cls.predictions.transform.LayerNorm.bias', 'cls.seq_relationship.weight']
+- This IS expected if you are initializing BertModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+=== Training F and M ===
+===== RES ====
+p 30
+tp 30
+fp 18
+recall 0.9999999666666678
+precision 0.6249999869791669
+f1 0.7692302761344129
+tgt_res:
+===== RES ====
+p 113
+tp 113
+fp 60
+recall 0.9999999911504426
+precision 0.6531791869758429
+f1 0.7902093066901026
+save pretrained model to: checkpoint/ab/bert/3000/source-encoder.ptribest
+save pretrained model to: checkpoint/ab/bert/3000/source-classifier.ptribest
+===== RES ====
+p 30
+tp 30
+fp 14
+recall 0.9999999666666678
+precision 0.6818181663223144
+f1 0.8108103067935661
+tgt_res:
+===== RES ====
+p 111
+tp 110
+fp 55
+recall 0.9909909820631443
+precision 0.6666666626262626
+f1 0.7971009626394413
+save pretrained model to: checkpoint/ab/bert/3000/source-encoder.ptribest
+save pretrained model to: checkpoint/ab/bert/3000/source-classifier.ptribest
+===== RES ====
+p 30
+tp 30
+fp 17
+recall 0.9999999666666678
+precision 0.6382978587596201
+f1 0.7792202833533003
+===== RES ====
+p 29
+tp 29
+fp 15
+recall 0.9999999655172426
+precision 0.6590908941115706
+f1 0.7945200472887101
+===== RES ====
+p 32
+tp 32
+fp 18
+recall 0.9999999687500011
+precision 0.6399999872000003
+f1 0.7804873099348524
+Restore model from: /home/derossi/DADER/main/checkpoint/ab/bert/3000/source-encoder.ptribest
+Restore model from: /home/derossi/DADER/main/checkpoint/ab/bert/3000/source-classifier.ptribest
+Pretraining time:  180.88851881027222
+=== Training F' and A ===
+===== RES ====
+p 32
+tp 32
+fp 9
+recall 0.9999999687500011
+precision 0.7804877858417614
+f1 0.8767118123478093
+======== tgt result =======
+===== RES ====
+p 114
+tp 113
+fp 54
+recall 0.9912280614804556
+precision 0.6766467025350497
+f1 0.804269974696658
+===== RES ====
+p 31
+tp 31
+fp 10
+recall 0.9999999677419364
+precision 0.7560975425342064
+f1 0.8611105968366992
+===== RES ====
+p 29
+tp 29
+fp 11
+recall 0.9999999655172426
+precision 0.7249999818750005
+f1 0.8405791984879952
+===== RES ====
+p 32
+tp 32
+fp 10
+recall 0.9999999687500011
+precision 0.7619047437641728
+f1 0.8648643506211701
+===== RES ====
+p 29
+tp 29
+fp 8
+recall 0.9999999655172426
+precision 0.7837837626004389
+f1 0.8787873595044089
+======== tgt result =======
+===== RES ====
+p 113
+tp 112
+fp 46
+recall 0.9911504337066334
+precision 0.7088607550072105
+f1 0.826567773369385
+===== RES ====
+p 32
+tp 32
+fp 8
+recall 0.9999999687500011
+precision 0.7999999800000005
+f1 0.8888883703706452
+======== tgt result =======
+===== RES ====
+p 111
+tp 109
+fp 45
+recall 0.9819819731352976
+precision 0.7077922031961545
+f1 0.8226410163904625
+===== RES ====
+p 35
+tp 35
+fp 9
+recall 0.9999999714285723
+precision 0.7954545273760335
+f1 0.8860754334244059
+===== RES ====
+p 32
+tp 32
+fp 9
+recall 0.9999999687500011
+precision 0.7804877858417614
+f1 0.8767118123478093
+===== RES ====
+p 28
+tp 28
+fp 9
+recall 0.9999999642857155
+precision 0.7567567363038721
+f1 0.8615379446156641
+===== RES ====
+p 33
+tp 32
+fp 7
+recall 0.969696940312214
+precision 0.8205127994740309
+f1 0.8888883676700311
+===== RES ====
+p 31
+tp 29
+fp 8
+recall 0.9354838407908438
+precision 0.7837837626004389
+f1 0.8529406552771057
+===== RES ====
+p 32
+tp 30
+fp 3
+recall 0.937499970703126
+precision 0.9090908815427007
+f1 0.923076394793171
+======== tgt result =======
+===== RES ====
+p 113
+tp 106
+fp 25
+recall 0.938053089043778
+precision 0.8091602991667153
+f1 0.8688519546159794
+===== RES ====
+p 27
+tp 25
+fp 1
+recall 0.9259258916323744
+precision 0.9615384245562144
+f1 0.9433956909935023
+======== tgt result =======
+===== RES ====
+p 110
+tp 100
+fp 20
+recall 0.9090909008264464
+precision 0.833333326388889
+f1 0.8695647107753338
+===== RES ====
+p 34
+tp 30
+fp 0
+recall 0.8823529152249143
+precision 0.9999999666666678
+f1 0.9374994726565156
+===== RES ====
+p 32
+tp 27
+fp 0
+recall 0.8437499736328133
+precision 0.9999999629629643
+f1 0.9152537098537605
+===== RES ====
+p 31
+tp 19
+fp 0
+recall 0.6129032060353804
+precision 0.9999999473684238
+f1 0.7599994984002911
+===== RES ====
+p 29
+tp 4
+fp 0
+recall 0.13793102972651622
+precision 0.9999997500000625
+f1 0.24242401469253164
+===== RES ====
+p 28
+tp 1
+fp 0
+recall 0.035714284438775556
+precision 0.9999990000010001
+f1 0.06896544589774563
+===== RES ====
+p 29
+tp 0
+fp 0
+recall 0.0
+precision 0.0
+f1 0.0
+===== RES ====
+p 30
+tp 0
+fp 0
+recall 0.0
+precision 0.0
+f1 0.0
+===== RES ====
+p 38
+tp 0
+fp 0
+recall 0.0
+precision 0.0
+f1 0.0
+=== Result of InvGAN+KD: ===
+0.0
+The source-target datasets are: ab_ri with seed 3000
+The F1 score is: 0.0
+The training time is: 59.840636014938354
+The inference time is: 0.0002697259187698364
+Source Encoder trainable parameters: 0
+Source Encoder non-trainable parameters: 109482240
+Target Encoder trainable parameters: 109482240
+Target Encoder non-trainable parameters: 0
+Source Classifier trainable parameters: 0
+Source Classifier non-trainable parameters: 1538
+Discriminator trainable parameters: 11805697
+Discriminator non-trainable parameters: 0
+=== Argument Setting ===
+src: wa1
+tgt: ri
+seed: 42
+train_seed: 3000
+model_type: bert
+max_seq_length: 256
+batch_size: 32
+pre_epochs: 5
+num_epochs: 20
+AD weight: 1.0
+KD weight: 5.0
+temperature: 20
+=== Processing datasets ===
+Some weights of the model checkpoint at bert-base-uncased were not used when initializing BertModel: ['cls.predictions.transform.LayerNorm.weight', 'cls.predictions.bias', 'cls.seq_relationship.weight', 'cls.predictions.decoder.weight', 'cls.predictions.transform.dense.bias', 'cls.predictions.transform.dense.weight', 'cls.seq_relationship.bias', 'cls.predictions.transform.LayerNorm.bias']
+- This IS expected if you are initializing BertModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of the model checkpoint at bert-base-uncased were not used when initializing BertModel: ['cls.predictions.transform.LayerNorm.weight', 'cls.predictions.bias', 'cls.seq_relationship.weight', 'cls.predictions.decoder.weight', 'cls.predictions.transform.dense.bias', 'cls.predictions.transform.dense.weight', 'cls.seq_relationship.bias', 'cls.predictions.transform.LayerNorm.bias']
+- This IS expected if you are initializing BertModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+=== Training F and M ===
+===== RES ====
+p 31
+tp 30
+fp 8
+recall 0.9677419042663902
+precision 0.7894736634349037
+f1 0.8695646973327753
+tgt_res:
+===== RES ====
+p 112
+tp 111
+fp 37
+recall 0.9910714197225766
+precision 0.7499999949324325
+f1 0.8538456568641869
+save pretrained model to: checkpoint/wa1/bert/3000/source-encoder.ptribest
+save pretrained model to: checkpoint/wa1/bert/3000/source-classifier.ptribest
+===== RES ====
+p 32
+tp 17
+fp 0
+recall 0.5312499833984381
+precision 0.999999941176474
+f1 0.6938770695546457
+===== RES ====
+p 29
+tp 28
+fp 7
+recall 0.9655172080856135
+precision 0.7999999771428579
+f1 0.8749994770510626
+tgt_res:
+===== RES ====
+p 110
+tp 105
+fp 30
+recall 0.9545454458677687
+precision 0.7777777720164609
+f1 0.8571423553522223
+save pretrained model to: checkpoint/wa1/bert/3000/source-encoder.ptribest
+save pretrained model to: checkpoint/wa1/bert/3000/source-classifier.ptribest
+===== RES ====
+p 34
+tp 33
+fp 3
+recall 0.9705882067474058
+precision 0.9166666412037044
+f1 0.9428566163267962
+tgt_res:
+===== RES ====
+p 114
+tp 111
+fp 20
+recall 0.9736842019852263
+precision 0.8473282378066547
+f1 0.9061219439902775
+save pretrained model to: checkpoint/wa1/bert/3000/source-encoder.ptribest
+save pretrained model to: checkpoint/wa1/bert/3000/source-classifier.ptribest
+===== RES ====
+p 30
+tp 29
+fp 5
+recall 0.9666666344444454
+precision 0.8529411513840839
+f1 0.9062494736330869
+Restore model from: /home/derossi/DADER/main/checkpoint/wa1/bert/3000/source-encoder.ptribest
+Restore model from: /home/derossi/DADER/main/checkpoint/wa1/bert/3000/source-classifier.ptribest
+Pretraining time:  194.74108576774597
+=== Training F' and A ===
+===== RES ====
+p 33
+tp 32
+fp 4
+recall 0.969696940312214
+precision 0.8888888641975317
+f1 0.9275357059443987
+======== tgt result =======
+===== RES ====
+p 112
+tp 109
+fp 20
+recall 0.9732142770248725
+precision 0.8449612337599904
+f1 0.9045638103341177
+===== RES ====
+p 28
+tp 28
+fp 4
+recall 0.9999999642857155
+precision 0.874999972656251
+f1 0.9333328044447108
+======== tgt result =======
+===== RES ====
+p 112
+tp 109
+fp 21
+recall 0.9732142770248725
+precision 0.8384615320118344
+f1 0.9008259416026241
+===== RES ====
+p 28
+tp 28
+fp 5
+recall 0.9999999642857155
+precision 0.8484848227731873
+f1 0.9180322601453917
+===== RES ====
+p 28
+tp 27
+fp 5
+recall 0.96428567984694
+precision 0.8437499736328133
+f1 0.8999994722224985
+===== RES ====
+p 30
+tp 29
+fp 3
+recall 0.9666666344444454
+precision 0.9062499716796885
+f1 0.9354833413114018
+======== tgt result =======
+===== RES ====
+p 111
+tp 108
+fp 19
+recall 0.9729729642074508
+precision 0.8503936940913882
+f1 0.9075625198435046
+===== RES ====
+p 28
+tp 28
+fp 2
+recall 0.9999999642857155
+precision 0.9333333022222232
+f1 0.9655167086804022
+======== tgt result =======
+===== RES ====
+p 111
+tp 107
+fp 16
+recall 0.963963955279604
+precision 0.8699186921144823
+f1 0.9145294080286159
+===== RES ====
+p 30
+tp 29
+fp 0
+recall 0.9666666344444454
+precision 0.9999999655172426
+f1 0.9830503142777618
+======== tgt result =======
+===== RES ====
+p 113
+tp 107
+fp 15
+recall 0.9469026464875873
+precision 0.8770491731389413
+f1 0.9106377908558646
+===== RES ====
+p 30
+tp 30
+fp 1
+recall 0.9999999666666678
+precision 0.9677419042663902
+f1 0.9836060252622816
+======== tgt result =======
+===== RES ====
+p 112
+tp 105
+fp 13
+recall 0.9374999916294644
+precision 0.8898305009336398
+f1 0.9130429706618992
+===== RES ====
+p 28
+tp 27
+fp 0
+recall 0.96428567984694
+precision 0.9999999629629643
+f1 0.9818176462812476
+===== RES ====
+p 31
+tp 30
+fp 1
+recall 0.9677419042663902
+precision 0.9677419042663902
+f1 0.9677414042666486
+===== RES ====
+p 30
+tp 29
+fp 1
+recall 0.9666666344444454
+precision 0.9666666344444454
+f1 0.9666661344447042
+===== RES ====
+p 30
+tp 29
+fp 1
+recall 0.9666666344444454
+precision 0.9666666344444454
+f1 0.9666661344447042
+===== RES ====
+p 31
+tp 30
+fp 0
+recall 0.9677419042663902
+precision 0.9999999666666678
+f1 0.9836060252622816
+===== RES ====
+p 31
+tp 30
+fp 2
+recall 0.9677419042663902
+precision 0.937499970703126
+f1 0.9523804222728761
+===== RES ====
+p 30
+tp 29
+fp 2
+recall 0.9666666344444454
+precision 0.9354838407908438
+f1 0.9508191410913684
+===== RES ====
+p 33
+tp 32
+fp 1
+recall 0.969696940312214
+precision 0.969696940312214
+f1 0.9696964403124718
+===== RES ====
+p 31
+tp 30
+fp 1
+recall 0.9677419042663902
+precision 0.9677419042663902
+f1 0.9677414042666486
+===== RES ====
+p 29
+tp 28
+fp 1
+recall 0.9655172080856135
+precision 0.9655172080856135
+f1 0.9655167080858724
+===== RES ====
+p 33
+tp 33
+fp 0
+recall 0.9999999696969707
+precision 0.9999999696969707
+f1 0.9999994696972208
+======== tgt result =======
+===== RES ====
+p 111
+tp 102
+fp 5
+recall 0.9189189106403702
+precision 0.9532710191283083
+f1 0.9357793080972286
+===== RES ====
+p 29
+tp 28
+fp 1
+recall 0.9655172080856135
+precision 0.9655172080856135
+f1 0.9655167080858724
+===== RES ====
+p 38
+tp 37
+fp 3
+recall 0.9736841849030479
+precision 0.9249999768750007
+f1 0.9487174247208425
+=== Result of InvGAN+KD: ===
+0.9487174247208425
+The source-target datasets are: wa1_ri with seed 3000
+The F1 score is: 0.9487174247208425
+The training time is: 60.39172887802124
+The inference time is: 0.0002671927213668823
+Source Encoder trainable parameters: 0
+Source Encoder non-trainable parameters: 109482240
+Target Encoder trainable parameters: 109482240
+Target Encoder non-trainable parameters: 0
+Source Classifier trainable parameters: 0
+Source Classifier non-trainable parameters: 1538
+Discriminator trainable parameters: 11805697
+Discriminator non-trainable parameters: 0
+=== Argument Setting ===
+src: da
+tgt: ia
+seed: 42
+train_seed: 3000
+model_type: bert
+max_seq_length: 256
+batch_size: 32
+pre_epochs: 5
+num_epochs: 20
+AD weight: 1.0
+KD weight: 5.0
+temperature: 20
+=== Processing datasets ===
+Some weights of the model checkpoint at bert-base-uncased were not used when initializing BertModel: ['cls.predictions.transform.LayerNorm.weight', 'cls.predictions.transform.dense.weight', 'cls.predictions.transform.dense.bias', 'cls.predictions.transform.LayerNorm.bias', 'cls.seq_relationship.bias', 'cls.seq_relationship.weight', 'cls.predictions.decoder.weight', 'cls.predictions.bias']
+- This IS expected if you are initializing BertModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of the model checkpoint at bert-base-uncased were not used when initializing BertModel: ['cls.predictions.transform.LayerNorm.weight', 'cls.predictions.transform.dense.weight', 'cls.predictions.transform.dense.bias', 'cls.predictions.transform.LayerNorm.bias', 'cls.seq_relationship.bias', 'cls.seq_relationship.weight', 'cls.predictions.decoder.weight', 'cls.predictions.bias']
+- This IS expected if you are initializing BertModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+=== Training F and M ===
+===== RES ====
+p 24
+tp 22
+fp 29
+recall 0.9166666284722238
+precision 0.43137254056132274
+f1 0.5866662158225421
+tgt_res:
+===== RES ====
+p 78
+tp 64
+fp 89
+recall 0.8205128099934256
+precision 0.41830065086078005
+f1 0.5541121020224362
+save pretrained model to: checkpoint/da/bert/3000/source-encoder.ptiabest
+save pretrained model to: checkpoint/da/bert/3000/source-classifier.ptiabest
+===== RES ====
+p 22
+tp 17
+fp 20
+recall 0.7727272376033073
+precision 0.4594594470416366
+f1 0.576270699224739
+===== RES ====
+p 26
+tp 22
+fp 18
+recall 0.8461538136094686
+precision 0.5499999862500004
+f1 0.6666661689626922
+tgt_res:
+===== RES ====
+p 77
+tp 61
+fp 74
+recall 0.7922077819193795
+precision 0.45185184850480115
+f1 0.5754712301089507
+save pretrained model to: checkpoint/da/bert/3000/source-encoder.ptiabest
+save pretrained model to: checkpoint/da/bert/3000/source-classifier.ptiabest
+===== RES ====
+p 23
+tp 18
+fp 7
+recall 0.7826086616257103
+precision 0.7199999712000011
+f1 0.749999469618389
+tgt_res:
+===== RES ====
+p 77
+tp 55
+fp 22
+recall 0.7142857050092766
+precision 0.7142857050092766
+f1 0.7142852050096267
+save pretrained model to: checkpoint/da/bert/3000/source-encoder.ptiabest
+save pretrained model to: checkpoint/da/bert/3000/source-classifier.ptiabest
+===== RES ====
+p 26
+tp 25
+fp 36
+recall 0.9615384245562144
+precision 0.40983605885514657
+f1 0.5747122113888607
+Restore model from: /home/derossi/DADER/main/checkpoint/da/bert/3000/source-encoder.ptiabest
+Restore model from: /home/derossi/DADER/main/checkpoint/da/bert/3000/source-classifier.ptiabest
+Pretraining time:  230.09357285499573
+=== Training F' and A ===
+===== RES ====
+p 26
+tp 21
+fp 7
+recall 0.8076922766272201
+precision 0.7499999732142867
+f1 0.777777249657386
+======== tgt result =======
+===== RES ====
+p 77
+tp 56
+fp 23
+recall 0.727272717827627
+precision 0.70886075052075
+f1 0.7179482088267782
+===== RES ====
+p 25
+tp 20
+fp 9
+recall 0.7999999680000013
+precision 0.689655148632581
+f1 0.7407402160497174
+===== RES ====
+p 25
+tp 19
+fp 7
+recall 0.7599999696000012
+precision 0.7307692026627229
+f1 0.7450975101887254
+===== RES ====
+p 24
+tp 19
+fp 7
+recall 0.7916666336805569
+precision 0.7307692026627229
+f1 0.7599994704003291
+===== RES ====
+p 23
+tp 16
+fp 5
+recall 0.6956521436672981
+precision 0.7619047256235845
+f1 0.7272721952482776
+===== RES ====
+p 22
+tp 15
+fp 4
+recall 0.6818181508264477
+precision 0.7894736426592819
+f1 0.7317067840574485
+===== RES ====
+p 23
+tp 17
+fp 2
+recall 0.7391304026465042
+precision 0.8947367950138528
+f1 0.8095232755105088
+======== tgt result =======
+===== RES ====
+p 78
+tp 46
+fp 8
+recall 0.5897435821827746
+precision 0.8518518360768179
+f1 0.6969692029388107
+===== RES ====
+p 24
+tp 15
+fp 1
+recall 0.6249999739583344
+precision 0.9374999414062536
+f1 0.749999482500307
+===== RES ====
+p 24
+tp 9
+fp 0
+recall 0.37499998437500065
+precision 0.9999998888889013
+f1 0.5454541157027575
+===== RES ====
+p 23
+tp 7
+fp 1
+recall 0.3043478128544429
+precision 0.8749998906250137
+f1 0.4516124911553583
+===== RES ====
+p 26
+tp 7
+fp 1
+recall 0.26923075887574005
+precision 0.8749998906250137
+f1 0.4117643217996075
+===== RES ====
+p 27
+tp 3
+fp 0
+recall 0.11111110699588492
+precision 0.9999996666667778
+f1 0.1999998066667869
+===== RES ====
+p 25
+tp 2
+fp 0
+recall 0.07999999680000013
+precision 0.99999950000025
+f1 0.1481480000000741
+===== RES ====
+p 24
+tp 1
+fp 0
+recall 0.041666664930555625
+precision 0.9999990000010001
+f1 0.07999991680000652
+===== RES ====
+p 25
+tp 1
+fp 0
+recall 0.03999999840000006
+precision 0.9999990000010001
+f1 0.07692299704142616
+===== RES ====
+p 24
+tp 1
+fp 0
+recall 0.041666664930555625
+precision 0.9999990000010001
+f1 0.07999991680000652
+===== RES ====
+p 25
+tp 1
+fp 0
+recall 0.03999999840000006
+precision 0.9999990000010001
+f1 0.07692299704142616
+===== RES ====
+p 24
+tp 1
+fp 0
+recall 0.041666664930555625
+precision 0.9999990000010001
+f1 0.07999991680000652
+===== RES ====
+p 25
+tp 1
+fp 0
+recall 0.03999999840000006
+precision 0.9999990000010001
+f1 0.07692299704142616
+===== RES ====
+p 24
+tp 1
+fp 0
+recall 0.041666664930555625
+precision 0.9999990000010001
+f1 0.07999991680000652
+===== RES ====
+p 27
+tp 3
+fp 0
+recall 0.11111110699588492
+precision 0.9999996666667778
+f1 0.1999998066667869
+=== Result of InvGAN+KD: ===
+0.1999998066667869
+The source-target datasets are: da_ia with seed 3000
+The F1 score is: 0.1999998066667869
+The training time is: 53.27106595039368
+The inference time is: 0.0002724677324295044
+Source Encoder trainable parameters: 0
+Source Encoder non-trainable parameters: 109482240
+Target Encoder trainable parameters: 109482240
+Target Encoder non-trainable parameters: 0
+Source Classifier trainable parameters: 0
+Source Classifier non-trainable parameters: 1538
+Discriminator trainable parameters: 11805697
+Discriminator non-trainable parameters: 0
+=== Argument Setting ===
+src: ds
+tgt: ia
+seed: 42
+train_seed: 3000
+model_type: bert
+max_seq_length: 256
+batch_size: 32
+pre_epochs: 5
+num_epochs: 20
+AD weight: 1.0
+KD weight: 5.0
+temperature: 20
+=== Processing datasets ===
+Some weights of the model checkpoint at bert-base-uncased were not used when initializing BertModel: ['cls.predictions.transform.LayerNorm.bias', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.decoder.weight', 'cls.seq_relationship.weight', 'cls.predictions.transform.dense.weight', 'cls.predictions.transform.dense.bias', 'cls.seq_relationship.bias', 'cls.predictions.bias']
+- This IS expected if you are initializing BertModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of the model checkpoint at bert-base-uncased were not used when initializing BertModel: ['cls.predictions.transform.LayerNorm.bias', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.decoder.weight', 'cls.seq_relationship.weight', 'cls.predictions.transform.dense.weight', 'cls.predictions.transform.dense.bias', 'cls.seq_relationship.bias', 'cls.predictions.bias']
+- This IS expected if you are initializing BertModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+=== Training F and M ===
+===== RES ====
+p 24
+tp 24
+fp 38
+recall 0.999999958333335
+precision 0.38709676795005216
+f1 0.558139119524353
+tgt_res:
+===== RES ====
+p 78
+tp 78
+fp 126
+recall 0.9999999871794873
+precision 0.3823529393021915
+f1 0.553191085257569
+save pretrained model to: checkpoint/ds/bert/3000/source-encoder.ptiabest
+save pretrained model to: checkpoint/ds/bert/3000/source-classifier.ptiabest
+===== RES ====
+p 24
+tp 23
+fp 12
+recall 0.9583332934027794
+precision 0.6571428383673475
+f1 0.7796605079003273
+tgt_res:
+===== RES ====
+p 78
+tp 78
+fp 37
+recall 0.9999999871794873
+precision 0.6782608636672969
+f1 0.8082896654409697
+save pretrained model to: checkpoint/ds/bert/3000/source-encoder.ptiabest
+save pretrained model to: checkpoint/ds/bert/3000/source-classifier.ptiabest
+===== RES ====
+p 25
+tp 24
+fp 10
+recall 0.9599999616000015
+precision 0.7058823321799315
+f1 0.8135588060904974
+tgt_res:
+===== RES ====
+p 78
+tp 77
+fp 37
+recall 0.9871794745233401
+precision 0.6754385905663282
+f1 0.8020828425567135
+save pretrained model to: checkpoint/ds/bert/3000/source-encoder.ptiabest
+save pretrained model to: checkpoint/ds/bert/3000/source-classifier.ptiabest
+===== RES ====
+p 23
+tp 23
+fp 4
+recall 0.999999956521741
+precision 0.8518518203017844
+f1 0.9199994664002694
+tgt_res:
+===== RES ====
+p 78
+tp 75
+fp 18
+recall 0.9615384492110456
+precision 0.8064516042317033
+f1 0.8771924760441918
+save pretrained model to: checkpoint/ds/bert/3000/source-encoder.ptiabest
+save pretrained model to: checkpoint/ds/bert/3000/source-classifier.ptiabest
+===== RES ====
+p 25
+tp 24
+fp 2
+recall 0.9599999616000015
+precision 0.9230768875739658
+f1 0.9411759338718546
+tgt_res:
+===== RES ====
+p 77
+tp 70
+fp 8
+recall 0.9090908972845338
+precision 0.8974358859303092
+f1 0.9032252948181749
+save pretrained model to: checkpoint/ds/bert/3000/source-encoder.ptiabest
+save pretrained model to: checkpoint/ds/bert/3000/source-classifier.ptiabest
+Restore model from: /home/derossi/DADER/main/checkpoint/ds/bert/3000/source-encoder.ptiabest
+Restore model from: /home/derossi/DADER/main/checkpoint/ds/bert/3000/source-classifier.ptiabest
+Pretraining time:  520.1287150382996
+=== Training F' and A ===
+===== RES ====
+p 26
+tp 25
+fp 4
+recall 0.9615384245562144
+precision 0.8620689357907263
+f1 0.9090903775209357
+======== tgt result =======
+===== RES ====
+p 78
+tp 72
+fp 11
+recall 0.9230769112426037
+precision 0.8674698690666282
+f1 0.8944094272600299
+===== RES ====
+p 20
+tp 19
+fp 5
+recall 0.9499999525000024
+precision 0.7916666336805569
+f1 0.863635828512683
+===== RES ====
+p 22
+tp 21
+fp 3
+recall 0.9545454111570267
+precision 0.8749999635416682
+f1 0.913042939508781
+======== tgt result =======
+===== RES ====
+p 78
+tp 71
+fp 10
+recall 0.9102563985864565
+precision 0.8765431990550223
+f1 0.8930812499508357
+===== RES ====
+p 20
+tp 19
+fp 2
+recall 0.9499999525000024
+precision 0.9047618616780065
+f1 0.9268287233792127
+======== tgt result =======
+===== RES ====
+p 78
+tp 70
+fp 8
+recall 0.8974358859303092
+precision 0.8974358859303092
+f1 0.8974353859305878
+===== RES ====
+p 23
+tp 22
+fp 1
+recall 0.9565216975425348
+precision 0.9565216975425348
+f1 0.9565211975427963
+======== tgt result =======
+===== RES ====
+p 77
+tp 69
+fp 8
+recall 0.8961038844661834
+precision 0.8961038844661834
+f1 0.8961033844664624
+===== RES ====
+p 24
+tp 23
+fp 2
+recall 0.9583332934027794
+precision 0.9199999632000014
+f1 0.938774972095228
+===== RES ====
+p 25
+tp 24
+fp 2
+recall 0.9599999616000015
+precision 0.9230768875739658
+f1 0.9411759338718546
+===== RES ====
+p 23
+tp 22
+fp 2
+recall 0.9565216975425348
+precision 0.9166666284722238
+f1 0.9361696731555423
+===== RES ====
+p 22
+tp 21
+fp 2
+recall 0.9545454111570267
+precision 0.9130434385633287
+f1 0.9333327920990347
+===== RES ====
+p 23
+tp 21
+fp 1
+recall 0.9130434385633287
+precision 0.9545454111570267
+f1 0.9333327920990347
+===== RES ====
+p 23
+tp 19
+fp 1
+recall 0.8260869206049165
+precision 0.9499999525000024
+f1 0.8837203915632889
+===== RES ====
+p 23
+tp 18
+fp 0
+recall 0.7826086616257103
+precision 0.9999999444444475
+f1 0.8780482450924847
+===== RES ====
+p 24
+tp 19
+fp 1
+recall 0.7916666336805569
+precision 0.9499999525000024
+f1 0.863635828512683
+===== RES ====
+p 21
+tp 14
+fp 1
+recall 0.6666666349206364
+precision 0.9333332711111153
+f1 0.7777772484570947
+===== RES ====
+p 23
+tp 16
+fp 0
+recall 0.6956521436672981
+precision 0.9999999375000038
+f1 0.8205122945433496
+===== RES ====
+p 24
+tp 16
+fp 0
+recall 0.66666663888889
+precision 0.9999999375000038
+f1 0.7999994800002881
+===== RES ====
+p 23
+tp 17
+fp 1
+recall 0.7391304026465042
+precision 0.9444443919753115
+f1 0.8292677596671589
+===== RES ====
+p 25
+tp 16
+fp 1
+recall 0.639999974400001
+precision 0.9411764152249167
+f1 0.761904243764477
+===== RES ====
+p 23
+tp 14
+fp 1
+recall 0.6086956257088858
+precision 0.9333332711111153
+f1 0.7368415886429689
+===== RES ====
+p 22
+tp 14
+fp 1
+recall 0.6363636074380178
+precision 0.9333332711111153
+f1 0.7567562337475683
+===== RES ====
+p 27
+tp 17
+fp 2
+recall 0.6296296063100145
+precision 0.8947367950138528
+f1 0.7391299177696944
+=== Result of InvGAN+KD: ===
+0.7391299177696944
+The source-target datasets are: ds_ia with seed 3000
+The F1 score is: 0.7391299177696944
+The training time is: 54.02335000038147
+The inference time is: 0.0002687796950340271
+Source Encoder trainable parameters: 0
+Source Encoder non-trainable parameters: 109482240
+Target Encoder trainable parameters: 109482240
+Target Encoder non-trainable parameters: 0
+Source Classifier trainable parameters: 0
+Source Classifier non-trainable parameters: 1538
+Discriminator trainable parameters: 11805697
+Discriminator non-trainable parameters: 0
+=== Argument Setting ===
+src: fz
+tgt: b2
+seed: 42
+train_seed: 3000
+model_type: bert
+max_seq_length: 256
+batch_size: 32
+pre_epochs: 5
+num_epochs: 20
+AD weight: 1.0
+KD weight: 5.0
+temperature: 20
+=== Processing datasets ===
+Some weights of the model checkpoint at bert-base-uncased were not used when initializing BertModel: ['cls.seq_relationship.bias', 'cls.seq_relationship.weight', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.transform.LayerNorm.bias', 'cls.predictions.transform.dense.weight', 'cls.predictions.bias', 'cls.predictions.transform.dense.bias', 'cls.predictions.decoder.weight']
+- This IS expected if you are initializing BertModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of the model checkpoint at bert-base-uncased were not used when initializing BertModel: ['cls.seq_relationship.bias', 'cls.seq_relationship.weight', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.transform.LayerNorm.bias', 'cls.predictions.transform.dense.weight', 'cls.predictions.bias', 'cls.predictions.transform.dense.bias', 'cls.predictions.decoder.weight']
+- This IS expected if you are initializing BertModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+=== Training F and M ===
+===== RES ====
+p 15
+tp 0
+fp 0
+recall 0.0
+precision 0.0
+f1 0.0
+===== RES ====
+p 16
+tp 16
+fp 29
+recall 0.9999999375000038
+precision 0.3555555476543212
+f1 0.5245897597422835
+tgt_res:
+===== RES ====
+p 52
+tp 52
+fp 85
+recall 0.9999999807692311
+precision 0.3795620410250946
+f1 0.5502641455729195
+save pretrained model to: checkpoint/fz/bert/3000/source-encoder.ptb2best
+save pretrained model to: checkpoint/fz/bert/3000/source-classifier.ptb2best
+===== RES ====
+p 15
+tp 15
+fp 42
+recall 0.9999999333333378
+precision 0.26315789012003704
+f1 0.4166663252317336
+===== RES ====
+p 13
+tp 13
+fp 47
+recall 0.9999999230769291
+precision 0.21666666305555562
+f1 0.3561640810660956
+===== RES ====
+p 13
+tp 13
+fp 30
+recall 0.9999999230769291
+precision 0.30232557436452157
+f1 0.46428534119924375
+Restore model from: /home/derossi/DADER/main/checkpoint/fz/bert/3000/source-encoder.ptb2best
+Restore model from: /home/derossi/DADER/main/checkpoint/fz/bert/3000/source-classifier.ptb2best
+Pretraining time:  25.636726140975952
+=== Training F' and A ===
+===== RES ====
+p 14
+tp 14
+fp 26
+recall 0.9999999285714337
+precision 0.34999999125000025
+f1 0.5185181152266142
+======== tgt result =======
+===== RES ====
+p 50
+tp 50
+fp 85
+recall 0.9999999800000005
+precision 0.3703703676268862
+f1 0.5405401402486422
+===== RES ====
+p 15
+tp 15
+fp 23
+recall 0.9999999333333378
+precision 0.39473683171745183
+f1 0.5660373086510502
+======== tgt result =======
+===== RES ====
+p 54
+tp 54
+fp 80
+recall 0.9999999814814818
+precision 0.4029850716195144
+f1 0.5744676695340157
+===== RES ====
+p 14
+tp 14
+fp 23
+recall 0.9999999285714337
+precision 0.37837836815193604
+f1 0.5490191880048956
+===== RES ====
+p 15
+tp 15
+fp 24
+recall 0.9999999333333378
+precision 0.384615374753452
+f1 0.5555551337451393
+===== RES ====
+p 15
+tp 15
+fp 19
+recall 0.9999999333333378
+precision 0.44117645761245716
+f1 0.6122444481468954
+======== tgt result =======
+===== RES ====
+p 53
+tp 52
+fp 76
+recall 0.9811320569597726
+precision 0.4062499968261719
+f1 0.574585214859428
+===== RES ====
+p 16
+tp 16
+fp 20
+recall 0.9999999375000038
+precision 0.44444443209876583
+f1 0.6153841656807636
+======== tgt result =======
+===== RES ====
+p 52
+tp 50
+fp 72
+recall 0.9615384430473377
+precision 0.4098360622144585
+f1 0.5747122179947548
+===== RES ====
+p 12
+tp 12
+fp 19
+recall 0.9999999166666736
+precision 0.38709676170655605
+f1 0.55813910654436
+===== RES ====
+p 14
+tp 14
+fp 16
+recall 0.9999999285714337
+precision 0.4666666511111116
+f1 0.6363631735540102
+======== tgt result =======
+===== RES ====
+p 53
+tp 50
+fp 47
+recall 0.9433962086151659
+precision 0.5154639122117123
+f1 0.6666662008003122
+===== RES ====
+p 16
+tp 14
+fp 6
+recall 0.8749999453125034
+precision 0.6999999650000017
+f1 0.777777240741056
+======== tgt result =======
+===== RES ====
+p 54
+tp 48
+fp 31
+recall 0.8888888724279839
+precision 0.6075949290177858
+f1 0.7218040180906606
+===== RES ====
+p 15
+tp 13
+fp 2
+recall 0.8666666088888928
+precision 0.8666666088888928
+f1 0.8666661088891813
+======== tgt result =======
+===== RES ====
+p 55
+tp 47
+fp 11
+recall 0.8545454390082647
+precision 0.8103448136147446
+f1 0.8318578927092048
+===== RES ====
+p 14
+tp 10
+fp 0
+recall 0.7142856632653098
+precision 0.99999990000001
+f1 0.8333327777780648
+===== RES ====
+p 15
+tp 4
+fp 0
+recall 0.2666666488888901
+precision 0.9999997500000625
+f1 0.4210522548478773
+===== RES ====
+p 15
+tp 0
+fp 0
+recall 0.0
+precision 0.0
+f1 0.0
+===== RES ====
+p 15
+tp 0
+fp 0
+recall 0.0
+precision 0.0
+f1 0.0
+===== RES ====
+p 13
+tp 0
+fp 0
+recall 0.0
+precision 0.0
+f1 0.0
+===== RES ====
+p 16
+tp 0
+fp 0
+recall 0.0
+precision 0.0
+f1 0.0
+===== RES ====
+p 15
+tp 0
+fp 0
+recall 0.0
+precision 0.0
+f1 0.0
+===== RES ====
+p 12
+tp 0
+fp 0
+recall 0.0
+precision 0.0
+f1 0.0
+===== RES ====
+p 15
+tp 0
+fp 0
+recall 0.0
+precision 0.0
+f1 0.0
+===== RES ====
+p 13
+tp 0
+fp 0
+recall 0.0
+precision 0.0
+f1 0.0
+===== RES ====
+p 19
+tp 0
+fp 0
+recall 0.0
+precision 0.0
+f1 0.0
+=== Result of InvGAN+KD: ===
+0.0
+The source-target datasets are: fz_b2 with seed 3000
+The F1 score is: 0.0
+The training time is: 38.42292499542236
+The inference time is: 0.00027323514223098755
+Source Encoder trainable parameters: 0
+Source Encoder non-trainable parameters: 109482240
+Target Encoder trainable parameters: 109482240
+Target Encoder non-trainable parameters: 0
+Source Classifier trainable parameters: 0
+Source Classifier non-trainable parameters: 1538
+Discriminator trainable parameters: 11805697
+Discriminator non-trainable parameters: 0
+=== Argument Setting ===
+src: dzy
+tgt: b2
+seed: 42
+train_seed: 3000
+model_type: bert
+max_seq_length: 256
+batch_size: 32
+pre_epochs: 5
+num_epochs: 20
+AD weight: 1.0
+KD weight: 5.0
+temperature: 20
+=== Processing datasets ===
+Some weights of the model checkpoint at bert-base-uncased were not used when initializing BertModel: ['cls.predictions.transform.LayerNorm.bias', 'cls.seq_relationship.weight', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.decoder.weight', 'cls.seq_relationship.bias', 'cls.predictions.bias', 'cls.predictions.transform.dense.weight', 'cls.predictions.transform.dense.bias']
+- This IS expected if you are initializing BertModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of the model checkpoint at bert-base-uncased were not used when initializing BertModel: ['cls.predictions.transform.LayerNorm.bias', 'cls.seq_relationship.weight', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.decoder.weight', 'cls.seq_relationship.bias', 'cls.predictions.bias', 'cls.predictions.transform.dense.weight', 'cls.predictions.transform.dense.bias']
+- This IS expected if you are initializing BertModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+=== Training F and M ===
+===== RES ====
+p 12
+tp 3
+fp 0
+recall 0.2499999791666684
+precision 0.9999996666667778
+f1 0.3999996266668818
+tgt_res:
+===== RES ====
+p 51
+tp 17
+fp 1
+recall 0.33333332679738575
+precision 0.9444443919753115
+f1 0.49275322327271737
+save pretrained model to: checkpoint/dzy/bert/3000/source-encoder.ptb2best
+save pretrained model to: checkpoint/dzy/bert/3000/source-classifier.ptb2best
+===== RES ====
+p 11
+tp 11
+fp 47
+recall 0.9999999090909174
+precision 0.1896551691438764
+f1 0.318840302457679
+===== RES ====
+p 13
+tp 13
+fp 46
+recall 0.9999999230769291
+precision 0.22033897931628849
+f1 0.3611108051699845
+===== RES ====
+p 15
+tp 15
+fp 43
+recall 0.9999999333333378
+precision 0.2586206851961951
+f1 0.41095856633539746
+tgt_res:
+===== RES ====
+p 54
+tp 54
+fp 150
+recall 0.9999999814814818
+precision 0.26470588105536336
+f1 0.4186043169283284
+save pretrained model to: checkpoint/dzy/bert/3000/source-encoder.ptb2best
+save pretrained model to: checkpoint/dzy/bert/3000/source-classifier.ptb2best
+===== RES ====
+p 15
+tp 15
+fp 41
+recall 0.9999999333333378
+precision 0.2678571380739797
+f1 0.4225348660982503
+tgt_res:
+===== RES ====
+p 50
+tp 50
+fp 139
+recall 0.9999999800000005
+precision 0.2645502631505277
+f1 0.41840970746336353
+save pretrained model to: checkpoint/dzy/bert/3000/source-encoder.ptb2best
+save pretrained model to: checkpoint/dzy/bert/3000/source-classifier.ptb2best
+Restore model from: /home/derossi/DADER/main/checkpoint/dzy/bert/3000/source-encoder.ptb2best
+Restore model from: /home/derossi/DADER/main/checkpoint/dzy/bert/3000/source-classifier.ptb2best
+Pretraining time:  22.34283709526062
+=== Training F' and A ===
+===== RES ====
+p 15
+tp 15
+fp 42
+recall 0.9999999333333378
+precision 0.26315789012003704
+f1 0.4166663252317336
+======== tgt result =======
+===== RES ====
+p 52
+tp 52
+fp 135
+recall 0.9999999807692311
+precision 0.27807486482312904
+f1 0.4351460994032853
+===== RES ====
+p 14
+tp 14
+fp 41
+recall 0.9999999285714337
+precision 0.25454544991735545
+f1 0.4057967662258308
+===== RES ====
+p 14
+tp 14
+fp 38
+recall 0.9999999285714337
+precision 0.2692307640532545
+f1 0.42424207713524
+======== tgt result =======
+===== RES ====
+p 53
+tp 53
+fp 128
+recall 0.9999999811320759
+precision 0.29281767794023383
+f1 0.452991098729175
+===== RES ====
+p 16
+tp 16
+fp 32
+recall 0.9999999375000038
+precision 0.3333333263888891
+f1 0.49999960937527405
+======== tgt result =======
+===== RES ====
+p 51
+tp 51
+fp 114
+recall 0.9999999803921573
+precision 0.3090909072176309
+f1 0.4722218571247586
+===== RES ====
+p 13
+tp 13
+fp 27
+recall 0.9999999230769291
+precision 0.3249999918750002
+f1 0.49056564898567445
+===== RES ====
+p 15
+tp 15
+fp 17
+recall 0.9999999333333378
+precision 0.468749985351563
+f1 0.63829741059332
+======== tgt result =======
+===== RES ====
+p 53
+tp 52
+fp 65
+recall 0.9811320569597726
+precision 0.44444444064577404
+f1 0.6117642695504726
+===== RES ====
+p 15
+tp 15
+fp 13
+recall 0.9999999333333378
+precision 0.5357142665816333
+f1 0.6976739318553498
+======== tgt result =======
+===== RES ====
+p 53
+tp 51
+fp 47
+recall 0.9622641327874693
+precision 0.5204081579550188
+f1 0.6754962242009993
+===== RES ====
+p 15
+tp 14
+fp 9
+recall 0.9333332711111153
+precision 0.6086956257088858
+f1 0.7368415886429689
+======== tgt result =======
+===== RES ====
+p 50
+tp 48
+fp 27
+recall 0.9599999808000005
+precision 0.6399999914666668
+f1 0.7679995077122997
+===== RES ====
+p 14
+tp 14
+fp 6
+recall 0.9999999285714337
+precision 0.6999999650000017
+f1 0.8235288788930195
+======== tgt result =======
+===== RES ====
+p 53
+tp 49
+fp 20
+recall 0.9245282844428626
+precision 0.7101449172442766
+f1 0.8032781839562265
+===== RES ====
+p 15
+tp 13
+fp 1
+recall 0.8666666088888928
+precision 0.9285713622449028
+f1 0.8965511629015904
+======== tgt result =======
+===== RES ====
+p 52
+tp 45
+fp 16
+recall 0.8653845987426039
+precision 0.7377049059392639
+f1 0.7964596660665644
+===== RES ====
+p 16
+tp 12
+fp 3
+recall 0.7499999531250029
+precision 0.7999999466666703
+f1 0.7741929989597427
+===== RES ====
+p 12
+tp 6
+fp 2
+recall 0.4999999583333368
+precision 0.7499999062500118
+f1 0.5999994600003861
+===== RES ====
+p 14
+tp 7
+fp 1
+recall 0.49999996428571686
+precision 0.8749998906250137
+f1 0.6363631157028145
+===== RES ====
+p 12
+tp 5
+fp 0
+recall 0.41666663194444736
+precision 0.99999980000004
+f1 0.5882348096888627
+===== RES ====
+p 16
+tp 4
+fp 0
+recall 0.24999998437500096
+precision 0.9999997500000625
+f1 0.399999640000224
+===== RES ====
+p 13
+tp 1
+fp 0
+recall 0.07692307100591762
+precision 0.9999990000010001
+f1 0.14285698979593955
+===== RES ====
+p 15
+tp 0
+fp 0
+recall 0.0
+precision 0.0
+f1 0.0
+===== RES ====
+p 15
+tp 0
+fp 0
+recall 0.0
+precision 0.0
+f1 0.0
+===== RES ====
+p 15
+tp 0
+fp 0
+recall 0.0
+precision 0.0
+f1 0.0
+===== RES ====
+p 13
+tp 0
+fp 0
+recall 0.0
+precision 0.0
+f1 0.0
+===== RES ====
+p 19
+tp 0
+fp 0
+recall 0.0
+precision 0.0
+f1 0.0
+=== Result of InvGAN+KD: ===
+0.0
+The source-target datasets are: dzy_b2 with seed 3000
+The F1 score is: 0.0
+The training time is: 38.54777717590332
+The inference time is: 0.00026939064264297485
+Source Encoder trainable parameters: 0
+Source Encoder non-trainable parameters: 109482240
+Target Encoder trainable parameters: 109482240
+Target Encoder non-trainable parameters: 0
+Source Classifier trainable parameters: 0
+Source Classifier non-trainable parameters: 1538
+Discriminator trainable parameters: 11805697
+Discriminator non-trainable parameters: 0
+=== Argument Setting ===
+src: ab
+tgt: ri
+seed: 42
+train_seed: 1000
+model_type: bert
+max_seq_length: 256
+batch_size: 32
+pre_epochs: 5
+num_epochs: 20
+AD weight: 1.0
+KD weight: 5.0
+temperature: 20
+=== Processing datasets ===
+Some weights of the model checkpoint at bert-base-uncased were not used when initializing BertModel: ['cls.seq_relationship.weight', 'cls.predictions.decoder.weight', 'cls.predictions.transform.dense.bias', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.transform.dense.weight', 'cls.seq_relationship.bias', 'cls.predictions.transform.LayerNorm.bias', 'cls.predictions.bias']
+- This IS expected if you are initializing BertModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of the model checkpoint at bert-base-uncased were not used when initializing BertModel: ['cls.seq_relationship.weight', 'cls.predictions.decoder.weight', 'cls.predictions.transform.dense.bias', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.transform.dense.weight', 'cls.seq_relationship.bias', 'cls.predictions.transform.LayerNorm.bias', 'cls.predictions.bias']
+- This IS expected if you are initializing BertModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+=== Training F and M ===
+===== RES ====
+p 31
+tp 31
+fp 35
+recall 0.9999999677419364
+precision 0.46969696258034904
+f1 0.6391748096506282
+tgt_res:
+===== RES ====
+p 111
+tp 111
+fp 111
+recall 0.9999999909909911
+precision 0.4999999977477478
+f1 0.6666662182185139
+save pretrained model to: checkpoint/ab/bert/1000/source-encoder.ptribest
+save pretrained model to: checkpoint/ab/bert/1000/source-classifier.ptribest
+===== RES ====
+p 31
+tp 31
+fp 30
+recall 0.9999999677419364
+precision 0.5081967129803818
+f1 0.6739125819946233
+tgt_res:
+===== RES ====
+p 113
+tp 113
+fp 88
+recall 0.9999999911504426
+precision 0.5621890519294077
+f1 0.7197447576172363
+save pretrained model to: checkpoint/ab/bert/1000/source-encoder.ptribest
+save pretrained model to: checkpoint/ab/bert/1000/source-classifier.ptribest
+===== RES ====
+p 29
+tp 29
+fp 19
+recall 0.9999999655172426
+precision 0.6041666540798614
+f1 0.7532462641257766
+tgt_res:
+===== RES ====
+p 111
+tp 111
+fp 66
+recall 0.9999999909909911
+precision 0.6271186405247534
+f1 0.7708328542392956
+save pretrained model to: checkpoint/ab/bert/1000/source-encoder.ptribest
+save pretrained model to: checkpoint/ab/bert/1000/source-classifier.ptribest
+===== RES ====
+p 31
+tp 31
+fp 25
+recall 0.9999999677419364
+precision 0.5535714186862247
+f1 0.7126432030654278
+===== RES ====
+p 29
+tp 29
+fp 23
+recall 0.9999999655172426
+precision 0.5576922969674558
+f1 0.7160489053500879
+Restore model from: /home/derossi/DADER/main/checkpoint/ab/bert/1000/source-encoder.ptribest
+Restore model from: /home/derossi/DADER/main/checkpoint/ab/bert/1000/source-classifier.ptribest
+Pretraining time:  183.32112312316895
+=== Training F' and A ===
+===== RES ====
+p 31
+tp 31
+fp 16
+recall 0.9999999677419364
+precision 0.6595744540516074
+f1 0.7948712955295452
+======== tgt result =======
+===== RES ====
+p 112
+tp 112
+fp 66
+recall 0.9999999910714287
+precision 0.6292134796111603
+f1 0.7724133136744882
+===== RES ====
+p 31
+tp 31
+fp 19
+recall 0.9999999677419364
+precision 0.6199999876000003
+f1 0.7654316073772152
+===== RES ====
+p 30
+tp 30
+fp 21
+recall 0.9999999666666678
+precision 0.5882352825836219
+f1 0.74074025605882
+===== RES ====
+p 32
+tp 32
+fp 18
+recall 0.9999999687500011
+precision 0.6399999872000003
+f1 0.7804873099348524
+===== RES ====
+p 30
+tp 30
+fp 16
+recall 0.9999999666666678
+precision 0.6521738988657848
+f1 0.7894731855958564
+===== RES ====
+p 33
+tp 33
+fp 13
+recall 0.9999999696969707
+precision 0.7173912887523634
+f1 0.835442530364007
+======== tgt result =======
+===== RES ====
+p 109
+tp 109
+fp 58
+recall 0.9999999908256881
+precision 0.6526946068700922
+f1 0.7898545888209149
+===== RES ====
+p 30
+tp 30
+fp 14
+recall 0.9999999666666678
+precision 0.6818181663223144
+f1 0.8108103067935661
+===== RES ====
+p 33
+tp 33
+fp 11
+recall 0.9999999696969707
+precision 0.7499999829545458
+f1 0.8571423450837679
+======== tgt result =======
+===== RES ====
+p 110
+tp 109
+fp 52
+recall 0.9909090819008266
+precision 0.677018629335288
+f1 0.8044275560520857
+===== RES ====
+p 29
+tp 29
+fp 11
+recall 0.9999999655172426
+precision 0.7249999818750005
+f1 0.8405791984879952
+===== RES ====
+p 27
+tp 26
+fp 10
+recall 0.9629629272976693
+precision 0.7222222021604945
+f1 0.8253963093981241
+===== RES ====
+p 29
+tp 28
+fp 10
+recall 0.9655172080856135
+precision 0.7368420858725767
+f1 0.8358203795948532
+===== RES ====
+p 28
+tp 27
+fp 9
+recall 0.96428567984694
+precision 0.7499999791666673
+f1 0.8437494814456
+===== RES ====
+p 33
+tp 32
+fp 8
+recall 0.969696940312214
+precision 0.7999999800000005
+f1 0.8767118093453732
+======== tgt result =======
+===== RES ====
+p 110
+tp 106
+fp 37
+recall 0.9636363548760332
+precision 0.7412587360751137
+f1 0.8379441659144565
+===== RES ====
+p 29
+tp 28
+fp 8
+recall 0.9655172080856135
+precision 0.7777777561728402
+f1 0.8615379408286864
+===== RES ====
+p 31
+tp 30
+fp 3
+recall 0.9677419042663902
+precision 0.9090908815427007
+f1 0.9374994711916733
+======== tgt result =======
+===== RES ====
+p 111
+tp 104
+fp 27
+recall 0.9369369284960637
+precision 0.7938931237107395
+f1 0.8595036285434193
+===== RES ====
+p 29
+tp 27
+fp 3
+recall 0.9310344506539844
+precision 0.899999970000001
+f1 0.9152537064064792
+===== RES ====
+p 32
+tp 29
+fp 2
+recall 0.9062499716796885
+precision 0.9354838407908438
+f1 0.9206343915346639
+===== RES ====
+p 31
+tp 26
+fp 2
+recall 0.8387096503642048
+precision 0.9285713954081645
+f1 0.8813554036199327
+===== RES ====
+p 30
+tp 21
+fp 0
+recall 0.6999999766666675
+precision 0.9999999523809546
+f1 0.8235288950406542
+===== RES ====
+p 31
+tp 13
+fp 0
+recall 0.4193548251821024
+precision 0.9999999230769291
+f1 0.5909086477275597
+===== RES ====
+p 38
+tp 12
+fp 2
+recall 0.31578946537396146
+precision 0.8571427959183717
+f1 0.46153805029618605
+=== Result of InvGAN+KD: ===
+0.46153805029618605
+The source-target datasets are: ab_ri with seed 1000
+The F1 score is: 0.46153805029618605
+The training time is: 59.681543827056885
+The inference time is: 0.00028192251920700073
+Source Encoder trainable parameters: 0
+Source Encoder non-trainable parameters: 109482240
+Target Encoder trainable parameters: 109482240
+Target Encoder non-trainable parameters: 0
+Source Classifier trainable parameters: 0
+Source Classifier non-trainable parameters: 1538
+Discriminator trainable parameters: 11805697
+Discriminator non-trainable parameters: 0
+=== Argument Setting ===
+src: wa1
+tgt: ri
+seed: 42
+train_seed: 1000
+model_type: bert
+max_seq_length: 256
+batch_size: 32
+pre_epochs: 5
+num_epochs: 20
+AD weight: 1.0
+KD weight: 5.0
+temperature: 20
+=== Processing datasets ===
+Some weights of the model checkpoint at bert-base-uncased were not used when initializing BertModel: ['cls.seq_relationship.weight', 'cls.predictions.transform.dense.weight', 'cls.predictions.decoder.weight', 'cls.seq_relationship.bias', 'cls.predictions.transform.dense.bias', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.bias', 'cls.predictions.transform.LayerNorm.bias']
+- This IS expected if you are initializing BertModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of the model checkpoint at bert-base-uncased were not used when initializing BertModel: ['cls.seq_relationship.weight', 'cls.predictions.transform.dense.weight', 'cls.predictions.decoder.weight', 'cls.seq_relationship.bias', 'cls.predictions.transform.dense.bias', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.bias', 'cls.predictions.transform.LayerNorm.bias']
+- This IS expected if you are initializing BertModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+=== Training F and M ===
+===== RES ====
+p 34
+tp 33
+fp 9
+recall 0.9705882067474058
+precision 0.7857142670068032
+f1 0.8684205353188416
+tgt_res:
+===== RES ====
+p 112
+tp 110
+fp 41
+recall 0.9821428483737246
+precision 0.7284768163677032
+f1 0.8365014057745488
+save pretrained model to: checkpoint/wa1/bert/1000/source-encoder.ptribest
+save pretrained model to: checkpoint/wa1/bert/1000/source-classifier.ptribest
+===== RES ====
+p 32
+tp 31
+fp 8
+recall 0.9687499697265636
+precision 0.7948717744904674
+f1 0.8732389168818524
+tgt_res:
+===== RES ====
+p 111
+tp 110
+fp 45
+recall 0.9909909820631443
+precision 0.7096774147762748
+f1 0.8270671766354829
+save pretrained model to: checkpoint/wa1/bert/1000/source-encoder.ptribest
+save pretrained model to: checkpoint/wa1/bert/1000/source-classifier.ptribest
+===== RES ====
+p 30
+tp 29
+fp 7
+recall 0.9666666344444454
+precision 0.8055555331790131
+f1 0.8787873562904549
+tgt_res:
+===== RES ====
+p 111
+tp 109
+fp 37
+recall 0.9819819731352976
+precision 0.7465753373522237
+f1 0.8482485299098963
+save pretrained model to: checkpoint/wa1/bert/1000/source-encoder.ptribest
+save pretrained model to: checkpoint/wa1/bert/1000/source-classifier.ptribest
+===== RES ====
+p 31
+tp 30
+fp 4
+recall 0.9677419042663902
+precision 0.8823529152249143
+f1 0.9230763957399156
+tgt_res:
+===== RES ====
+p 111
+tp 108
+fp 30
+recall 0.9729729642074508
+precision 0.7826086899810965
+f1 0.8674693784296617
+save pretrained model to: checkpoint/wa1/bert/1000/source-encoder.ptribest
+save pretrained model to: checkpoint/wa1/bert/1000/source-classifier.ptribest
+===== RES ====
+p 27
+tp 26
+fp 5
+recall 0.9629629272976693
+precision 0.8387096503642048
+f1 0.8965511956007527
+Restore model from: /home/derossi/DADER/main/checkpoint/wa1/bert/1000/source-encoder.ptribest
+Restore model from: /home/derossi/DADER/main/checkpoint/wa1/bert/1000/source-classifier.ptribest
+Pretraining time:  197.16022944450378
+=== Training F' and A ===
+===== RES ====
+p 30
+tp 29
+fp 4
+recall 0.9666666344444454
+precision 0.878787852157944
+f1 0.9206343925424734
+======== tgt result =======
+===== RES ====
+p 111
+tp 108
+fp 32
+recall 0.9729729642074508
+precision 0.7714285659183674
+f1 0.8605572687420489
+===== RES ====
+p 30
+tp 29
+fp 5
+recall 0.9666666344444454
+precision 0.8529411513840839
+f1 0.9062494736330869
+===== RES ====
+p 33
+tp 33
+fp 2
+recall 0.9999999696969707
+precision 0.9428571159183682
+f1 0.9705877071801889
+======== tgt result =======
+===== RES ====
+p 110
+tp 106
+fp 26
+recall 0.9636363548760332
+precision 0.8030302969467402
+f1 0.8760325547438091
+===== RES ====
+p 30
+tp 29
+fp 4
+recall 0.9666666344444454
+precision 0.878787852157944
+f1 0.9206343925424734
+===== RES ====
+p 29
+tp 28
+fp 2
+recall 0.9655172080856135
+precision 0.9333333022222232
+f1 0.94915201034212
+===== RES ====
+p 30
+tp 29
+fp 2
+recall 0.9666666344444454
+precision 0.9354838407908438
+f1 0.9508191410913684
+===== RES ====
+p 33
+tp 32
+fp 1
+recall 0.969696940312214
+precision 0.969696940312214
+f1 0.9696964403124718
+===== RES ====
+p 29
+tp 28
+fp 1
+recall 0.9655172080856135
+precision 0.9655172080856135
+f1 0.9655167080858724
+===== RES ====
+p 31
+tp 30
+fp 0
+recall 0.9677419042663902
+precision 0.9999999666666678
+f1 0.9836060252622816
+======== tgt result =======
+===== RES ====
+p 111
+tp 106
+fp 15
+recall 0.9549549463517573
+precision 0.8760330506112971
+f1 0.9137925964999755
+===== RES ====
+p 30
+tp 28
+fp 0
+recall 0.9333333022222232
+precision 0.9999999642857155
+f1 0.9655167086804022
+===== RES ====
+p 26
+tp 23
+fp 0
+recall 0.8846153505917173
+precision 0.999999956521741
+f1 0.9387749737611987
+===== RES ====
+p 28
+tp 25
+fp 0
+recall 0.8928571109693889
+precision 0.9999999600000016
+f1 0.9433956924174948
+===== RES ====
+p 32
+tp 28
+fp 0
+recall 0.874999972656251
+precision 0.9999999642857155
+f1 0.9333328044447108
+===== RES ====
+p 30
+tp 25
+fp 0
+recall 0.8333333055555564
+precision 0.9999999600000016
+f1 0.9090903801655607
+===== RES ====
+p 31
+tp 25
+fp 0
+recall 0.8064515868886585
+precision 0.9999999600000016
+f1 0.8928566167094579
+===== RES ====
+p 31
+tp 16
+fp 0
+recall 0.5161290156087414
+precision 0.9999999375000038
+f1 0.6808505857857162
+===== RES ====
+p 26
+tp 13
+fp 0
+recall 0.49999998076923147
+precision 0.9999999230769291
+f1 0.6666661880344805
+===== RES ====
+p 28
+tp 5
+fp 0
+recall 0.17857142219387778
+precision 0.99999980000004
+f1 0.3030300275483992
+===== RES ====
+p 33
+tp 2
+fp 0
+recall 0.060606058769513374
+precision 0.99999950000025
+f1 0.11428560000005715
+===== RES ====
+p 31
+tp 0
+fp 0
+recall 0.0
+precision 0.0
+f1 0.0
+===== RES ====
+p 38
+tp 1
+fp 0
+recall 0.026315788781163457
+precision 0.9999990000010001
+f1 0.05128199868507828
+=== Result of InvGAN+KD: ===
+0.05128199868507828
+The source-target datasets are: wa1_ri with seed 1000
+The F1 score is: 0.05128199868507828
+The training time is: 59.06205773353577
+The inference time is: 0.00027123838663101196
+Source Encoder trainable parameters: 0
+Source Encoder non-trainable parameters: 109482240
+Target Encoder trainable parameters: 109482240
+Target Encoder non-trainable parameters: 0
+Source Classifier trainable parameters: 0
+Source Classifier non-trainable parameters: 1538
+Discriminator trainable parameters: 11805697
+Discriminator non-trainable parameters: 0
+=== Argument Setting ===
+src: da
+tgt: ia
+seed: 42
+train_seed: 1000
+model_type: bert
+max_seq_length: 256
+batch_size: 32
+pre_epochs: 5
+num_epochs: 20
+AD weight: 1.0
+KD weight: 5.0
+temperature: 20
+=== Processing datasets ===
+Some weights of the model checkpoint at bert-base-uncased were not used when initializing BertModel: ['cls.predictions.transform.dense.weight', 'cls.seq_relationship.bias', 'cls.predictions.decoder.weight', 'cls.seq_relationship.weight', 'cls.predictions.transform.LayerNorm.bias', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.bias', 'cls.predictions.transform.dense.bias']
+- This IS expected if you are initializing BertModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of the model checkpoint at bert-base-uncased were not used when initializing BertModel: ['cls.predictions.transform.dense.weight', 'cls.seq_relationship.bias', 'cls.predictions.decoder.weight', 'cls.seq_relationship.weight', 'cls.predictions.transform.LayerNorm.bias', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.bias', 'cls.predictions.transform.dense.bias']
+- This IS expected if you are initializing BertModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+=== Training F and M ===
+===== RES ====
+p 22
+tp 21
+fp 27
+recall 0.9545454111570267
+precision 0.43749999088541686
+f1 0.5999995518370409
+tgt_res:
+===== RES ====
+p 77
+tp 72
+fp 88
+recall 0.9350649229212348
+precision 0.4499999971875
+f1 0.6075944929056549
+save pretrained model to: checkpoint/da/bert/1000/source-encoder.ptiabest
+save pretrained model to: checkpoint/da/bert/1000/source-classifier.ptiabest
+===== RES ====
+p 26
+tp 24
+fp 10
+recall 0.9230768875739658
+precision 0.7058823321799315
+f1 0.799999482222524
+tgt_res:
+===== RES ====
+p 77
+tp 63
+fp 40
+recall 0.8181818075560805
+precision 0.611650479498539
+f1 0.6999995026546633
+save pretrained model to: checkpoint/da/bert/1000/source-encoder.ptiabest
+save pretrained model to: checkpoint/da/bert/1000/source-classifier.ptiabest
+===== RES ====
+p 21
+tp 16
+fp 0
+recall 0.7619047256235845
+precision 0.9999999375000038
+f1 0.8648643272464451
+tgt_res:
+===== RES ====
+p 77
+tp 58
+fp 7
+recall 0.7532467434643281
+precision 0.8923076785798819
+f1 0.8169009005160726
+save pretrained model to: checkpoint/da/bert/1000/source-encoder.ptiabest
+save pretrained model to: checkpoint/da/bert/1000/source-classifier.ptiabest
+===== RES ====
+p 25
+tp 24
+fp 17
+recall 0.9599999616000015
+precision 0.585365839381321
+f1 0.72727223461922
+===== RES ====
+p 23
+tp 16
+fp 0
+recall 0.6956521436672981
+precision 0.9999999375000038
+f1 0.8205122945433496
+Restore model from: /home/derossi/DADER/main/checkpoint/da/bert/1000/source-encoder.ptiabest
+Restore model from: /home/derossi/DADER/main/checkpoint/da/bert/1000/source-classifier.ptiabest
+Pretraining time:  232.22630739212036
+=== Training F' and A ===
+===== RES ====
+p 24
+tp 20
+fp 0
+recall 0.8333332986111125
+precision 0.9999999500000024
+f1 0.9090903719010984
+======== tgt result =======
+===== RES ====
+p 78
+tp 59
+fp 9
+recall 0.7564102467126892
+precision 0.8676470460640141
+f1 0.8082186693566586
+===== RES ====
+p 22
+tp 18
+fp 0
+recall 0.8181817809917372
+precision 0.9999999444444475
+f1 0.899999460000274
+===== RES ====
+p 25
+tp 19
+fp 0
+recall 0.7599999696000012
+precision 0.9999999473684238
+f1 0.8636358336779657
+===== RES ====
+p 23
+tp 14
+fp 0
+recall 0.6086956257088858
+precision 0.9999999285714337
+f1 0.7567562454349153
+===== RES ====
+p 27
+tp 13
+fp 0
+recall 0.48148146364883465
+precision 0.9999999230769291
+f1 0.6499995287502917
+===== RES ====
+p 26
+tp 9
+fp 0
+recall 0.3461538328402372
+precision 0.9999998888889013
+f1 0.5142853028574149
+===== RES ====
+p 23
+tp 5
+fp 0
+recall 0.21739129489603065
+precision 0.99999980000004
+f1 0.3571425382655194
+===== RES ====
+p 24
+tp 5
+fp 0
+recall 0.20833332465277812
+precision 0.99999980000004
+f1 0.3448272770513378
+===== RES ====
+p 23
+tp 4
+fp 0
+recall 0.17391303591682453
+precision 0.9999997500000625
+f1 0.29629602194805377
+===== RES ====
+p 25
+tp 5
+fp 0
+recall 0.19999999200000032
+precision 0.99999980000004
+f1 0.3333330333335367
+===== RES ====
+p 25
+tp 2
+fp 0
+recall 0.07999999680000013
+precision 0.99999950000025
+f1 0.1481480000000741
+===== RES ====
+p 24
+tp 1
+fp 0
+recall 0.041666664930555625
+precision 0.9999990000010001
+f1 0.07999991680000652
+===== RES ====
+p 26
+tp 2
+fp 0
+recall 0.07692307396449716
+precision 0.99999950000025
+f1 0.14285700000007148
+===== RES ====
+p 21
+tp 0
+fp 0
+recall 0.0
+precision 0.0
+f1 0.0
+===== RES ====
+p 24
+tp 1
+fp 0
+recall 0.041666664930555625
+precision 0.9999990000010001
+f1 0.07999991680000652
+===== RES ====
+p 24
+tp 1
+fp 0
+recall 0.041666664930555625
+precision 0.9999990000010001
+f1 0.07999991680000652
+===== RES ====
+p 26
+tp 0
+fp 0
+recall 0.0
+precision 0.0
+f1 0.0
+===== RES ====
+p 24
+tp 0
+fp 0
+recall 0.0
+precision 0.0
+f1 0.0
+===== RES ====
+p 25
+tp 0
+fp 0
+recall 0.0
+precision 0.0
+f1 0.0
+===== RES ====
+p 23
+tp 0
+fp 0
+recall 0.0
+precision 0.0
+f1 0.0
+===== RES ====
+p 27
+tp 1
+fp 0
+recall 0.037037035665294975
+precision 0.9999990000010001
+f1 0.07142849744898479
+=== Result of InvGAN+KD: ===
+0.07142849744898479
+The source-target datasets are: da_ia with seed 1000
+The F1 score is: 0.07142849744898479
+The training time is: 52.70230197906494
+The inference time is: 0.00026693195104599
+Source Encoder trainable parameters: 0
+Source Encoder non-trainable parameters: 109482240
+Target Encoder trainable parameters: 109482240
+Target Encoder non-trainable parameters: 0
+Source Classifier trainable parameters: 0
+Source Classifier non-trainable parameters: 1538
+Discriminator trainable parameters: 11805697
+Discriminator non-trainable parameters: 0
+=== Argument Setting ===
+src: ds
+tgt: ia
+seed: 42
+train_seed: 1000
+model_type: bert
+max_seq_length: 256
+batch_size: 32
+pre_epochs: 5
+num_epochs: 20
+AD weight: 1.0
+KD weight: 5.0
+temperature: 20
+=== Processing datasets ===
+Some weights of the model checkpoint at bert-base-uncased were not used when initializing BertModel: ['cls.predictions.bias', 'cls.seq_relationship.weight', 'cls.seq_relationship.bias', 'cls.predictions.transform.dense.weight', 'cls.predictions.decoder.weight', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.transform.dense.bias', 'cls.predictions.transform.LayerNorm.bias']
+- This IS expected if you are initializing BertModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of the model checkpoint at bert-base-uncased were not used when initializing BertModel: ['cls.predictions.bias', 'cls.seq_relationship.weight', 'cls.seq_relationship.bias', 'cls.predictions.transform.dense.weight', 'cls.predictions.decoder.weight', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.transform.dense.bias', 'cls.predictions.transform.LayerNorm.bias']
+- This IS expected if you are initializing BertModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+=== Training F and M ===
+===== RES ====
+p 22
+tp 22
+fp 61
+recall 0.9999999545454565
+precision 0.2650602377703586
+f1 0.4190472798188497
+tgt_res:
+===== RES ====
+p 78
+tp 78
+fp 201
+recall 0.9999999871794873
+precision 0.27956989147107564
+f1 0.43697444596688706
+save pretrained model to: checkpoint/ds/bert/1000/source-encoder.ptiabest
+save pretrained model to: checkpoint/ds/bert/1000/source-classifier.ptiabest
+===== RES ====
+p 25
+tp 25
+fp 18
+recall 0.9999999600000016
+precision 0.5813953353163875
+f1 0.7352936310556559
+tgt_res:
+===== RES ====
+p 78
+tp 78
+fp 50
+recall 0.9999999871794873
+precision 0.6093749952392579
+f1 0.7572810755022241
+save pretrained model to: checkpoint/ds/bert/1000/source-encoder.ptiabest
+save pretrained model to: checkpoint/ds/bert/1000/source-classifier.ptiabest
+===== RES ====
+p 24
+tp 24
+fp 14
+recall 0.999999958333335
+precision 0.6315789307479229
+f1 0.7741930489076781
+tgt_res:
+===== RES ====
+p 78
+tp 78
+fp 42
+recall 0.9999999871794873
+precision 0.6499999945833334
+f1 0.7878783024184097
+save pretrained model to: checkpoint/ds/bert/1000/source-encoder.ptiabest
+save pretrained model to: checkpoint/ds/bert/1000/source-classifier.ptiabest
+===== RES ====
+p 26
+tp 26
+fp 30
+recall 0.9999999615384629
+precision 0.4642857059948981
+f1 0.6341458929211733
+===== RES ====
+p 25
+tp 25
+fp 2
+recall 0.9999999600000016
+precision 0.9259258916323744
+f1 0.9615379252961186
+tgt_res:
+===== RES ====
+p 78
+tp 78
+fp 20
+recall 0.9999999871794873
+precision 0.7959183592253228
+f1 0.8863631327482088
+save pretrained model to: checkpoint/ds/bert/1000/source-encoder.ptiabest
+save pretrained model to: checkpoint/ds/bert/1000/source-classifier.ptiabest
+Restore model from: /home/derossi/DADER/main/checkpoint/ds/bert/1000/source-encoder.ptiabest
+Restore model from: /home/derossi/DADER/main/checkpoint/ds/bert/1000/source-classifier.ptiabest
+Pretraining time:  513.9273521900177
+=== Training F' and A ===
+===== RES ====
+p 24
+tp 24
+fp 5
+recall 0.999999958333335
+precision 0.8275861783590973
+f1 0.9056598476328817
+======== tgt result =======
+===== RES ====
+p 78
+tp 78
+fp 21
+recall 0.9999999871794873
+precision 0.7878787799204164
+f1 0.8813554292830489
+===== RES ====
+p 26
+tp 26
+fp 4
+recall 0.9999999615384629
+precision 0.8666666377777787
+f1 0.9285708979594512
+======== tgt result =======
+===== RES ====
+p 77
+tp 77
+fp 20
+recall 0.9999999870129872
+precision 0.7938144248060369
+f1 0.885056967697461
+===== RES ====
+p 23
+tp 23
+fp 1
+recall 0.999999956521741
+precision 0.9583332934027794
+f1 0.9787228628341185
+======== tgt result =======
+===== RES ====
+p 78
+tp 77
+fp 18
+recall 0.9871794745233401
+precision 0.8105263072576179
+f1 0.890172904941971
+===== RES ====
+p 23
+tp 23
+fp 2
+recall 0.999999956521741
+precision 0.9199999632000014
+f1 0.9583327942710949
+===== RES ====
+p 22
+tp 22
+fp 2
+recall 0.9999999545454565
+precision 0.9166666284722238
+f1 0.9565211984879748
+===== RES ====
+p 24
+tp 24
+fp 2
+recall 0.999999958333335
+precision 0.9230768875739658
+f1 0.9599994624002611
+===== RES ====
+p 22
+tp 22
+fp 2
+recall 0.9999999545454565
+precision 0.9166666284722238
+f1 0.9565211984879748
+===== RES ====
+p 23
+tp 23
+fp 2
+recall 0.999999956521741
+precision 0.9199999632000014
+f1 0.9583327942710949
+===== RES ====
+p 24
+tp 24
+fp 0
+recall 0.999999958333335
+precision 0.999999958333335
+f1 0.999999458333585
+======== tgt result =======
+===== RES ====
+p 78
+tp 70
+fp 3
+recall 0.8974358859303092
+precision 0.9589040964533686
+f1 0.9271518061491225
+===== RES ====
+p 24
+tp 23
+fp 1
+recall 0.9583332934027794
+precision 0.9583332934027794
+f1 0.9583327934030402
+===== RES ====
+p 24
+tp 21
+fp 0
+recall 0.8749999635416682
+precision 0.9999999523809546
+f1 0.9333327940743411
+===== RES ====
+p 24
+tp 21
+fp 1
+recall 0.8749999635416682
+precision 0.9545454111570267
+f1 0.913042939508781
+===== RES ====
+p 26
+tp 23
+fp 0
+recall 0.8846153505917173
+precision 0.999999956521741
+f1 0.9387749737611987
+===== RES ====
+p 23
+tp 19
+fp 0
+recall 0.8260869206049165
+precision 0.9999999473684238
+f1 0.904761366213425
+===== RES ====
+p 26
+tp 22
+fp 0
+recall 0.8461538136094686
+precision 0.9999999545454565
+f1 0.9166661319447147
+===== RES ====
+p 27
+tp 22
+fp 0
+recall 0.8148147846364894
+precision 0.9999999545454565
+f1 0.8979586522285119
+===== RES ====
+p 25
+tp 19
+fp 0
+recall 0.7599999696000012
+precision 0.9999999473684238
+f1 0.8636358336779657
+===== RES ====
+p 26
+tp 19
+fp 0
+recall 0.7307692026627229
+precision 0.9999999473684238
+f1 0.8444439190126283
+===== RES ====
+p 23
+tp 17
+fp 0
+recall 0.7391304026465042
+precision 0.999999941176474
+f1 0.8499994687502821
+===== RES ====
+p 26
+tp 19
+fp 0
+recall 0.7307692026627229
+precision 0.9999999473684238
+f1 0.8444439190126283
+===== RES ====
+p 27
+tp 17
+fp 1
+recall 0.6296296063100145
+precision 0.9444443919753115
+f1 0.7555550419756132
+=== Result of InvGAN+KD: ===
+0.7555550419756132
+The source-target datasets are: ds_ia with seed 1000
+The F1 score is: 0.7555550419756132
+The training time is: 54.096521854400635
+The inference time is: 0.0002662390470504761
+Source Encoder trainable parameters: 0
+Source Encoder non-trainable parameters: 109482240
+Target Encoder trainable parameters: 109482240
+Target Encoder non-trainable parameters: 0
+Source Classifier trainable parameters: 0
+Source Classifier non-trainable parameters: 1538
+Discriminator trainable parameters: 11805697
+Discriminator non-trainable parameters: 0
+=== Argument Setting ===
+src: fz
+tgt: b2
+seed: 42
+train_seed: 1000
+model_type: bert
+max_seq_length: 256
+batch_size: 32
+pre_epochs: 5
+num_epochs: 20
+AD weight: 1.0
+KD weight: 5.0
+temperature: 20
+=== Processing datasets ===
+Some weights of the model checkpoint at bert-base-uncased were not used when initializing BertModel: ['cls.predictions.bias', 'cls.seq_relationship.weight', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.transform.dense.bias', 'cls.seq_relationship.bias', 'cls.predictions.transform.dense.weight', 'cls.predictions.decoder.weight', 'cls.predictions.transform.LayerNorm.bias']
+- This IS expected if you are initializing BertModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of the model checkpoint at bert-base-uncased were not used when initializing BertModel: ['cls.predictions.bias', 'cls.seq_relationship.weight', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.transform.dense.bias', 'cls.seq_relationship.bias', 'cls.predictions.transform.dense.weight', 'cls.predictions.decoder.weight', 'cls.predictions.transform.LayerNorm.bias']
+- This IS expected if you are initializing BertModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+=== Training F and M ===
+===== RES ====
+p 16
+tp 0
+fp 0
+recall 0.0
+precision 0.0
+f1 0.0
+===== RES ====
+p 16
+tp 15
+fp 7
+recall 0.9374999414062536
+precision 0.6818181508264477
+f1 0.7894731551249556
+tgt_res:
+===== RES ====
+p 52
+tp 46
+fp 25
+recall 0.8846153676035506
+precision 0.6478873148184886
+f1 0.7479669794437713
+save pretrained model to: checkpoint/fz/bert/1000/source-encoder.ptb2best
+save pretrained model to: checkpoint/fz/bert/1000/source-classifier.ptb2best
+===== RES ====
+p 14
+tp 14
+fp 29
+recall 0.9999999285714337
+precision 0.32558138777717704
+f1 0.4912276823640754
+===== RES ====
+p 14
+tp 14
+fp 33
+recall 0.9999999285714337
+precision 0.2978723340878227
+f1 0.45901602472479985
+===== RES ====
+p 11
+tp 11
+fp 35
+recall 0.9999999090909174
+precision 0.23913042958412112
+f1 0.38596458725785643
+Restore model from: /home/derossi/DADER/main/checkpoint/fz/bert/1000/source-encoder.ptb2best
+Restore model from: /home/derossi/DADER/main/checkpoint/fz/bert/1000/source-classifier.ptb2best
+Pretraining time:  25.735968351364136
+=== Training F' and A ===
+===== RES ====
+p 14
+tp 13
+fp 6
+recall 0.9285713622449028
+precision 0.684210490304711
+f1 0.7878782516072833
+======== tgt result =======
+===== RES ====
+p 52
+tp 47
+fp 26
+recall 0.9038461364644974
+precision 0.6438356076186903
+f1 0.7519995020803137
+===== RES ====
+p 17
+tp 16
+fp 6
+recall 0.9411764152249167
+precision 0.7272726942148775
+f1 0.8205122866538135
+======== tgt result =======
+===== RES ====
+p 53
+tp 47
+fp 25
+recall 0.886792436098256
+precision 0.6527777687114199
+f1 0.7519994995203173
+===== RES ====
+p 14
+tp 12
+fp 5
+recall 0.8571427959183717
+precision 0.7058823114186875
+f1 0.7741930031220677
+===== RES ====
+p 14
+tp 13
+fp 6
+recall 0.9285713622449028
+precision 0.684210490304711
+f1 0.7878782516072833
+===== RES ====
+p 16
+tp 12
+fp 3
+recall 0.7499999531250029
+precision 0.7999999466666703
+f1 0.7741929989597427
+===== RES ====
+p 15
+tp 12
+fp 0
+recall 0.7999999466666703
+precision 0.9999999166666736
+f1 0.8888883292183853
+======== tgt result =======
+===== RES ====
+p 52
+tp 41
+fp 9
+recall 0.7884615232988169
+precision 0.8199999836000004
+f1 0.8039210530568279
+===== RES ====
+p 13
+tp 7
+fp 2
+recall 0.5384614970414233
+precision 0.7777776913580343
+f1 0.6363630950416919
+===== RES ====
+p 15
+tp 7
+fp 0
+recall 0.46666663555555765
+precision 0.9999998571428775
+f1 0.6363631446283883
+===== RES ====
+p 15
+tp 1
+fp 0
+recall 0.06666666222222252
+precision 0.9999990000010001
+f1 0.12499986718751611
+===== RES ====
+p 14
+tp 0
+fp 0
+recall 0.0
+precision 0.0
+f1 0.0
+===== RES ====
+p 15
+tp 0
+fp 0
+recall 0.0
+precision 0.0
+f1 0.0
+===== RES ====
+p 16
+tp 0
+fp 0
+recall 0.0
+precision 0.0
+f1 0.0
+===== RES ====
+p 11
+tp 0
+fp 0
+recall 0.0
+precision 0.0
+f1 0.0
+===== RES ====
+p 14
+tp 0
+fp 0
+recall 0.0
+precision 0.0
+f1 0.0
+===== RES ====
+p 15
+tp 0
+fp 0
+recall 0.0
+precision 0.0
+f1 0.0
+===== RES ====
+p 15
+tp 0
+fp 0
+recall 0.0
+precision 0.0
+f1 0.0
+===== RES ====
+p 16
+tp 0
+fp 0
+recall 0.0
+precision 0.0
+f1 0.0
+===== RES ====
+p 14
+tp 0
+fp 0
+recall 0.0
+precision 0.0
+f1 0.0
+===== RES ====
+p 17
+tp 0
+fp 0
+recall 0.0
+precision 0.0
+f1 0.0
+===== RES ====
+p 15
+tp 0
+fp 0
+recall 0.0
+precision 0.0
+f1 0.0
+===== RES ====
+p 19
+tp 0
+fp 0
+recall 0.0
+precision 0.0
+f1 0.0
+=== Result of InvGAN+KD: ===
+0.0
+The source-target datasets are: fz_b2 with seed 1000
+The F1 score is: 0.0
+The training time is: 37.42998170852661
+The inference time is: 0.0002933591604232788
+Source Encoder trainable parameters: 0
+Source Encoder non-trainable parameters: 109482240
+Target Encoder trainable parameters: 109482240
+Target Encoder non-trainable parameters: 0
+Source Classifier trainable parameters: 0
+Source Classifier non-trainable parameters: 1538
+Discriminator trainable parameters: 11805697
+Discriminator non-trainable parameters: 0
+=== Argument Setting ===
+src: dzy
+tgt: b2
+seed: 42
+train_seed: 1000
+model_type: bert
+max_seq_length: 256
+batch_size: 32
+pre_epochs: 5
+num_epochs: 20
+AD weight: 1.0
+KD weight: 5.0
+temperature: 20
+=== Processing datasets ===
+Some weights of the model checkpoint at bert-base-uncased were not used when initializing BertModel: ['cls.predictions.transform.dense.weight', 'cls.seq_relationship.weight', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.bias', 'cls.seq_relationship.bias', 'cls.predictions.decoder.weight', 'cls.predictions.transform.LayerNorm.bias', 'cls.predictions.transform.dense.bias']
+- This IS expected if you are initializing BertModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of the model checkpoint at bert-base-uncased were not used when initializing BertModel: ['cls.predictions.transform.dense.weight', 'cls.seq_relationship.weight', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.bias', 'cls.seq_relationship.bias', 'cls.predictions.decoder.weight', 'cls.predictions.transform.LayerNorm.bias', 'cls.predictions.transform.dense.bias']
+- This IS expected if you are initializing BertModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+=== Training F and M ===
+===== RES ====
+p 16
+tp 0
+fp 0
+recall 0.0
+precision 0.0
+f1 0.0
+===== RES ====
+p 16
+tp 16
+fp 39
+recall 0.9999999375000038
+precision 0.2909090856198348
+f1 0.4507038635194054
+tgt_res:
+===== RES ====
+p 54
+tp 54
+fp 143
+recall 0.9999999814814818
+precision 0.27411167373547374
+f1 0.4302785433249717
+save pretrained model to: checkpoint/dzy/bert/1000/source-encoder.ptb2best
+save pretrained model to: checkpoint/dzy/bert/1000/source-classifier.ptb2best
+===== RES ====
+p 15
+tp 15
+fp 29
+recall 0.9999999333333378
+precision 0.3409090831611572
+f1 0.5084741798336565
+tgt_res:
+===== RES ====
+p 52
+tp 52
+fp 99
+recall 0.9999999807692311
+precision 0.3443708586465506
+f1 0.5123148848069982
+save pretrained model to: checkpoint/dzy/bert/1000/source-encoder.ptb2best
+save pretrained model to: checkpoint/dzy/bert/1000/source-classifier.ptb2best
+===== RES ====
+p 16
+tp 16
+fp 23
+recall 0.9999999375000038
+precision 0.41025639973701544
+f1 0.5818177480994606
+tgt_res:
+===== RES ====
+p 52
+tp 52
+fp 86
+recall 0.9999999807692311
+precision 0.3768115914723798
+f1 0.5473680177288186
+save pretrained model to: checkpoint/dzy/bert/1000/source-encoder.ptb2best
+save pretrained model to: checkpoint/dzy/bert/1000/source-classifier.ptb2best
+===== RES ====
+p 16
+tp 16
+fp 17
+recall 0.9999999375000038
+precision 0.484848470156107
+f1 0.6530607580177852
+tgt_res:
+===== RES ====
+p 50
+tp 47
+fp 64
+recall 0.9399999812000004
+precision 0.42342341960879804
+f1 0.5838504962003047
+save pretrained model to: checkpoint/dzy/bert/1000/source-encoder.ptb2best
+save pretrained model to: checkpoint/dzy/bert/1000/source-classifier.ptb2best
+Restore model from: /home/derossi/DADER/main/checkpoint/dzy/bert/1000/source-encoder.ptb2best
+Restore model from: /home/derossi/DADER/main/checkpoint/dzy/bert/1000/source-classifier.ptb2best
+Pretraining time:  23.960821628570557
+=== Training F' and A ===
+===== RES ====
+p 15
+tp 15
+fp 19
+recall 0.9999999333333378
+precision 0.44117645761245716
+f1 0.6122444481468954
+======== tgt result =======
+===== RES ====
+p 54
+tp 53
+fp 67
+recall 0.9814814633058989
+precision 0.4416666629861111
+f1 0.6091949672350727
+===== RES ====
+p 14
+tp 14
+fp 20
+recall 0.9999999285714337
+precision 0.41176469377162667
+f1 0.5833328958336198
+===== RES ====
+p 14
+tp 14
+fp 18
+recall 0.9999999285714337
+precision 0.4374999863281255
+f1 0.6086952022687202
+===== RES ====
+p 15
+tp 15
+fp 18
+recall 0.9999999333333378
+precision 0.45454544077135034
+f1 0.624999544271124
+======== tgt result =======
+===== RES ====
+p 54
+tp 50
+fp 59
+recall 0.9259259087791499
+precision 0.4587155921218753
+f1 0.6134964819153325
+===== RES ====
+p 16
+tp 16
+fp 14
+recall 0.9999999375000038
+precision 0.5333333155555561
+f1 0.6956516899813895
+======== tgt result =======
+===== RES ====
+p 54
+tp 49
+fp 42
+recall 0.9074073906035669
+precision 0.5384615325443788
+f1 0.6758615922000848
+===== RES ====
+p 17
+tp 15
+fp 10
+recall 0.8823528892733594
+precision 0.599999976000001
+f1 0.7142851984130234
+======== tgt result =======
+===== RES ====
+p 53
+tp 48
+fp 40
+recall 0.9056603602705593
+precision 0.5454545392561985
+f1 0.6808505849809574
+===== RES ====
+p 11
+tp 9
+fp 9
+recall 0.8181817438016598
+precision 0.49999997222222375
+f1 0.6206891414985726
+===== RES ====
+p 14
+tp 12
+fp 4
+recall 0.8571427959183717
+precision 0.7499999531250029
+f1 0.799999448889202
+======== tgt result =======
+===== RES ====
+p 53
+tp 48
+fp 23
+recall 0.9056603602705593
+precision 0.676056328506249
+f1 0.7741930464363137
+===== RES ====
+p 13
+tp 9
+fp 2
+recall 0.6923076390532585
+precision 0.8181817438016598
+f1 0.7499994409725557
+===== RES ====
+p 17
+tp 11
+fp 2
+recall 0.6470587854671302
+precision 0.8461537810650938
+f1 0.7333327933336643
+===== RES ====
+p 14
+tp 10
+fp 1
+recall 0.7142856632653098
+precision 0.9090908264462886
+f1 0.7999994432003078
+===== RES ====
+p 13
+tp 7
+fp 0
+recall 0.5384614970414233
+precision 0.9999998571428775
+f1 0.6999994750002938
+===== RES ====
+p 14
+tp 9
+fp 0
+recall 0.6428570969387788
+precision 0.9999998888889013
+f1 0.7826081512290254
+===== RES ====
+p 16
+tp 8
+fp 0
+recall 0.4999999687500019
+precision 0.9999998750000157
+f1 0.6666661666669583
+===== RES ====
+p 15
+tp 8
+fp 0
+recall 0.5333332977777802
+precision 0.9999998750000157
+f1 0.6956516597356428
+===== RES ====
+p 16
+tp 7
+fp 0
+recall 0.4374999726562517
+precision 0.9999998571428775
+f1 0.6086951758036885
+===== RES ====
+p 16
+tp 7
+fp 0
+recall 0.4374999726562517
+precision 0.9999998571428775
+f1 0.6086951758036885
+===== RES ====
+p 13
+tp 7
+fp 0
+recall 0.5384614970414233
+precision 0.9999998571428775
+f1 0.6999994750002938
+===== RES ====
+p 14
+tp 7
+fp 0
+recall 0.49999996428571686
+precision 0.9999998571428775
+f1 0.6666661587304505
+===== RES ====
+p 16
+tp 6
+fp 0
+recall 0.37499997656250145
+precision 0.9999998333333611
+f1 0.545454099173828
+===== RES ====
+p 19
+tp 8
+fp 0
+recall 0.4210526094182837
+precision 0.9999998750000157
+f1 0.5925921316875272
+=== Result of InvGAN+KD: ===
+0.5925921316875272
+The source-target datasets are: dzy_b2 with seed 1000
+The F1 score is: 0.5925921316875272
+The training time is: 38.02075386047363
+The inference time is: 0.00026478618383407593
+Source Encoder trainable parameters: 0
+Source Encoder non-trainable parameters: 109482240
+Target Encoder trainable parameters: 109482240
+Target Encoder non-trainable parameters: 0
+Source Classifier trainable parameters: 0
+Source Classifier non-trainable parameters: 1538
+Discriminator trainable parameters: 11805697
+Discriminator non-trainable parameters: 0
+=== Argument Setting ===
+src: ab
+tgt: ri
+seed: 42
+train_seed: 42
+model_type: bert
+max_seq_length: 256
+batch_size: 32
+pre_epochs: 5
+num_epochs: 20
+AD weight: 1.0
+KD weight: 5.0
+temperature: 20
+=== Processing datasets ===
+Some weights of the model checkpoint at bert-base-uncased were not used when initializing BertModel: ['cls.predictions.transform.LayerNorm.weight', 'cls.seq_relationship.bias', 'cls.predictions.transform.LayerNorm.bias', 'cls.predictions.decoder.weight', 'cls.predictions.bias', 'cls.predictions.transform.dense.bias', 'cls.seq_relationship.weight', 'cls.predictions.transform.dense.weight']
+- This IS expected if you are initializing BertModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of the model checkpoint at bert-base-uncased were not used when initializing BertModel: ['cls.predictions.transform.LayerNorm.weight', 'cls.seq_relationship.bias', 'cls.predictions.transform.LayerNorm.bias', 'cls.predictions.decoder.weight', 'cls.predictions.bias', 'cls.predictions.transform.dense.bias', 'cls.seq_relationship.weight', 'cls.predictions.transform.dense.weight']
+- This IS expected if you are initializing BertModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+=== Training F and M ===
+===== RES ====
+p 29
+tp 29
+fp 34
+recall 0.9999999655172426
+precision 0.4603174530108341
+f1 0.6304343371931096
+tgt_res:
+===== RES ====
+p 111
+tp 111
+fp 82
+recall 0.9999999909909911
+precision 0.5751295306988107
+f1 0.7302626894696499
+save pretrained model to: checkpoint/ab/bert/42/source-encoder.ptribest
+save pretrained model to: checkpoint/ab/bert/42/source-classifier.ptribest
+===== RES ====
+p 25
+tp 25
+fp 23
+recall 0.9999999600000016
+precision 0.5208333224826391
+f1 0.68493103771844
+tgt_res:
+===== RES ====
+p 111
+tp 111
+fp 66
+recall 0.9999999909909911
+precision 0.6271186405247534
+f1 0.7708328542392956
+save pretrained model to: checkpoint/ab/bert/42/source-encoder.ptribest
+save pretrained model to: checkpoint/ab/bert/42/source-classifier.ptribest
+===== RES ====
+p 27
+tp 27
+fp 21
+recall 0.9999999629629643
+precision 0.5624999882812503
+f1 0.7199995200002933
+tgt_res:
+===== RES ====
+p 112
+tp 112
+fp 65
+recall 0.9999999910714287
+precision 0.6327683580069584
+f1 0.7750860251197215
+save pretrained model to: checkpoint/ab/bert/42/source-encoder.ptribest
+save pretrained model to: checkpoint/ab/bert/42/source-classifier.ptribest
+===== RES ====
+p 31
+tp 31
+fp 22
+recall 0.9999999677419364
+precision 0.5849056493414029
+f1 0.7380947548188869
+tgt_res:
+===== RES ====
+p 111
+tp 111
+fp 68
+recall 0.9999999909909911
+precision 0.6201117283792641
+f1 0.7655167635912545
+save pretrained model to: checkpoint/ab/bert/42/source-encoder.ptribest
+save pretrained model to: checkpoint/ab/bert/42/source-classifier.ptribest
+===== RES ====
+p 31
+tp 31
+fp 15
+recall 0.9999999677419364
+precision 0.6739130288279777
+f1 0.8051943032554734
+tgt_res:
+===== RES ====
+p 111
+tp 111
+fp 54
+recall 0.9999999909909911
+precision 0.6727272686501378
+f1 0.804347339398523
+save pretrained model to: checkpoint/ab/bert/42/source-encoder.ptribest
+save pretrained model to: checkpoint/ab/bert/42/source-classifier.ptribest
+Restore model from: /home/derossi/DADER/main/checkpoint/ab/bert/42/source-encoder.ptribest
+Restore model from: /home/derossi/DADER/main/checkpoint/ab/bert/42/source-classifier.ptribest
+Pretraining time:  179.80515050888062
+=== Training F' and A ===
+===== RES ====
+p 33
+tp 33
+fp 17
+recall 0.9999999696969707
+precision 0.6599999868000003
+f1 0.7951802247063412
+======== tgt result =======
+===== RES ====
+p 112
+tp 112
+fp 54
+recall 0.9999999910714287
+precision 0.6746987911162724
+f1 0.8057549087524221
+===== RES ====
+p 28
+tp 28
+fp 18
+recall 0.9999999642857155
+precision 0.6086956389413992
+f1 0.7567562658878005
+===== RES ====
+p 35
+tp 35
+fp 17
+recall 0.9999999714285723
+precision 0.6730769101331364
+f1 0.8045972017442428
+======== tgt result =======
+===== RES ====
+p 112
+tp 112
+fp 54
+recall 0.9999999910714287
+precision 0.6746987911162724
+f1 0.8057549087524221
+===== RES ====
+p 30
+tp 30
+fp 16
+recall 0.9999999666666678
+precision 0.6521738988657848
+f1 0.7894731855958564
+===== RES ====
+p 34
+tp 34
+fp 14
+recall 0.9999999705882362
+precision 0.7083333185763893
+f1 0.8292677870318128
+======== tgt result =======
+===== RES ====
+p 113
+tp 113
+fp 53
+recall 0.9999999911504426
+precision 0.6807228874655248
+f1 0.8100353545306754
+===== RES ====
+p 33
+tp 33
+fp 9
+recall 0.9999999696969707
+precision 0.7857142670068032
+f1 0.8799994837336097
+======== tgt result =======
+===== RES ====
+p 112
+tp 111
+fp 51
+recall 0.9910714197225766
+precision 0.6851851809556471
+f1 0.8102184888382659
+===== RES ====
+p 29
+tp 29
+fp 9
+recall 0.9999999655172426
+precision 0.7631578746537402
+f1 0.8656711249724329
+===== RES ====
+p 28
+tp 28
+fp 11
+recall 0.9999999642857155
+precision 0.717948699539777
+f1 0.835820384050183
+===== RES ====
+p 33
+tp 33
+fp 10
+recall 0.9999999696969707
+precision 0.7674418426176316
+f1 0.8684205384351813
+===== RES ====
+p 30
+tp 30
+fp 7
+recall 0.9999999666666678
+precision 0.8108107888970058
+f1 0.8955218667857493
+======== tgt result =======
+===== RES ====
+p 111
+tp 110
+fp 43
+recall 0.9909909820631443
+precision 0.7189542436669657
+f1 0.8333328396754456
+===== RES ====
+p 31
+tp 31
+fp 10
+recall 0.9999999677419364
+precision 0.7560975425342064
+f1 0.8611105968366992
+===== RES ====
+p 32
+tp 32
+fp 10
+recall 0.9999999687500011
+precision 0.7619047437641728
+f1 0.8648643506211701
+===== RES ====
+p 30
+tp 30
+fp 5
+recall 0.9999999666666678
+precision 0.857142832653062
+f1 0.9230763976334045
+======== tgt result =======
+===== RES ====
+p 111
+tp 108
+fp 35
+recall 0.9729729642074508
+precision 0.7552447499633235
+f1 0.8503932020276888
+===== RES ====
+p 30
+tp 29
+fp 6
+recall 0.9666666344444454
+precision 0.8285714048979599
+f1 0.8923071678109284
+===== RES ====
+p 35
+tp 34
+fp 7
+recall 0.9714285436734702
+precision 0.8292682724568714
+f1 0.8947363216761767
+===== RES ====
+p 30
+tp 29
+fp 7
+recall 0.9666666344444454
+precision 0.8055555331790131
+f1 0.8787873562904549
+===== RES ====
+p 34
+tp 33
+fp 4
+recall 0.9705882067474058
+precision 0.8918918677867064
+f1 0.9295769394964005
+======== tgt result =======
+===== RES ====
+p 109
+tp 102
+fp 23
+recall 0.9357798079286256
+precision 0.815999993472
+f1 0.8717943666815611
+===== RES ====
+p 33
+tp 31
+fp 3
+recall 0.9393939109274573
+precision 0.9117646790657448
+f1 0.9253726068169339
+===== RES ====
+p 31
+tp 29
+fp 1
+recall 0.9354838407908438
+precision 0.9666666344444454
+f1 0.9508191410913684
+======== tgt result =======
+===== RES ====
+p 110
+tp 102
+fp 18
+recall 0.9272727188429754
+precision 0.8499999929166667
+f1 0.8869560149719254
+===== RES ====
+p 34
+tp 31
+fp 1
+recall 0.9117646790657448
+precision 0.9687499697265636
+f1 0.9393934113868598
+===== RES ====
+p 38
+tp 35
+fp 5
+recall 0.9210526073407209
+precision 0.8749999781250006
+f1 0.8974353747537306
+=== Result of InvGAN+KD: ===
+0.8974353747537306
+The source-target datasets are: ab_ri with seed 42
+The F1 score is: 0.8974353747537306
+The training time is: 60.62057828903198
+The inference time is: 0.0002633333206176758
+Source Encoder trainable parameters: 0
+Source Encoder non-trainable parameters: 109482240
+Target Encoder trainable parameters: 109482240
+Target Encoder non-trainable parameters: 0
+Source Classifier trainable parameters: 0
+Source Classifier non-trainable parameters: 1538
+Discriminator trainable parameters: 11805697
+Discriminator non-trainable parameters: 0
+=== Argument Setting ===
+src: wa1
+tgt: ri
+seed: 42
+train_seed: 42
+model_type: bert
+max_seq_length: 256
+batch_size: 32
+pre_epochs: 5
+num_epochs: 20
+AD weight: 1.0
+KD weight: 5.0
+temperature: 20
+=== Processing datasets ===
+Some weights of the model checkpoint at bert-base-uncased were not used when initializing BertModel: ['cls.seq_relationship.bias', 'cls.predictions.transform.LayerNorm.bias', 'cls.predictions.transform.dense.bias', 'cls.predictions.transform.LayerNorm.weight', 'cls.seq_relationship.weight', 'cls.predictions.bias', 'cls.predictions.transform.dense.weight', 'cls.predictions.decoder.weight']
+- This IS expected if you are initializing BertModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of the model checkpoint at bert-base-uncased were not used when initializing BertModel: ['cls.seq_relationship.bias', 'cls.predictions.transform.LayerNorm.bias', 'cls.predictions.transform.dense.bias', 'cls.predictions.transform.LayerNorm.weight', 'cls.seq_relationship.weight', 'cls.predictions.bias', 'cls.predictions.transform.dense.weight', 'cls.predictions.decoder.weight']
+- This IS expected if you are initializing BertModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+=== Training F and M ===
+===== RES ====
+p 30
+tp 30
+fp 13
+recall 0.9999999666666678
+precision 0.697674402379665
+f1 0.8219173015578005
+tgt_res:
+===== RES ====
+p 112
+tp 111
+fp 50
+recall 0.9910714197225766
+precision 0.6894409895065777
+f1 0.8131863233375123
+save pretrained model to: checkpoint/wa1/bert/42/source-encoder.ptribest
+save pretrained model to: checkpoint/wa1/bert/42/source-classifier.ptribest
+===== RES ====
+p 30
+tp 29
+fp 2
+recall 0.9666666344444454
+precision 0.9354838407908438
+f1 0.9508191410913684
+tgt_res:
+===== RES ====
+p 110
+tp 106
+fp 27
+recall 0.9636363548760332
+precision 0.7969924752105829
+f1 0.8724274808382297
+save pretrained model to: checkpoint/wa1/bert/42/source-encoder.ptribest
+save pretrained model to: checkpoint/wa1/bert/42/source-classifier.ptribest
+===== RES ====
+p 28
+tp 27
+fp 9
+recall 0.96428567984694
+precision 0.7499999791666673
+f1 0.8437494814456
+===== RES ====
+p 29
+tp 29
+fp 3
+recall 0.9999999655172426
+precision 0.9062499716796885
+f1 0.9508191421663471
+tgt_res:
+===== RES ====
+p 112
+tp 108
+fp 27
+recall 0.9642857056760205
+precision 0.7999999940740742
+f1 0.8744934243802905
+save pretrained model to: checkpoint/wa1/bert/42/source-encoder.ptribest
+save pretrained model to: checkpoint/wa1/bert/42/source-classifier.ptribest
+===== RES ====
+p 32
+tp 31
+fp 6
+recall 0.9687499697265636
+precision 0.8378378151935726
+f1 0.8985502012185075
+Restore model from: /home/derossi/DADER/main/checkpoint/wa1/bert/42/source-encoder.ptribest
+Restore model from: /home/derossi/DADER/main/checkpoint/wa1/bert/42/source-classifier.ptribest
+Pretraining time:  193.847904920578
+=== Training F' and A ===
+===== RES ====
+p 32
+tp 32
+fp 4
+recall 0.9999999687500011
+precision 0.8888888641975317
+f1 0.9411759446369428
+======== tgt result =======
+===== RES ====
+p 113
+tp 110
+fp 32
+recall 0.9734513188190149
+precision 0.774647881868677
+f1 0.8627445977396134
+===== RES ====
+p 30
+tp 30
+fp 5
+recall 0.9999999666666678
+precision 0.857142832653062
+f1 0.9230763976334045
+===== RES ====
+p 30
+tp 29
+fp 2
+recall 0.9666666344444454
+precision 0.9354838407908438
+f1 0.9508191410913684
+======== tgt result =======
+===== RES ====
+p 112
+tp 108
+fp 27
+recall 0.9642857056760205
+precision 0.7999999940740742
+f1 0.8744934243802905
+===== RES ====
+p 33
+tp 32
+fp 2
+recall 0.969696940312214
+precision 0.9411764429065753
+f1 0.9552233521945153
+======== tgt result =======
+===== RES ====
+p 111
+tp 108
+fp 26
+recall 0.9729729642074508
+precision 0.8059701432390288
+f1 0.8816321502709992
+===== RES ====
+p 30
+tp 29
+fp 1
+recall 0.9666666344444454
+precision 0.9666666344444454
+f1 0.9666661344447042
+======== tgt result =======
+===== RES ====
+p 112
+tp 107
+fp 20
+recall 0.9553571343271685
+precision 0.8425196784053569
+f1 0.8953969840166635
+===== RES ====
+p 28
+tp 27
+fp 1
+recall 0.96428567984694
+precision 0.96428567984694
+f1 0.9642851798471993
+===== RES ====
+p 29
+tp 28
+fp 0
+recall 0.9655172080856135
+precision 0.9999999642857155
+f1 0.9824556060328808
+======== tgt result =======
+===== RES ====
+p 111
+tp 106
+fp 15
+recall 0.9549549463517573
+precision 0.8760330506112971
+f1 0.9137925964999755
+===== RES ====
+p 33
+tp 33
+fp 0
+recall 0.9999999696969707
+precision 0.9999999696969707
+f1 0.9999994696972208
+======== tgt result =======
+===== RES ====
+p 113
+tp 109
+fp 13
+recall 0.9646017613752057
+precision 0.8934426156275196
+f1 0.9276590673067423
+===== RES ====
+p 29
+tp 28
+fp 0
+recall 0.9655172080856135
+precision 0.9999999642857155
+f1 0.9824556060328808
+===== RES ====
+p 29
+tp 28
+fp 0
+recall 0.9655172080856135
+precision 0.9999999642857155
+f1 0.9824556060328808
+===== RES ====
+p 34
+tp 33
+fp 0
+recall 0.9705882067474058
+precision 0.9999999696969707
+f1 0.9850740975720969
+===== RES ====
+p 31
+tp 30
+fp 0
+recall 0.9677419042663902
+precision 0.9999999666666678
+f1 0.9836060252622816
+===== RES ====
+p 32
+tp 31
+fp 0
+recall 0.9687499697265636
+precision 0.9999999677419364
+f1 0.9841264530110889
+===== RES ====
+p 34
+tp 33
+fp 0
+recall 0.9705882067474058
+precision 0.9999999696969707
+f1 0.9850740975720969
+===== RES ====
+p 28
+tp 27
+fp 0
+recall 0.96428567984694
+precision 0.9999999629629643
+f1 0.9818176462812476
+===== RES ====
+p 29
+tp 28
+fp 0
+recall 0.9655172080856135
+precision 0.9999999642857155
+f1 0.9824556060328808
+===== RES ====
+p 31
+tp 29
+fp 0
+recall 0.9354838407908438
+precision 0.9999999655172426
+f1 0.9666661350002591
+===== RES ====
+p 25
+tp 23
+fp 0
+recall 0.9199999632000014
+precision 0.999999956521741
+f1 0.9583327942710949
+===== RES ====
+p 28
+tp 25
+fp 0
+recall 0.8928571109693889
+precision 0.9999999600000016
+f1 0.9433956924174948
+===== RES ====
+p 33
+tp 25
+fp 0
+recall 0.7575757346189171
+precision 0.9999999600000016
+f1 0.8620684453034899
+===== RES ====
+p 38
+tp 31
+fp 2
+recall 0.8157894522160671
+precision 0.9393939109274573
+f1 0.8732389145013753
+=== Result of InvGAN+KD: ===
+0.8732389145013753
+The source-target datasets are: wa1_ri with seed 42
+The F1 score is: 0.8732389145013753
+The training time is: 60.057698011398315
+The inference time is: 0.000279746949672699
+Source Encoder trainable parameters: 0
+Source Encoder non-trainable parameters: 109482240
+Target Encoder trainable parameters: 109482240
+Target Encoder non-trainable parameters: 0
+Source Classifier trainable parameters: 0
+Source Classifier non-trainable parameters: 1538
+Discriminator trainable parameters: 11805697
+Discriminator non-trainable parameters: 0
+=== Argument Setting ===
+src: da
+tgt: ia
+seed: 42
+train_seed: 42
+model_type: bert
+max_seq_length: 256
+batch_size: 32
+pre_epochs: 5
+num_epochs: 20
+AD weight: 1.0
+KD weight: 5.0
+temperature: 20
+=== Processing datasets ===
+Some weights of the model checkpoint at bert-base-uncased were not used when initializing BertModel: ['cls.predictions.bias', 'cls.predictions.decoder.weight', 'cls.predictions.transform.dense.weight', 'cls.seq_relationship.weight', 'cls.seq_relationship.bias', 'cls.predictions.transform.LayerNorm.bias', 'cls.predictions.transform.dense.bias', 'cls.predictions.transform.LayerNorm.weight']
+- This IS expected if you are initializing BertModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of the model checkpoint at bert-base-uncased were not used when initializing BertModel: ['cls.predictions.bias', 'cls.predictions.decoder.weight', 'cls.predictions.transform.dense.weight', 'cls.seq_relationship.weight', 'cls.seq_relationship.bias', 'cls.predictions.transform.LayerNorm.bias', 'cls.predictions.transform.dense.bias', 'cls.predictions.transform.LayerNorm.weight']
+- This IS expected if you are initializing BertModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+=== Training F and M ===
+===== RES ====
+p 24
+tp 22
+fp 27
+recall 0.9166666284722238
+precision 0.4489795826738861
+f1 0.6027392681556967
+tgt_res:
+===== RES ====
+p 77
+tp 69
+fp 84
+recall 0.8961038844661834
+precision 0.4509803892092785
+f1 0.5999995493765112
+save pretrained model to: checkpoint/da/bert/42/source-encoder.ptiabest
+save pretrained model to: checkpoint/da/bert/42/source-classifier.ptiabest
+===== RES ====
+p 26
+tp 24
+fp 21
+recall 0.9230768875739658
+precision 0.5333333214814818
+f1 0.6760558547910335
+tgt_res:
+===== RES ====
+p 78
+tp 69
+fp 65
+recall 0.884615373274162
+precision 0.5149253692916017
+f1 0.6509429249736319
+save pretrained model to: checkpoint/da/bert/42/source-encoder.ptiabest
+save pretrained model to: checkpoint/da/bert/42/source-classifier.ptiabest
+===== RES ====
+p 26
+tp 25
+fp 10
+recall 0.9615384245562144
+precision 0.7142856938775517
+f1 0.819671615157508
+tgt_res:
+===== RES ====
+p 78
+tp 68
+fp 38
+recall 0.8717948606180146
+precision 0.6415094279102884
+f1 0.7391299383273547
+save pretrained model to: checkpoint/da/bert/42/source-encoder.ptiabest
+save pretrained model to: checkpoint/da/bert/42/source-classifier.ptiabest
+===== RES ====
+p 25
+tp 24
+fp 23
+recall 0.9599999616000015
+precision 0.5106382870076961
+f1 0.6666661948305531
+===== RES ====
+p 24
+tp 23
+fp 23
+recall 0.9583332934027794
+precision 0.49999998913043503
+f1 0.6571423877554088
+Restore model from: /home/derossi/DADER/main/checkpoint/da/bert/42/source-encoder.ptiabest
+Restore model from: /home/derossi/DADER/main/checkpoint/da/bert/42/source-classifier.ptiabest
+Pretraining time:  228.0806965827942
+=== Training F' and A ===
+===== RES ====
+p 27
+tp 26
+fp 14
+recall 0.9629629272976693
+precision 0.6499999837500005
+f1 0.7761188986414207
+======== tgt result =======
+===== RES ====
+p 78
+tp 68
+fp 38
+recall 0.8717948606180146
+precision 0.6415094279102884
+f1 0.7391299383273547
+===== RES ====
+p 25
+tp 24
+fp 13
+recall 0.9599999616000015
+precision 0.6486486311176046
+f1 0.7741930421438993
+===== RES ====
+p 23
+tp 21
+fp 11
+recall 0.9130434385633287
+precision 0.6562499794921882
+f1 0.7636358492565085
+===== RES ====
+p 23
+tp 21
+fp 9
+recall 0.9130434385633287
+precision 0.6999999766666675
+f1 0.7924523090070691
+======== tgt result =======
+===== RES ====
+p 78
+tp 67
+fp 34
+recall 0.8589743479618673
+precision 0.6633663300656799
+f1 0.7486028518463952
+===== RES ====
+p 23
+tp 22
+fp 9
+recall 0.9565216975425348
+precision 0.7096773964620194
+f1 0.814814295610719
+======== tgt result =======
+===== RES ====
+p 78
+tp 66
+fp 27
+recall 0.8461538353057201
+precision 0.7096774117238989
+f1 0.7719293193806411
+===== RES ====
+p 20
+tp 19
+fp 6
+recall 0.9499999525000024
+precision 0.7599999696000012
+f1 0.8444439130867097
+======== tgt result =======
+===== RES ====
+p 77
+tp 64
+fp 21
+recall 0.831168820374431
+precision 0.7529411676124569
+f1 0.7901229482551543
+===== RES ====
+p 23
+tp 21
+fp 4
+recall 0.9130434385633287
+precision 0.8399999664000013
+f1 0.8749994644100085
+======== tgt result =======
+===== RES ====
+p 78
+tp 64
+fp 17
+recall 0.8205128099934256
+precision 0.7901234470355131
+f1 0.8050309365930087
+===== RES ====
+p 25
+tp 23
+fp 2
+recall 0.9199999632000014
+precision 0.9199999632000014
+f1 0.9199994632002733
+======== tgt result =======
+===== RES ====
+p 78
+tp 64
+fp 9
+recall 0.8205128099934256
+precision 0.8767123167573656
+f1 0.8476816085262363
+===== RES ====
+p 26
+tp 22
+fp 2
+recall 0.8461538136094686
+precision 0.9166666284722238
+f1 0.8799994656002845
+===== RES ====
+p 24
+tp 18
+fp 2
+recall 0.7499999687500013
+precision 0.8999999550000022
+f1 0.8181812851242689
+===== RES ====
+p 22
+tp 16
+fp 1
+recall 0.7272726942148775
+precision 0.9411764152249167
+f1 0.8205122866538135
+===== RES ====
+p 26
+tp 19
+fp 1
+recall 0.7307692026627229
+precision 0.9499999525000024
+f1 0.8260864291118245
+===== RES ====
+p 23
+tp 15
+fp 1
+recall 0.6521738846880919
+precision 0.9374999414062536
+f1 0.769230245891166
+===== RES ====
+p 25
+tp 16
+fp 1
+recall 0.639999974400001
+precision 0.9411764152249167
+f1 0.761904243764477
+===== RES ====
+p 23
+tp 16
+fp 1
+recall 0.6956521436672981
+precision 0.9411764152249167
+f1 0.7999994712502996
+===== RES ====
+p 26
+tp 19
+fp 0
+recall 0.7307692026627229
+precision 0.9999999473684238
+f1 0.8444439190126283
+===== RES ====
+p 26
+tp 20
+fp 1
+recall 0.7692307396449716
+precision 0.9523809070294805
+f1 0.8510632992307093
+===== RES ====
+p 25
+tp 19
+fp 2
+recall 0.7599999696000012
+precision 0.9047618616780065
+f1 0.8260864243859325
+===== RES ====
+p 26
+tp 19
+fp 1
+recall 0.7307692026627229
+precision 0.9499999525000024
+f1 0.8260864291118245
+===== RES ====
+p 27
+tp 20
+fp 1
+recall 0.7407407133058995
+precision 0.9523809070294805
+f1 0.8333328064239026
+===== RES ====
+p 27
+tp 18
+fp 3
+recall 0.6666666419753096
+precision 0.8571428163265326
+f1 0.7499994765628236
+=== Result of InvGAN+KD: ===
+0.7499994765628236
+The source-target datasets are: da_ia with seed 42
+The F1 score is: 0.7499994765628236
+The training time is: 54.42698907852173
+The inference time is: 0.00026423484086990356
+Source Encoder trainable parameters: 0
+Source Encoder non-trainable parameters: 109482240
+Target Encoder trainable parameters: 109482240
+Target Encoder non-trainable parameters: 0
+Source Classifier trainable parameters: 0
+Source Classifier non-trainable parameters: 1538
+Discriminator trainable parameters: 11805697
+Discriminator non-trainable parameters: 0
+=== Argument Setting ===
+src: ds
+tgt: ia
+seed: 42
+train_seed: 42
+model_type: bert
+max_seq_length: 256
+batch_size: 32
+pre_epochs: 5
+num_epochs: 20
+AD weight: 1.0
+KD weight: 5.0
+temperature: 20
+=== Processing datasets ===
+Some weights of the model checkpoint at bert-base-uncased were not used when initializing BertModel: ['cls.predictions.transform.dense.bias', 'cls.seq_relationship.bias', 'cls.predictions.transform.LayerNorm.bias', 'cls.predictions.transform.dense.weight', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.decoder.weight', 'cls.predictions.bias', 'cls.seq_relationship.weight']
+- This IS expected if you are initializing BertModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of the model checkpoint at bert-base-uncased were not used when initializing BertModel: ['cls.predictions.transform.dense.bias', 'cls.seq_relationship.bias', 'cls.predictions.transform.LayerNorm.bias', 'cls.predictions.transform.dense.weight', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.decoder.weight', 'cls.predictions.bias', 'cls.seq_relationship.weight']
+- This IS expected if you are initializing BertModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+=== Training F and M ===
+===== RES ====
+p 21
+tp 21
+fp 33
+recall 0.9999999523809546
+precision 0.38888888168724295
+f1 0.5599995818669523
+tgt_res:
+===== RES ====
+p 77
+tp 77
+fp 102
+recall 0.9999999870129872
+precision 0.43016759536219223
+f1 0.6015620746768067
+save pretrained model to: checkpoint/ds/bert/42/source-encoder.ptiabest
+save pretrained model to: checkpoint/ds/bert/42/source-classifier.ptiabest
+===== RES ====
+p 26
+tp 25
+fp 12
+recall 0.9615384245562144
+precision 0.6756756574141715
+f1 0.7936502836989607
+tgt_res:
+===== RES ====
+p 78
+tp 75
+fp 38
+recall 0.9615384492110456
+precision 0.663716808285692
+f1 0.7853398227025258
+save pretrained model to: checkpoint/ds/bert/42/source-encoder.ptiabest
+save pretrained model to: checkpoint/ds/bert/42/source-classifier.ptiabest
+===== RES ====
+p 23
+tp 15
+fp 1
+recall 0.6521738846880919
+precision 0.9374999414062536
+f1 0.769230245891166
+===== RES ====
+p 24
+tp 14
+fp 0
+recall 0.5833333090277788
+precision 0.9999999285714337
+f1 0.7368416011083257
+===== RES ====
+p 25
+tp 24
+fp 9
+recall 0.9599999616000015
+precision 0.7272727052341605
+f1 0.8275856878718725
+tgt_res:
+===== RES ====
+p 78
+tp 75
+fp 22
+recall 0.9615384492110456
+precision 0.7731958683175684
+f1 0.8571423532411012
+save pretrained model to: checkpoint/ds/bert/42/source-encoder.ptiabest
+save pretrained model to: checkpoint/ds/bert/42/source-classifier.ptiabest
+Restore model from: /home/derossi/DADER/main/checkpoint/ds/bert/42/source-encoder.ptiabest
+Restore model from: /home/derossi/DADER/main/checkpoint/ds/bert/42/source-classifier.ptiabest
+Pretraining time:  511.89772057533264
+=== Training F' and A ===
+===== RES ====
+p 22
+tp 21
+fp 10
+recall 0.9545454111570267
+precision 0.677419332986473
+f1 0.7924523147030388
+======== tgt result =======
+===== RES ====
+p 78
+tp 75
+fp 22
+recall 0.9615384492110456
+precision 0.7731958683175684
+f1 0.8571423532411012
+===== RES ====
+p 22
+tp 21
+fp 8
+recall 0.9545454111570267
+precision 0.7241379060642101
+f1 0.8235288888891817
+======== tgt result =======
+===== RES ====
+p 78
+tp 75
+fp 21
+recall 0.9615384492110456
+precision 0.7812499918619793
+f1 0.8620684609594595
+===== RES ====
+p 20
+tp 19
+fp 8
+recall 0.9499999525000024
+precision 0.7037036776406045
+f1 0.8085101149844519
+===== RES ====
+p 23
+tp 22
+fp 8
+recall 0.9565216975425348
+precision 0.7333333088888897
+f1 0.8301881566396647
+======== tgt result =======
+===== RES ====
+p 78
+tp 74
+fp 19
+recall 0.9487179365548983
+precision 0.7956989161752805
+f1 0.8654965697482412
+===== RES ====
+p 25
+tp 24
+fp 6
+recall 0.9599999616000015
+precision 0.7999999733333342
+f1 0.8727267451242495
+======== tgt result =======
+===== RES ====
+p 78
+tp 73
+fp 16
+recall 0.935897423898751
+precision 0.8202247098851156
+f1 0.8742509887055079
+===== RES ====
+p 24
+tp 23
+fp 4
+recall 0.9583332934027794
+precision 0.8518518203017844
+f1 0.9019602506730947
+======== tgt result =======
+===== RES ====
+p 78
+tp 73
+fp 16
+recall 0.935897423898751
+precision 0.8202247098851156
+f1 0.8742509887055079
+===== RES ====
+p 22
+tp 21
+fp 3
+recall 0.9545454111570267
+precision 0.8749999635416682
+f1 0.913042939508781
+======== tgt result =======
+===== RES ====
+p 78
+tp 72
+fp 15
+recall 0.9230769112426037
+precision 0.8275861973840667
+f1 0.8727267636366486
+===== RES ====
+p 24
+tp 23
+fp 2
+recall 0.9583332934027794
+precision 0.9199999632000014
+f1 0.938774972095228
+======== tgt result =======
+===== RES ====
+p 78
+tp 70
+fp 14
+recall 0.8974358859303092
+precision 0.8333333234126985
+f1 0.8641970208812519
+===== RES ====
+p 22
+tp 22
+fp 2
+recall 0.9999999545454565
+precision 0.9166666284722238
+f1 0.9565211984879748
+======== tgt result =======
+===== RES ====
+p 78
+tp 70
+fp 14
+recall 0.8974358859303092
+precision 0.8333333234126985
+f1 0.8641970208812519
+===== RES ====
+p 25
+tp 23
+fp 2
+recall 0.9199999632000014
+precision 0.9199999632000014
+f1 0.9199994632002733
+===== RES ====
+p 23
+tp 21
+fp 2
+recall 0.9130434385633287
+precision 0.9130434385633287
+f1 0.9130429385636025
+===== RES ====
+p 24
+tp 23
+fp 2
+recall 0.9583332934027794
+precision 0.9199999632000014
+f1 0.938774972095228
+===== RES ====
+p 22
+tp 18
+fp 2
+recall 0.8181817809917372
+precision 0.8999999550000022
+f1 0.8571423174606095
+===== RES ====
+p 24
+tp 19
+fp 2
+recall 0.7916666336805569
+precision 0.9047618616780065
+f1 0.8444439091360973
+===== RES ====
+p 23
+tp 19
+fp 2
+recall 0.8260869206049165
+precision 0.9047618616780065
+f1 0.8636358254135131
+===== RES ====
+p 24
+tp 20
+fp 2
+recall 0.8333332986111125
+precision 0.9090908677685968
+f1 0.8695646805295886
+===== RES ====
+p 23
+tp 20
+fp 2
+recall 0.8695651795841226
+precision 0.9090908677685968
+f1 0.8888883496299124
+===== RES ====
+p 24
+tp 19
+fp 2
+recall 0.7916666336805569
+precision 0.9047618616780065
+f1 0.8444439091360973
+===== RES ====
+p 22
+tp 19
+fp 1
+recall 0.863636324380167
+precision 0.9499999525000024
+f1 0.9047613628120684
+===== RES ====
+p 21
+tp 19
+fp 2
+recall 0.9047618616780065
+precision 0.9047618616780065
+f1 0.9047613616782829
+===== RES ====
+p 27
+tp 22
+fp 7
+recall 0.8148147846364894
+precision 0.7586206634958391
+f1 0.7857137582911345
+=== Result of InvGAN+KD: ===
+0.7857137582911345
+The source-target datasets are: ds_ia with seed 42
+The F1 score is: 0.7857137582911345
+The training time is: 55.377044439315796
+The inference time is: 0.0002696812152862549
+Source Encoder trainable parameters: 0
+Source Encoder non-trainable parameters: 109482240
+Target Encoder trainable parameters: 109482240
+Target Encoder non-trainable parameters: 0
+Source Classifier trainable parameters: 0
+Source Classifier non-trainable parameters: 1538
+Discriminator trainable parameters: 11805697
+Discriminator non-trainable parameters: 0
+=== Argument Setting ===
+src: fz
+tgt: b2
+seed: 42
+train_seed: 42
+model_type: bert
+max_seq_length: 256
+batch_size: 32
+pre_epochs: 5
+num_epochs: 20
+AD weight: 1.0
+KD weight: 5.0
+temperature: 20
+=== Processing datasets ===
+Some weights of the model checkpoint at bert-base-uncased were not used when initializing BertModel: ['cls.predictions.transform.dense.bias', 'cls.predictions.transform.dense.weight', 'cls.predictions.transform.LayerNorm.bias', 'cls.predictions.decoder.weight', 'cls.predictions.transform.LayerNorm.weight', 'cls.seq_relationship.bias', 'cls.seq_relationship.weight', 'cls.predictions.bias']
+- This IS expected if you are initializing BertModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of the model checkpoint at bert-base-uncased were not used when initializing BertModel: ['cls.predictions.transform.dense.bias', 'cls.predictions.transform.dense.weight', 'cls.predictions.transform.LayerNorm.bias', 'cls.predictions.decoder.weight', 'cls.predictions.transform.LayerNorm.weight', 'cls.seq_relationship.bias', 'cls.seq_relationship.weight', 'cls.predictions.bias']
+- This IS expected if you are initializing BertModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+=== Training F and M ===
+===== RES ====
+p 11
+tp 0
+fp 0
+recall 0.0
+precision 0.0
+f1 0.0
+===== RES ====
+p 15
+tp 5
+fp 2
+recall 0.3333333111111126
+precision 0.7142856122449125
+f1 0.45454497933924887
+tgt_res:
+===== RES ====
+p 52
+tp 28
+fp 6
+recall 0.538461528106509
+precision 0.8235293875432533
+f1 0.6511622974584359
+save pretrained model to: checkpoint/fz/bert/42/source-encoder.ptb2best
+save pretrained model to: checkpoint/fz/bert/42/source-classifier.ptb2best
+===== RES ====
+p 12
+tp 11
+fp 5
+recall 0.9166665902777842
+precision 0.6874999570312527
+f1 0.7857137397962262
+tgt_res:
+===== RES ====
+p 51
+tp 47
+fp 31
+recall 0.9215686093810077
+precision 0.6025640948389219
+f1 0.7286816811492827
+save pretrained model to: checkpoint/fz/bert/42/source-encoder.ptb2best
+save pretrained model to: checkpoint/fz/bert/42/source-classifier.ptb2best
+===== RES ====
+p 13
+tp 8
+fp 2
+recall 0.615384568047341
+precision 0.7999999200000081
+f1 0.6956516219285175
+===== RES ====
+p 16
+tp 10
+fp 2
+recall 0.6249999609375024
+precision 0.8333332638888947
+f1 0.7142851734697259
+Restore model from: /home/derossi/DADER/main/checkpoint/fz/bert/42/source-encoder.ptb2best
+Restore model from: /home/derossi/DADER/main/checkpoint/fz/bert/42/source-classifier.ptb2best
+Pretraining time:  23.96576499938965
+=== Training F' and A ===
+===== RES ====
+p 15
+tp 15
+fp 3
+recall 0.9999999333333378
+precision 0.8333332870370396
+f1 0.9090903581269951
+======== tgt result =======
+===== RES ====
+p 49
+tp 45
+fp 27
+recall 0.9183673281965852
+precision 0.6249999913194446
+f1 0.7438011586643377
+===== RES ====
+p 13
+tp 13
+fp 6
+recall 0.9999999230769291
+precision 0.684210490304711
+f1 0.8124994667971623
+===== RES ====
+p 17
+tp 16
+fp 6
+recall 0.9411764152249167
+precision 0.7272726942148775
+f1 0.8205122866538135
+===== RES ====
+p 15
+tp 15
+fp 5
+recall 0.9999999333333378
+precision 0.7499999625000018
+f1 0.8571423183676284
+===== RES ====
+p 15
+tp 14
+fp 7
+recall 0.9333332711111153
+precision 0.6666666349206364
+f1 0.7777772484570947
+===== RES ====
+p 16
+tp 16
+fp 6
+recall 0.9999999375000038
+precision 0.7272726942148775
+f1 0.8421047313022223
+===== RES ====
+p 17
+tp 17
+fp 4
+recall 0.999999941176474
+precision 0.8095237709750585
+f1 0.8947363005542918
+===== RES ====
+p 16
+tp 16
+fp 8
+recall 0.9999999375000038
+precision 0.66666663888889
+f1 0.7999994800002881
+===== RES ====
+p 11
+tp 11
+fp 9
+recall 0.9999999090909174
+precision 0.5499999725000013
+f1 0.7096769157130921
+===== RES ====
+p 12
+tp 12
+fp 7
+recall 0.9999999166666736
+precision 0.6315789141274255
+f1 0.7741930239336935
+===== RES ====
+p 15
+tp 15
+fp 6
+recall 0.9999999333333378
+precision 0.7142856802721105
+f1 0.8333328009262105
+===== RES ====
+p 16
+tp 16
+fp 4
+recall 0.9999999375000038
+precision 0.799999960000002
+f1 0.8888883456792886
+===== RES ====
+p 13
+tp 11
+fp 4
+recall 0.8461537810650938
+precision 0.7333332844444478
+f1 0.7857137321431756
+===== RES ====
+p 12
+tp 10
+fp 3
+recall 0.8333332638888947
+precision 0.7692307100591762
+f1 0.7999994368003165
+===== RES ====
+p 17
+tp 13
+fp 2
+recall 0.7647058373702448
+precision 0.8666666088888928
+f1 0.8124994511721833
+===== RES ====
+p 15
+tp 11
+fp 2
+recall 0.7333332844444478
+precision 0.8461537810650938
+f1 0.7857137321431756
+===== RES ====
+p 10
+tp 7
+fp 1
+recall 0.699999930000007
+precision 0.8749998906250137
+f1 0.777777197531186
+===== RES ====
+p 17
+tp 8
+fp 1
+recall 0.47058820761245834
+precision 0.8888887901234679
+f1 0.6153841153849448
+===== RES ====
+p 17
+tp 7
+fp 0
+recall 0.4117646816609011
+precision 0.9999998571428775
+f1 0.58333287152806
+===== RES ====
+p 16
+tp 0
+fp 0
+recall 0.0
+precision 0.0
+f1 0.0
+===== RES ====
+p 19
+tp 3
+fp 0
+recall 0.15789472853185638
+precision 0.9999996666667778
+f1 0.2727270123968518
+=== Result of InvGAN+KD: ===
+0.2727270123968518
+The source-target datasets are: fz_b2 with seed 42
+The F1 score is: 0.2727270123968518
+The training time is: 37.051819801330566
+The inference time is: 0.00026752054691314697
+Source Encoder trainable parameters: 0
+Source Encoder non-trainable parameters: 109482240
+Target Encoder trainable parameters: 109482240
+Target Encoder non-trainable parameters: 0
+Source Classifier trainable parameters: 0
+Source Classifier non-trainable parameters: 1538
+Discriminator trainable parameters: 11805697
+Discriminator non-trainable parameters: 0
+=== Argument Setting ===
+src: dzy
+tgt: b2
+seed: 42
+train_seed: 42
+model_type: bert
+max_seq_length: 256
+batch_size: 32
+pre_epochs: 5
+num_epochs: 20
+AD weight: 1.0
+KD weight: 5.0
+temperature: 20
+=== Processing datasets ===
+Some weights of the model checkpoint at bert-base-uncased were not used when initializing BertModel: ['cls.predictions.transform.LayerNorm.bias', 'cls.seq_relationship.bias', 'cls.predictions.transform.dense.weight', 'cls.predictions.transform.dense.bias', 'cls.predictions.bias', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.decoder.weight', 'cls.seq_relationship.weight']
+- This IS expected if you are initializing BertModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of the model checkpoint at bert-base-uncased were not used when initializing BertModel: ['cls.predictions.transform.LayerNorm.bias', 'cls.seq_relationship.bias', 'cls.predictions.transform.dense.weight', 'cls.predictions.transform.dense.bias', 'cls.predictions.bias', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.decoder.weight', 'cls.seq_relationship.weight']
+- This IS expected if you are initializing BertModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+=== Training F and M ===
+===== RES ====
+p 15
+tp 0
+fp 0
+recall 0.0
+precision 0.0
+f1 0.0
+===== RES ====
+p 14
+tp 14
+fp 25
+recall 0.9999999285714337
+precision 0.3589743497698885
+f1 0.5283014781063661
+tgt_res:
+===== RES ====
+p 52
+tp 51
+fp 94
+recall 0.9807692119082845
+precision 0.3517241355053508
+f1 0.517766103636044
+save pretrained model to: checkpoint/dzy/bert/42/source-encoder.ptb2best
+save pretrained model to: checkpoint/dzy/bert/42/source-classifier.ptb2best
+===== RES ====
+p 14
+tp 14
+fp 26
+recall 0.9999999285714337
+precision 0.34999999125000025
+f1 0.5185181152266142
+===== RES ====
+p 11
+tp 11
+fp 35
+recall 0.9999999090909174
+precision 0.23913042958412112
+f1 0.38596458725785643
+===== RES ====
+p 14
+tp 14
+fp 23
+recall 0.9999999285714337
+precision 0.37837836815193604
+f1 0.5490191880048956
+tgt_res:
+===== RES ====
+p 52
+tp 50
+fp 73
+recall 0.9615384430473377
+precision 0.40650406173573933
+f1 0.5714281472003035
+save pretrained model to: checkpoint/dzy/bert/42/source-encoder.ptb2best
+save pretrained model to: checkpoint/dzy/bert/42/source-classifier.ptb2best
+Restore model from: /home/derossi/DADER/main/checkpoint/dzy/bert/42/source-encoder.ptb2best
+Restore model from: /home/derossi/DADER/main/checkpoint/dzy/bert/42/source-classifier.ptb2best
+Pretraining time:  21.442094087600708
+=== Training F' and A ===
+===== RES ====
+p 14
+tp 14
+fp 20
+recall 0.9999999285714337
+precision 0.41176469377162667
+f1 0.5833328958336198
+======== tgt result =======
+===== RES ====
+p 51
+tp 50
+fp 74
+recall 0.9803921376393699
+precision 0.4032258031997919
+f1 0.5714281519023374
+===== RES ====
+p 14
+tp 14
+fp 22
+recall 0.9999999285714337
+precision 0.3888888780864201
+f1 0.5599995744002835
+===== RES ====
+p 15
+tp 15
+fp 16
+recall 0.9999999333333378
+precision 0.4838709521331951
+f1 0.6521734451798762
+======== tgt result =======
+===== RES ====
+p 53
+tp 51
+fp 69
+recall 0.9622641327874693
+precision 0.42499999645833336
+f1 0.5895949439008695
+===== RES ====
+p 14
+tp 14
+fp 19
+recall 0.9999999285714337
+precision 0.42424241138659363
+f1 0.5957442372116958
+===== RES ====
+p 16
+tp 16
+fp 14
+recall 0.9999999375000038
+precision 0.5333333155555561
+f1 0.6956516899813895
+======== tgt result =======
+===== RES ====
+p 54
+tp 52
+fp 47
+recall 0.9629629451303159
+precision 0.5252525199469442
+f1 0.679738096458933
+===== RES ====
+p 11
+tp 11
+fp 13
+recall 0.9999999090909174
+precision 0.4583333142361119
+f1 0.6285709616329428
+===== RES ====
+p 15
+tp 14
+fp 9
+recall 0.9333332711111153
+precision 0.6086956257088858
+f1 0.7368415886429689
+======== tgt result =======
+===== RES ====
+p 52
+tp 50
+fp 30
+recall 0.9615384430473377
+precision 0.6249999921875001
+f1 0.7575752685953419
+===== RES ====
+p 16
+tp 14
+fp 5
+recall 0.8749999453125034
+precision 0.7368420664819965
+f1 0.7999994579594938
+======== tgt result =======
+===== RES ====
+p 52
+tp 47
+fp 20
+recall 0.9038461364644974
+precision 0.7014925268433951
+f1 0.7899154610553167
+===== RES ====
+p 16
+tp 13
+fp 3
+recall 0.8124999492187531
+precision 0.8124999492187531
+f1 0.8124994492190609
+======== tgt result =======
+===== RES ====
+p 51
+tp 43
+fp 14
+recall 0.8431372383698581
+precision 0.7543859516774395
+f1 0.7962957830935907
+===== RES ====
+p 16
+tp 12
+fp 2
+recall 0.7499999531250029
+precision 0.8571427959183717
+f1 0.799999448889202
+===== RES ====
+p 15
+tp 13
+fp 2
+recall 0.8666666088888928
+precision 0.8666666088888928
+f1 0.8666661088891813
+======== tgt result =======
+===== RES ====
+p 49
+tp 39
+fp 10
+recall 0.7959183511037071
+precision 0.7959183511037071
+f1 0.7959178511040212
+===== RES ====
+p 15
+tp 11
+fp 1
+recall 0.7333332844444478
+precision 0.9166665902777842
+f1 0.8148142606313042
+===== RES ====
+p 16
+tp 9
+fp 1
+recall 0.5624999648437522
+precision 0.8999999100000091
+f1 0.6923071656807972
+===== RES ====
+p 13
+tp 7
+fp 0
+recall 0.5384614970414233
+precision 0.9999998571428775
+f1 0.6999994750002938
+===== RES ====
+p 17
+tp 10
+fp 0
+recall 0.588235259515573
+precision 0.99999990000001
+f1 0.7407402194790308
+===== RES ====
+p 15
+tp 8
+fp 1
+recall 0.5333332977777802
+precision 0.8888887901234679
+f1 0.6666661423614402
+===== RES ====
+p 14
+tp 5
+fp 1
+recall 0.3571428316326549
+precision 0.8333331944444675
+f1 0.49999953000034186
+===== RES ====
+p 14
+tp 7
+fp 0
+recall 0.49999996428571686
+precision 0.9999998571428775
+f1 0.6666661587304505
+===== RES ====
+p 16
+tp 8
+fp 0
+recall 0.4999999687500019
+precision 0.9999998750000157
+f1 0.6666661666669583
+===== RES ====
+p 16
+tp 9
+fp 0
+recall 0.5624999648437522
+precision 0.9999998888889013
+f1 0.7199994816002934
+===== RES ====
+p 19
+tp 9
+fp 0
+recall 0.47368418559556913
+precision 0.9999998888889013
+f1 0.6428566607145759
+=== Result of InvGAN+KD: ===
+0.6428566607145759
+The source-target datasets are: dzy_b2 with seed 42
+The F1 score is: 0.6428566607145759
+The training time is: 38.289936542510986
+The inference time is: 0.0002654269337654114
+Source Encoder trainable parameters: 0
+Source Encoder non-trainable parameters: 109482240
+Target Encoder trainable parameters: 109482240
+Target Encoder non-trainable parameters: 0
+Source Classifier trainable parameters: 0
+Source Classifier non-trainable parameters: 1538
+Discriminator trainable parameters: 11805697
+Discriminator non-trainable parameters: 0
