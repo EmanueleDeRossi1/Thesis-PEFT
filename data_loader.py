@@ -7,8 +7,6 @@ import pandas as pd
 from transformers import AutoTokenizer
 from torch.utils.data import Dataset, DataLoader
 
-print("something")
-
 class SourceTargetDataset(Dataset):
     def __init__(
         self, 
@@ -52,9 +50,6 @@ class SourceTargetDataset(Dataset):
         )
         target_input_ids = encoded_target["input_ids"]
         target_attention_mask = encoded_target["attention_mask"]
-
-        print(f"source_input_ids len: {len(source_input_ids)}")
-        print(f"target_input_ids shape: {len(target_input_ids)} type: {type(target_input_ids)}")
 
 
         return {
@@ -149,19 +144,19 @@ if __name__ == "__main__":
     
     hparams = {
         "dataset_dir": dataset_dir,         
-        "source_folder": "cameras",               
-        "target_folder": "computers",            
+        "source_folder": "ab",               
+        "target_folder": "wa1",            
         "pretrained_model_name": "bert-base-uncased",
         "padding": "max_length",
         "max_seq_length": 256,
         "batch_size": 32,
     }
 
-    cameras_computers_dm = DataModuleSourceTarget(hparams)
-    cameras_computers_dm.prepare_data()
+    ab_wa1_dm = DataModuleSourceTarget(hparams)
+    ab_wa1_dm.prepare_data()
     
     
-    train_loader = cameras_computers_dm.train_dataloader()
+    train_loader = ab_wa1_dm.train_dataloader()
     for batch in train_loader:
         print("Batch:")
         for key, value in batch.items():
