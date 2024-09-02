@@ -5,12 +5,14 @@ Created on Fri Aug  9 11:01:13 2024
 @author: emanu
 """
 
+print("something")
+
 import pandas as pd
 import os
 
 import matplotlib.pyplot as plt
 
-
+print("something")
 
 
 def calculate_label_percentages(df):
