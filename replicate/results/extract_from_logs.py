@@ -10,7 +10,6 @@ import os
 import numpy as np
 import pandas as pd
 
-
 def extract_log_data(log_file_path):
     data = {}
 
@@ -99,10 +98,52 @@ def calculate_stats_by_dataset(data):
 
     return dataset_stats
 
+def create_csv_file(data, filename):
+    # Convert the data to a pandas DataFrame
+    rows = []
+    for (pair_seed, metrics) in data.items():
+        pair, seed = pair_seed  # Unpack the pair and seed correctly
+        rows.append({
+            "Pair": pair,
+            "Seed": seed,
+            "F1 Score": metrics['f1_score'],
+            "Training Time": metrics['training_time'],
+            "Inference Time": metrics['inference_time']
+        })
+        
+    df = pd.DataFrame(rows)
+        
+    # Create a new column in df for sorting based on the data_order list
+    df['Order'] = df['Pair'].map(lambda x: data_order.index(x) if x in data_order else len(data_order))
+        
+    # Sort the DataFrame by this new 'Order' column
+    df_sorted = df.sort_values(by='Order').drop(columns='Order')
+        
+    # Save the sorted DataFrame to a CSV file
+    df_sorted.to_csv(filename, index=False)
+
+def calculate_overall_means(data):
+    # Initialize sums and counts for all metrics
+    sums = {}
+    counts = {}
+
+    # Iterate over the dictionary and sum up the values
+    for metrics_dict in data.values():
+        for metric, value in metrics_dict.items():
+            if metric not in sums:
+                sums[metric] = 0
+                counts[metric] = 0
+            sums[metric] += value
+            counts[metric] += 1
+
+    # Calculate the overall means
+    overall_means = {metric: sums[metric] / counts[metric] for metric in sums}
+
+    return overall_means
 
 if __name__ == '__main__':
     
-    main_directory = r'C:\Users\emanu\Documents\GitHub\Thesis-Adapters\replicate2\log files'
+    main_directory = r'C:\Users\emanu\Documents\GitHub\Thesis-Adapters\replicate\results\log files'
     
     wdc_udapter_filename = os.path.join(main_directory, 'UDAPTER WDC.out')
     wdc_udapter_extracted = extract_log_data(wdc_udapter_filename)
@@ -137,76 +178,12 @@ if __name__ == '__main__':
     inverted_dader_stats = calculate_stats_by_dataset(inverted_dader_extracted)
     inverted_dader_df = pd.DataFrame(inverted_dader_stats).T
     
-    
-    
-    data_order = [
-    "wa1_ab", "ab_wa1", "ds_da", "da_ds", "dzy_fz", "fz_dzy", 
-    "ri_ab", "ab_ri", "ri_wa1", "wa1_ri", "ia_da", "da_ia", 
-    "ia_ds", "ds_ia", "b2_fz", "fz_b2", "b2_dzy", "dzy_b2", 
-    "computers_watches", "watches_computers", "cameras_watches", 
-    "watches_cameras", "shoes_watches", "watches_shoes", 
-    "computers_shoes", "shoes_computers", "cameras_shoes", 
-    "shoes_cameras", "computers_cameras", "cameras_computers"
-]
-
-
-    
+        
     merged_udapter = {**benchmark_udapter_extracted, **inverted_udapter_extracted, **wdc_udapter_extracted}
     merged_dader = {**benchmark_dader_extracted, **inverted_dader_extracted, **wdc_dader_extracted}
     
-    
-    # Step 3: Convert the data to a pandas DataFrame
-    rows = []
-    for (pair_seed, metrics) in merged_dader.items():
-        pair, seed = pair_seed  # Unpack the pair and seed correctly
-        rows.append({
-            "Pair": pair,
-            "Seed": seed,
-            "F1 Score": metrics['f1_score'],
-            "Training Time": metrics['training_time'],
-            "Inference Time": metrics['inference_time']
-        })
-    
-    df = pd.DataFrame(rows)
-    
-    # Define the order list
-    data_order = [
-        "wa1_ab", "ab_wa1", "ds_da", "da_ds", "dzy_fz", "fz_dzy", 
-        "ri_ab", "ab_ri", "ri_wa1", "wa1_ri", "ia_da", "da_ia", 
-        "ia_ds", "ds_ia", "b2_fz", "fz_b2", "b2_dzy", "dzy_b2", 
-        "computers_watches", "watches_computers", "cameras_watches", 
-        "watches_cameras", "shoes_watches", "watches_shoes", 
-        "computers_shoes", "shoes_computers", "cameras_shoes", 
-        "shoes_cameras", "computers_cameras", "cameras_computers"
-    ]
-    
-    # Step 4: Create a new column in df for sorting based on the data_order list
-    df['Order'] = df['Pair'].map(lambda x: data_order.index(x) if x in data_order else len(data_order))
-    
-    # Step 5: Sort the DataFrame by this new 'Order' column
-    df_sorted = df.sort_values(by='Order').drop(columns='Order')
-    
-    # Step 6: Save the sorted DataFrame to a CSV file
-    df_sorted.to_csv('dader_results.csv', index=False)
-    
-    print(df_sorted)
+    # CREATE CSV FILE DADER
 
-    
-    
-    # Step 3: Convert the data to a pandas DataFrame
-    rows = []
-    for (pair_seed, metrics) in merged_udapter.items():
-        pair, seed = pair_seed  # Unpack the pair and seed correctly
-        rows.append({
-            "Pair": pair,
-            "Seed": seed,
-            "F1 Score": metrics['f1_score'],
-            "Training Time": metrics['training_time'],
-            "Inference Time": metrics['inference_time']
-        })
-    
-    df = pd.DataFrame(rows)
-    
     # Define the order list
     data_order = [
         "wa1_ab", "ab_wa1", "ds_da", "da_ds", "dzy_fz", "fz_dzy", 
@@ -217,14 +194,47 @@ if __name__ == '__main__':
         "computers_shoes", "shoes_computers", "cameras_shoes", 
         "shoes_cameras", "computers_cameras", "cameras_computers"
     ]
-    
-    # Step 4: Create a new column in df for sorting based on the data_order list
-    df['Order'] = df['Pair'].map(lambda x: data_order.index(x) if x in data_order else len(data_order))
-    
-    # Step 5: Sort the DataFrame by this new 'Order' column
-    df_sorted = df.sort_values(by='Order').drop(columns='Order')
-    
-    # Step 6: Save the sorted DataFrame to a CSV file
-    df_sorted.to_csv('udapter_results.csv', index=False)
-    
-    print(df_sorted)
+
+
+    # Call the function for each dataset
+    create_csv_file(merged_dader, 'dader_results.csv')
+    create_csv_file(merged_udapter, 'udapter_results.csv')
+
+    dader_stats = {**benchmark_dader_stats, **inverted_dader_stats, **wdc_dader_stats}
+    udapter_stats = {**benchmark_udapter_stats, **inverted_udapter_stats, **wdc_udapter_stats} 
+
+    similar_domains = data_order[:6]
+    similar_domains_dader_stats = {key: dader_stats[key] for key in similar_domains if key in similar_domains}
+    similar_domains_udapter_stats = {key: udapter_stats[key] for key in similar_domains if key in similar_domains}
+
+    different_domains = data_order[6:18]
+    different_domains_dader_stats = {key: dader_stats[key] for key in different_domains if key in different_domains}
+    different_domains_udapter_stats = {key: udapter_stats[key] for key in different_domains if key in different_domains}
+
+
+    dader_overall_means = calculate_overall_means(dader_stats)
+    udapter_overall_means = calculate_overall_means(udapter_stats)
+
+    similar_dader_overall_means = calculate_overall_means(similar_domains_dader_stats)
+    similar_udapter_overall_means = calculate_overall_means(similar_domains_udapter_stats)
+
+    different_dader_overall_means = calculate_overall_means(different_domains_dader_stats)
+    different_udapter_overall_means = calculate_overall_means(different_domains_udapter_stats)
+
+    wdc_dader_overall_means = calculate_overall_means(wdc_dader_stats)
+    wdc_udapter_overall_means = calculate_overall_means(wdc_udapter_stats)
+
+
+    print("DADER: ", dader_overall_means)
+    print("UDAPTER:  ", udapter_overall_means)
+
+
+    print("SIMILAR DADER: ", similar_dader_overall_means)
+    print("SIMILAR UDAPTER: ", similar_udapter_overall_means)
+
+    print("DIFFERENT DADER: ", different_dader_overall_means)
+    print("DIFFERENT UDAPTER: ", different_udapter_overall_means)
+
+    print("WDC DADER: ", wdc_dader_overall_means)
+    print("WDC UDAPTER: ", wdc_udapter_overall_means)
+
