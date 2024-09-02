@@ -36,11 +36,10 @@ class SourceTargetDataset(Dataset):
             source_text,
             max_length=self.max_seq_length,
             truncation=True,
-            padding=self.padding,
-            return_tensors="pt"
+            padding=self.padding
         )
-        source_input_ids = encoded_source["input_ids"].squeeze(0)
-        source_attention_mask = encoded_source["attention_mask"].squeeze(0)
+        source_input_ids = encoded_source["input_ids"]
+        source_attention_mask = encoded_source["attention_mask"]
 
         target_text = self.target_df.iloc[index]["pairs"]
         label_target = self.target_df.iloc[index]["labels"]
@@ -49,20 +48,23 @@ class SourceTargetDataset(Dataset):
             target_text,
             max_length=self.max_seq_length,
             truncation=True,
-            padding=self.padding,
-            return_tensors="pt"
+            padding=self.padding
         )
-        target_input_ids = encoded_target["input_ids"].squeeze(0)
-        target_attention_mask = encoded_target["attention_mask"].squeeze(0)
+        target_input_ids = encoded_target["input_ids"]
+        target_attention_mask = encoded_target["attention_mask"]
+
+        print(f"source_input_ids len: {len(source_input_ids)}")
+        print(f"target_input_ids shape: {len(target_input_ids)} type: {type(target_input_ids)}")
+
 
         return {
-            "source_input_ids": source_input_ids,
-            "source_attention_mask": source_attention_mask,
-            "target_input_ids": target_input_ids,
-            "target_attention_mask": target_attention_mask,
+            "source_input_ids": torch.tensor(source_input_ids),
+            "source_attention_mask": torch.tensor(source_attention_mask),
+            "target_input_ids": torch.tensor(target_input_ids),
+            "target_attention_mask": torch.tensor(target_attention_mask),
             "label_source": torch.tensor(label_source, dtype=torch.long),
             "label_target": torch.tensor(label_target, dtype=torch.long),
-        }
+            }
 
 
 class DataModuleSourceTarget(pl.LightningDataModule):
@@ -150,7 +152,7 @@ if __name__ == "__main__":
         "source_folder": "cameras",               
         "target_folder": "computers",            
         "pretrained_model_name": "bert-base-uncased",
-        "padding": True,
+        "padding": "max_length",
         "max_seq_length": 256,
         "batch_size": 32,
     }
