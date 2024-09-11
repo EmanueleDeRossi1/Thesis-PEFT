@@ -1,26 +1,29 @@
 import torch
 import pytorch_lightning as pl
-from transformers import BertModel, BertTokenizer
+from transformers import BertModel
 from peft import get_peft_model, LoraConfig, TaskType
-from torch.utils.data import DataLoader, Dataset
-from sklearn.metrics.pairwise import cosine_similarity
 from torch.nn import CrossEntropyLoss
 import numpy as np
 import wandb
+from divergences.mkmmd import MultipleKernelMaximumMeanDiscrepancy, GaussianKernel
+from sklearn.metrics import accuracy_score, f1_score
+from transformers import AdamW
+import os
 
 
 class LoRA_module(pl.LightningModule):
     def __init__(self, hparams):
         super().__init__()
         
-        wandb.init(project="LoRA_model_training", config=hparams)
+        # wandb.init(project="LoRA_model_training", config=hparams)
+        hf_token = os.getenv("HUGGINGFACE_TOKEN")
 
-        self.hparams = hparams
 
+        self.save_hyperparameters(hparams)
 
-        base_model_name = "bert-base"
+        base_model_name = "bert-base-uncased"
 
-        base_model = BertModel.from_pretrained(base_model_name)
+        base_model = BertModel.from_pretrained(base_model_name, token=hf_token)
 
         peft_config = LoraConfig(
             task_type=TaskType.SEQ_CLS,  # Sequence Classification task
@@ -32,6 +35,10 @@ class LoRA_module(pl.LightningModule):
         
         self.model = get_peft_model(base_model, peft_config)
         self.criterion = CrossEntropyLoss()
+
+        # Initialize MK-MMD with Gaussian Kernels
+        self.kernels = [GaussianKernel(alpha=0.5), GaussianKernel(alpha=1.0), GaussianKernel(alpha=2.0)]
+        self.mk_mmd_loss = MultipleKernelMaximumMeanDiscrepancy(self.kernels, linear=False)
 
         # for debugging
         self.model.print_trainable_parameters()
@@ -67,7 +74,7 @@ class LoRA_module(pl.LightningModule):
         target_features = self.model.get_input_embeddings()(target_input_ids)
 
         # Compute MK-MMD loss
-        mmd_loss = mk_mmd_loss(source_features, target_features)
+        mmd_loss = self.mk_mmd_loss(source_features, target_features)
 
         # Combine source classification loss with MK-MMD loss
         total_loss = loss_source + self.hparams['mmd_lambda'] * mmd_loss
@@ -78,12 +85,12 @@ class LoRA_module(pl.LightningModule):
         f1_source = f1_score(label_source.cpu(), preds_source.cpu(), average='weighted')
 
         # Log metrics to wandb
-        wandb.log({
-            "train_loss": total_loss.item(),
-            "train_acc": acc_source,
-            "train_f1": f1_source,
-            "mmd_loss": mmd_loss.item(),
-        })
+        #wandb.log({
+        #    "train_loss": total_loss.item(),
+        #    "train_acc": acc_source,
+        #    "train_f1": f1_source,
+        #    "mmd_loss": mmd_loss.item(),
+        #})
 
         return total_loss
 
@@ -97,11 +104,11 @@ class LoRA_module(pl.LightningModule):
         f1 = f1_score(labels.cpu(), preds.cpu(), average='weighted')
 
         # Log validation loss, accuracy, and F1-score
-        wandb.log({
-            "val_loss": loss.item(),
-            "val_acc": acc,
-            "val_f1": f1,
-        })
+        #wandb.log({
+        #    "val_loss": loss.item(),
+        #    "val_acc": acc,
+        #    "val_f1": f1,
+        #})
 
         return {'val_loss': loss.item(), 'val_acc': acc, 'val_f1': f1}    
     
@@ -120,11 +127,11 @@ class LoRA_module(pl.LightningModule):
         f1 = f1_score(labels.cpu(), preds.cpu(), average='weighted')
 
         # Log metrics
-        wandb.log({
-            f"{dataset_type}_test_loss": loss.item(),
-            f"{dataset_type}_test_acc": acc,
-            f"{dataset_type}_test_f1": f1,
-        })
+        #wandb.log({
+        #    f"{dataset_type}_test_loss": loss.item(),
+        #    f"{dataset_type}_test_acc": acc,
+        #    f"{dataset_type}_test_f1": f1,
+        #})
 
         return {
             f'{dataset_type}_test_loss': loss.item(),
@@ -143,17 +150,17 @@ class LoRA_module(pl.LightningModule):
         avg_target_f1 = torch.tensor([x['target_test_f1'] for x in outputs]).mean()
 
         # Log final test metrics for source and target datasets
-        wandb.log({
-            "avg_source_test_loss": avg_source_loss.item(),
-            "avg_source_test_acc": avg_source_acc.item(),
-            "avg_source_test_f1": avg_source_f1.item(),
-            "avg_target_test_loss": avg_target_loss.item(),
-            "avg_target_test_acc": avg_target_acc.item(),
-            "avg_target_test_f1": avg_target_f1.item(),
-        })
+        #wandb.log({
+        #    "avg_source_test_loss": avg_source_loss.item(),
+        #    "avg_source_test_acc": avg_source_acc.item(),
+        #    "avg_source_test_f1": avg_source_f1.item(),
+        #    "avg_target_test_loss": avg_target_loss.item(),
+        #    "avg_target_test_acc": avg_target_acc.item(),
+        #    "avg_target_test_f1": avg_target_f1.item(),
+        #})
 
 
     def configure_optimizers(self):
         # AdamW optimizer
-        optimizer = AdamW(self.model.parameters(), lr=self.hparams.get('learning_rate', 1e-5))
+        optimizer = AdamW(self.model.parameters(), lr=self.hparams.learning_rate)
         return optimizer
