@@ -1,1 +1,5 @@
 .venv/
+slurm-*.out
+wandb/
+lightning_logs/
+LoRA_model_training/

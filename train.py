@@ -24,16 +24,15 @@ if __name__ == "__main__":
     model = LoRA_module(hparams)
 
     # Initialize WandB logger (optional)
-    # wandb_logger = WandbLogger(project="LoRA_model_training", config=hparams)
+    wandb_logger = WandbLogger(project="LoRA_model_training", config=hparams)
 
     # Initialize the trainer
     trainer = pl.Trainer(
+        logger=wandb_logger,
+        accelerator='gpu',  # Use GPU 
+        devices=hparams.get('gpus', 1),  # Use 1 GPU
         max_epochs=hparams.get('max_epochs', 5),
-        accelerator=hparams.get('accelerator', 'gpu')
-        devices=hparams.get('devices', 1),
-        # logger=wandb_logger,  # Optionally log to WandB
-        log_every_n_steps=50,
-        precision=16 if hparams.get('gpus', 0) > 0 else 32,  # Use mixed precision if using GPU
+        log_every_n_steps=10,
     )
 
     # Start training

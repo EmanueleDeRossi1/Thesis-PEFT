@@ -1,4 +1,12 @@
 #!/bin/bash
+#SBATCH --job-name=lora
+#SBATCH --gres=gpu:a100_40gb:1
+#SBATCH -p gpu
+#SBATCH --time=1-00:00:00
+
+source .venv/bin/activate
+export http_proxy=http://proxy2.uni-potsdam.de:3128
+export https_proxy=http://proxy2.uni-potsdam.de:3128
 
 export HUGGINGFACE_TOKEN="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"
 
@@ -18,7 +26,7 @@ for src in "${SRC_DOMAINS[@]}"; do
       sed -i "s|target_folder: .*|target_folder: \"$trg\"|" config.yaml
 
       # Run the training script for the current source-target domain pair
-      python train.py
+      srun python train.py
 
     fi
   done
