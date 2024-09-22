@@ -1,10 +1,18 @@
 import os
 import yaml
 import torch
+import random
 import pytorch_lightning as pl
 from pytorch_lightning.loggers import WandbLogger
 from modules.lora import LoRA_module 
 from dataloader.data_loader import DataModuleSourceTarget
+
+def set_seed(seed):
+    random.seed(seed)
+    torch.manual_seed(seed)
+    if torch.cuda.device_count() > 0:
+        torch.cuda.manual_seed_all(seed)
+
 
 def load_hparams(yaml_file):
     """Load hyperparameters from a YAML file."""
@@ -13,6 +21,9 @@ def load_hparams(yaml_file):
     return hparams
 
 if __name__ == "__main__":
+    # set random seed
+    set_seed(42)
+
     # Load hyperparameters from config.yaml
     hparams = load_hparams('config.yaml')
 

@@ -1,12 +1,12 @@
 import torch
 import pytorch_lightning as pl
-from transformers import AutoModelForTokenClassification, AutoConfig
+from transformers import AutoModelForSequenceClassification
 from peft import get_peft_model, LoraConfig, TaskType
 from torch.nn import CrossEntropyLoss
 from torch.optim import AdamW
 import numpy as np
 from divergences.mkmmd import MultipleKernelMaximumMeanDiscrepancy, GaussianKernel
-from sklearn.metrics import accuracy_score, f1_score
+import torchmetrics
 import os
 
 
@@ -22,10 +22,10 @@ class LoRA_module(pl.LightningModule):
 
         base_model_name = "bert-base-uncased"
 
-        config = AutoConfig.from_pretrained(base_model_name)
-        self.num_classes = config.num_labels
+        self.num_classes = self.hparams.get('num_classes', 2)
 
-        base_model = AutoModelForTokenClassification.from_pretrained(base_model_name, token=hf_token)
+
+        base_model = AutoModelForSequenceClassification.from_pretrained(base_model_name, token=hf_token)
 
         peft_config = LoraConfig(
             task_type=TaskType.SEQ_CLS,  # Sequence Classification task
@@ -38,6 +38,11 @@ class LoRA_module(pl.LightningModule):
         
         self.model = get_peft_model(base_model, peft_config)
         self.criterion = CrossEntropyLoss()
+        
+        # Initialize F1 and Accuracy measures
+        self.accuracy = torchmetrics.Accuracy()  # accuracy
+        self.f1 = torchmetrics.F1(num_classes=self.num_classes, average='macro')  # F1
+
 
         # Initialize MK-MMD with Gaussian Kernels
         self.kernels = [GaussianKernel(alpha=0.5), GaussianKernel(alpha=1.0), GaussianKernel(alpha=2.0)]
@@ -50,9 +55,10 @@ class LoRA_module(pl.LightningModule):
     def forward(self, input_ids, attention_mask):
         # Forward pass
         outputs = self.model(input_ids=input_ids, attention_mask=attention_mask, output_hidden_states=True)
-        hidden_states = outputs.hidden_states[11 : len(outputs.hidden_states)]
+        # Return pooled_output to calculate the divergence between source and target later
+        pooled_output = outputs.pooler_output
         
-        return hidden_states, outputs.logits
+        return pooled_output, outputs.logits
 
     def training_step(self, batch, batch_idx):
         # Concatenate source and target data for domain adaptation
@@ -66,28 +72,17 @@ class LoRA_module(pl.LightningModule):
         p = float(batch_idx + start_steps) / total_steps
         alpha = 2.0 / (1.0 + np.exp(-10 * p)) - 1  # Used to weigh task loss vs divergence
 
-        # Forward pass
-        hidden_states, logits = self(input_ids=input_ids, attention_mask=attention_mask)
+        # Forward pass using pooler_output
+        pooled_output, logits = self(input_ids=input_ids, attention_mask=attention_mask)
 
+        # Split source and target features for divergence calculation
+        src_feature, trg_feature = torch.split(pooled_output, split_size_or_sections=input_ids.shape[0] // 2, dim=0)
 
-        # Compute MK-MMD divergence between source and target
-        divergence = 0
-        for hidden_state in hidden_states:
-            # Split source and target features
-            src_feature, trg_feature = torch.split(
-                hidden_state, split_size_or_sections=input_ids.shape[0] // 2, dim=0
-            )
-            # Reduce sequence dimension by taking the mean
-            src_feature = torch.mean(src_feature, dim=1)
-            trg_feature = torch.mean(trg_feature, dim=1)
-
-            # Accumulate divergence
-            divergence += self.mk_mmd_loss(src_feature, trg_feature)
+        # Compute MK-MMD divergence using pooler_output
+        divergence = self.mk_mmd_loss(src_feature, trg_feature)
 
         # Split logits back into source and target (only using source labels for task loss)
         logits, _ = torch.split(logits, split_size_or_sections=input_ids.shape[0] // 2, dim=0)
-
-        logits = logits.mean(dim=1)  # Reduce sequence dimension
 
         # Task loss (classification loss)
         task_loss = self.criterion(logits, labels)
@@ -97,8 +92,8 @@ class LoRA_module(pl.LightningModule):
 
         # Calculate metrics: accuracy and F1
         preds = torch.argmax(logits, dim=1)
-        accuracy = accuracy_score(labels.cpu(), preds.cpu())
-        f1 = f1_score(labels.cpu(), preds.cpu(), average='weighted')
+        accuracy = self.accuracy(labels, preds)
+        f1 = self.f1(labels, preds)
 
         self.log("train/accuracy", accuracy)
         self.log("train/f1", f1)
@@ -114,29 +109,16 @@ class LoRA_module(pl.LightningModule):
         attention_mask = torch.cat([batch["source_attention_mask"], batch["target_attention_mask"]], dim=0)
 
         # Forward pass through the model
-        hidden_states, logits = self(input_ids=input_ids, attention_mask=attention_mask)
+        pooled_output, logits = self(input_ids=input_ids, attention_mask=attention_mask)
 
-        # Compute divergence using MK-MMD or any other divergence method
-        divergence = 0
-        for hidden_state in hidden_states:
-            # Split source and target features
-            src_feature, trg_feature = torch.split(
-                hidden_state, split_size_or_sections=input_ids.shape[0] // 2, dim=0
-            )
-            # Average the hidden states across the sequence dimension
-            src_feature = torch.mean(src_feature, dim=1)
-            trg_feature = torch.mean(trg_feature, dim=1)
+        # Split source and target features for divergence calculation
+        src_feature, trg_feature = torch.split(pooled_output, split_size_or_sections=input_ids.shape[0] // 2, dim=0)
 
-            # Calculate divergence between source and target features
-            divergence += self.mk_mmd_loss(src_feature, trg_feature)
+        # Compute MK-MMD divergence using pooler_output
+        divergence = self.mk_mmd_loss(src_feature, trg_feature)
 
         # Split logits back into source and target (source and target labels)
         logits_source, logits_target = torch.split(logits, split_size_or_sections=input_ids.shape[0] // 2, dim=0)
-
-        logits_source = logits_source.mean(dim=1)  # Reduce sequence dimension
-        logits_target = logits_target.mean(dim=1)  # Reduce sequence dimension
-
-
 
         # Compute task-specific losses for both source and target
         source_taskclf_loss = self.criterion(logits_source, batch["label_source"])
@@ -151,11 +133,11 @@ class LoRA_module(pl.LightningModule):
         source_preds = torch.argmax(logits_source, dim=1)
         target_preds = torch.argmax(logits_target, dim=1)
 
-        source_accuracy = accuracy_score(batch["label_source"].cpu(), source_preds.cpu())
-        source_f1 = f1_score(batch["label_source"].cpu(), source_preds.cpu(), average='weighted')
+        source_accuracy = self.accuracy(batch["label_source"], source_preds)
+        source_f1 = self.f1(batch["label_source"], source_preds)
 
-        target_accuracy = accuracy_score(batch["label_target"].cpu(), target_preds.cpu())
-        target_f1 = f1_score(batch["label_target"].cpu(), target_preds.cpu(), average='weighted')
+        target_accuracy = self.accuracy(batch["label_target"], target_preds.cpu())
+        target_f1 = self.f1(batch["label_target"], target_preds)
 
         # Log metrics for both source and target test performance
         self.log("source_test/loss", source_loss)
@@ -187,27 +169,16 @@ class LoRA_module(pl.LightningModule):
         attention_mask = torch.cat([batch["source_attention_mask"], batch["target_attention_mask"]], dim=0)
 
         # Forward pass through the model
-        hidden_states, logits = self(input_ids=input_ids, attention_mask=attention_mask)
+        pooled_output, logits = self(input_ids=input_ids, attention_mask=attention_mask)
 
-        # Compute divergence using MK-MMD or any other divergence method
-        divergence = 0
-        for hidden_state in hidden_states:
-            # Split source and target features
-            src_feature, trg_feature = torch.split(
-                hidden_state, split_size_or_sections=input_ids.shape[0] // 2, dim=0
-            )
-            # Average the hidden states across the sequence dimension
-            src_feature = torch.mean(src_feature, dim=1)
-            trg_feature = torch.mean(trg_feature, dim=1)
+        # Split source and target features for divergence calculation
+        src_feature, trg_feature = torch.split(pooled_output, split_size_or_sections=input_ids.shape[0] // 2, dim=0)
 
-            # Calculate divergence between source and target features
-            divergence += self.mk_mmd_loss(src_feature, trg_feature)
+        # Compute MK-MMD divergence using pooler_output
+        divergence = self.mk_mmd_loss(src_feature, trg_feature)
 
         # Split logits back into source and target (source and target labels)
         logits_source, logits_target = torch.split(logits, split_size_or_sections=input_ids.shape[0] // 2, dim=0)
-
-        logits_source = logits_source.mean(dim=1)  # Reduce sequence dimension
-        logits_target = logits_target.mean(dim=1)  # Reduce sequence dimension
 
         # Compute task-specific losses for both source and target
         source_taskclf_loss = self.criterion(logits_source, batch["label_source"])
@@ -222,11 +193,11 @@ class LoRA_module(pl.LightningModule):
         source_preds = torch.argmax(logits_source, dim=1)
         target_preds = torch.argmax(logits_target, dim=1)
 
-        source_accuracy = accuracy_score(batch["label_source"].cpu(), source_preds.cpu())
-        source_f1 = f1_score(batch["label_source"].cpu(), source_preds.cpu(), average='weighted')
+        source_accuracy = self.accuracy(batch["label_source"], source_preds)
+        source_f1 = self.f1(batch["label_source"], source_preds)
 
-        target_accuracy = accuracy_score(batch["label_target"].cpu(), target_preds.cpu())
-        target_f1 = f1_score(batch["label_target"].cpu(), target_preds.cpu(), average='weighted')
+        target_accuracy = self.accuracy(batch["label_target"], target_preds)
+        target_f1 = self.f1(batch["label_target"], target_preds)
 
         # Log metrics for both source and target test performance
         self.log("source_test/loss", source_loss)
