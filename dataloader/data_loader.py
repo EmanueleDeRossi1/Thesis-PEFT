@@ -134,33 +134,3 @@ class DataModuleSourceTarget(pl.LightningDataModule):
 
     def test_dataloader(self):
         return DataLoader(self.test_dataset, batch_size=self.batch_size, num_workers=1)
-
-
-# Example usage
-if __name__ == "__main__":
-    
-    dataset_dir = os.path.join(os.getcwd(), "data")
-    
-    
-    hparams = {
-        "dataset_dir": dataset_dir,         
-        "source_folder": "ab",               
-        "target_folder": "wa1",            
-        "pretrained_model_name": "bert-base-uncased",
-        "padding": "max_length",
-        "max_seq_length": 256,
-        "batch_size": 32,
-    }
-
-    ab_wa1_dm = DataModuleSourceTarget(hparams)
-    ab_wa1_dm.prepare_data()
-    
-    
-    train_loader = ab_wa1_dm.train_dataloader()
-    for batch in train_loader:
-        print("Batch:")
-        for key, value in batch.items():
-            print(f"{key}: {value.shape}")
-        break
-
-

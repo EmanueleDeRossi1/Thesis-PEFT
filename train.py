@@ -21,11 +21,12 @@ def load_hparams(yaml_file):
     return hparams
 
 if __name__ == "__main__":
-    # set random seed
-    set_seed(42)
-
     # Load hyperparameters from config.yaml
     hparams = load_hparams('config.yaml')
+
+    # set random seed
+    set_seed(hparams.get('random_seed', 42))
+
 
     # Initialize the data module
     data_module = DataModuleSourceTarget(hparams)

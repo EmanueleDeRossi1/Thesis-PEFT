@@ -40,8 +40,8 @@ class LoRA_module(pl.LightningModule):
         self.criterion = CrossEntropyLoss()
         
         # Initialize F1 and Accuracy measures
-        self.accuracy = torchmetrics.Accuracy()  # accuracy
-        self.f1 = torchmetrics.F1(num_classes=self.num_classes, average='macro')  # F1
+        self.accuracy = torchmetrics.Accuracy(task='binary')  # accuracy
+        self.f1 = torchmetrics.F1Score(task='binary', num_classes=self.num_classes, average='macro')  # F1
 
 
         # Initialize MK-MMD with Gaussian Kernels
@@ -51,10 +51,13 @@ class LoRA_module(pl.LightningModule):
         # for debugging
         self.model.print_trainable_parameters()
 
+        
+
     
     def forward(self, input_ids, attention_mask):
         # Forward pass
         outputs = self.model(input_ids=input_ids, attention_mask=attention_mask, output_hidden_states=True)
+        print(outputs)
         # Return pooled_output to calculate the divergence between source and target later
         pooled_output = outputs.pooler_output
         

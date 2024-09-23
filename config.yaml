@@ -14,3 +14,4 @@ epochs: 20
 accelerator: "gpu"
 devices: 1
 num_classes: 2
+random_seed: 42
