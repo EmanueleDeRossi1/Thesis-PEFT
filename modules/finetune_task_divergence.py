@@ -10,7 +10,7 @@ from torchmetrics import Accuracy, F1Score
 import os
 
 
-class LoRA_module(pl.LightningModule):
+class FineTuneTaskDivergence(pl.LightningModule):
     def __init__(self, hparams):
         super().__init__()
         
@@ -27,16 +27,7 @@ class LoRA_module(pl.LightningModule):
 
         base_model = AutoModelForSequenceClassification.from_pretrained(base_model_name, token=hf_token)
 
-        peft_config = LoraConfig(
-            task_type=TaskType.SEQ_CLS,  # Sequence Classification task
-            bias='lora_only', # Update only lora's bias term
-            inference_mode=False,  # Enable training mode
-            r=self.hparams['lora_r'],  # Low-rank matrix rank
-            lora_alpha=self.hparams['lora_alpha'],  # Scaling factor
-            lora_dropout=self.hparams['lora_dropout']  # Dropout probability
-        )
-        
-        self.model = get_peft_model(base_model, peft_config)
+        self.model = base_model
 
         self.criterion = CrossEntropyLoss()
         
@@ -49,8 +40,6 @@ class LoRA_module(pl.LightningModule):
         self.kernels = [GaussianKernel(alpha=0.5), GaussianKernel(alpha=1.0), GaussianKernel(alpha=2.0)]
         self.mk_mmd_loss = MultipleKernelMaximumMeanDiscrepancy(self.kernels, linear=False)
 
-        # for debugging
-        self.model.print_trainable_parameters()
     
     def forward(self, input_ids, attention_mask):
         # Forward pass
@@ -152,6 +141,7 @@ class LoRA_module(pl.LightningModule):
 
         target_accuracy = self.accuracy(batch['label_target'], target_preds)
         target_f1 = self.f1(batch['label_target'], target_preds)
+
 
         # Collect metrics for epoch end logging
         metrics = {
