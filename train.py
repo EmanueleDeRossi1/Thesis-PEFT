@@ -7,6 +7,7 @@ from pytorch_lightning.loggers import WandbLogger
 from modules.lora import LoRA_module 
 
 from modules.finetune_task import FineTuneTask
+from modules.finetune_task import FineTuneTask
 
 from dataloader.data_loader import DataModuleSourceTarget
 
@@ -39,8 +40,9 @@ if __name__ == "__main__":
     data_module.prepare_data()
 
     # Initialize the model
-    #model = LoRA_module(hparams).to(device)
+    # model = LoRA_module(hparams).to(device)
     model = FineTuneTask(hparams).to(device)
+    # model = FineTuneTaskDivergence(hparams).to(device)
 
 
     # Initialize WandB logger (optional)

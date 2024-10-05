@@ -52,9 +52,9 @@ class LoRA_module(pl.LightningModule):
         # for debugging
         self.model.print_trainable_parameters()
     
-    def forward(self, input_ids, attention_mask):
+    def forward(self, input_ids, attention_mask, token_type_ids):
         # Forward pass
-        outputs = self.model(input_ids=input_ids, attention_mask=attention_mask, output_hidden_states=True)
+        outputs = self.model(input_ids=input_ids, attention_mask=attention_mask, token_type_ids=token_type_ids, output_hidden_states=True)
         # Get the last hidden state
         last_hidden_state = outputs.hidden_states[-1]  
         cls_token = last_hidden_state[:, 0, :]
@@ -64,6 +64,7 @@ class LoRA_module(pl.LightningModule):
         # Concatenate source and target data for domain adaptation
         input_ids = torch.cat([batch["source_input_ids"], batch["target_input_ids"]], dim=0)
         attention_mask = torch.cat([batch["source_attention_mask"], batch["target_attention_mask"]], dim=0)
+        token_type_ids = torch.cat([batch["source_token_type_ids"], batch["target_token_type_ids"]], dim=0)
         labels = batch["label_source"]
 
         # Compute steps for dynamic alpha calculation
@@ -73,7 +74,7 @@ class LoRA_module(pl.LightningModule):
         alpha = 2.0 / (1.0 + np.exp(-10 * p)) - 1  # Used to weigh task loss vs divergence
 
         # Forward pass using cls token
-        cls_token, logits = self(input_ids=input_ids, attention_mask=attention_mask)
+        cls_token, logits = self(input_ids=input_ids, attention_mask=attention_mask, token_type_ids=token_type_ids)
 
         # Split source and target features for divergence calculation
         src_feature, trg_feature = torch.split(cls_token, split_size_or_sections=input_ids.shape[0] // 2, dim=0)
@@ -113,9 +114,11 @@ class LoRA_module(pl.LightningModule):
         # Concatenate source and target data for domain adaptation
         input_ids = torch.cat([batch["source_input_ids"], batch["target_input_ids"]], dim=0)
         attention_mask = torch.cat([batch["source_attention_mask"], batch["target_attention_mask"]], dim=0)
+        token_type_ids = torch.cat([batch["source_token_type_ids"], batch["target_token_type_ids"]], dim=0)
+
 
         # Forward pass using cls token
-        cls_token, logits = self(input_ids=input_ids, attention_mask=attention_mask)
+        cls_token, logits = self(input_ids=input_ids, attention_mask=attention_mask, token_type_ids=token_type_ids)
 
         # Split source and target features for divergence calculation
         src_feature, trg_feature = torch.split(cls_token, split_size_or_sections=input_ids.shape[0] // 2, dim=0)
@@ -193,9 +196,10 @@ class LoRA_module(pl.LightningModule):
         # Concatenate source and target data for domain adaptation
         input_ids = torch.cat([batch["source_input_ids"], batch["target_input_ids"]], dim=0)
         attention_mask = torch.cat([batch["source_attention_mask"], batch["target_attention_mask"]], dim=0)
+        token_type_ids = torch.cat([batch["source_token_type_ids"], batch["target_token_type_ids"]], dim=0)
 
         # Forward pass using cls token
-        cls_token, logits = self(input_ids=input_ids, attention_mask=attention_mask)
+        cls_token, logits = self(input_ids=input_ids, attention_mask=attention_mask, token_type_ids=token_type_ids)
 
         # Split source and target features for divergence calculation
         src_feature, trg_feature = torch.split(cls_token, split_size_or_sections=input_ids.shape[0] // 2, dim=0)

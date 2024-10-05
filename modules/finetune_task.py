@@ -36,9 +36,9 @@ class FineTuneTask(pl.LightningModule):
         # You can remove MK-MMD and related domain adaptation components
         # as we're now focusing only on training the target dataset
     
-    def forward(self, input_ids, attention_mask):
+    def forward(self, input_ids, attention_mask, token_type_ids):
         # Forward pass
-        outputs = self.model(input_ids=input_ids, attention_mask=attention_mask, output_hidden_states=True)
+        outputs = self.model(input_ids=input_ids, attention_mask=attention_mask, token_type_ids=token_type_ids, output_hidden_states=True)
         # Get the last hidden state
         last_hidden_state = outputs.hidden_states[-1]  
         cls_token = last_hidden_state[:, 0, :]
@@ -48,10 +48,11 @@ class FineTuneTask(pl.LightningModule):
         # Use only target data for training
         input_ids = batch["target_input_ids"]
         attention_mask = batch["target_attention_mask"]
+        token_type_ids = batch["target_token_type_ids"]
         labels = batch["label_target"]
 
         # Forward pass
-        cls_token, logits = self(input_ids=input_ids, attention_mask=attention_mask)
+        cls_token, logits = self(input_ids=input_ids, attention_mask=attention_mask, token_type_ids=token_type_ids)
 
         # Task loss (classification loss)
         task_loss = self.criterion(logits, labels)
@@ -72,10 +73,11 @@ class FineTuneTask(pl.LightningModule):
         # Use only target data for validation
         input_ids = batch["target_input_ids"]
         attention_mask = batch["target_attention_mask"]
+        token_type_ids = batch["target_token_type_ids"]
         labels = batch["label_target"]
 
         # Forward pass
-        cls_token, logits = self(input_ids=input_ids, attention_mask=attention_mask)
+        cls_token, logits = self(input_ids=input_ids, attention_mask=attention_mask, token_type_ids=token_type_ids)
 
         # Task loss (classification loss)
         task_loss = self.criterion(logits, labels)
@@ -115,10 +117,11 @@ class FineTuneTask(pl.LightningModule):
         # Use only target data for testing
         input_ids = batch["target_input_ids"]
         attention_mask = batch["target_attention_mask"]
+        token_type_ids = batch["target_token_type_ids"]
         labels = batch["label_target"]
 
         # Forward pass
-        cls_token, logits = self(input_ids=input_ids, attention_mask=attention_mask)
+        cls_token, logits = self(input_ids=input_ids, attention_mask=attention_mask, token_type_ids=token_type_ids)
 
         # Task loss (classification loss)
         task_loss = self.criterion(logits, labels)

@@ -34,10 +34,13 @@ class SourceTargetDataset(Dataset):
             source_text,
             max_length=self.max_seq_length,
             truncation=True,
-            padding=self.padding
+            padding=self.padding,
+            return_token_type_ids=True
         )
         source_input_ids = encoded_source["input_ids"]
         source_attention_mask = encoded_source["attention_mask"]
+        source_token_type_ids = encoded_source["token_type_ids"]
+        
 
         target_text = self.target_df.iloc[index]["pairs"]
         label_target = self.target_df.iloc[index]["labels"]
@@ -50,15 +53,17 @@ class SourceTargetDataset(Dataset):
         )
         target_input_ids = encoded_target["input_ids"]
         target_attention_mask = encoded_target["attention_mask"]
-
+        target_token_type_ids = encoded_target["token_type_ids"]
 
         return {
             "source_input_ids": torch.tensor(source_input_ids),
             "source_attention_mask": torch.tensor(source_attention_mask),
+            "source_token_type_ids": torch.tensor(source_token_type_ids),  
             "target_input_ids": torch.tensor(target_input_ids),
             "target_attention_mask": torch.tensor(target_attention_mask),
+            "target_token_type_ids": torch.tensor(target_token_type_ids),
             "label_source": torch.tensor(label_source, dtype=torch.long),
-            "label_target": torch.tensor(label_target, dtype=torch.long),
+            "label_target": torch.tensor(label_target, dtype=torch.long)
             }
 
 
