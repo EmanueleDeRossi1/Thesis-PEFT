@@ -30,8 +30,16 @@ class SourceTargetDataset(Dataset):
         source_text = self.source_df.iloc[index]["pairs"]
         label_source = self.source_df.iloc[index]["labels"]
 
+        # Split the source text into two sequences based on the [SEP] token
+        sequences_source = source_text.split("[SEP]")
+
+        # Take the left and right instances of the pairs
+        left_source = sequences_source[0].strip()
+        right_source = sequences_source[1].strip()
+
         encoded_source = self.tokenizer(
-            source_text,
+            text=left_source,
+            text_pair=right_source,
             max_length=self.max_seq_length,
             truncation=True,
             padding=self.padding,
@@ -45,8 +53,16 @@ class SourceTargetDataset(Dataset):
         target_text = self.target_df.iloc[index]["pairs"]
         label_target = self.target_df.iloc[index]["labels"]
 
+        # Split the source text into two sequences based on the [SEP] token
+        sequences_target = source_text.split("[SEP]")
+
+        # Take the left and right instances of the pairs
+        left_target = sequences_target[0].strip()
+        right_target = sequences_target[1].strip()
+
         encoded_target = self.tokenizer(
-            target_text,
+            text=left_target,
+            text_pair=right_target,
             max_length=self.max_seq_length,
             truncation=True,
             padding=self.padding
