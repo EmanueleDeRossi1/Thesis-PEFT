@@ -54,7 +54,7 @@ class SourceTargetDataset(Dataset):
         label_target = self.target_df.iloc[index]["labels"]
 
         # Split the source text into two sequences based on the [SEP] token
-        sequences_target = source_text.split("[SEP]")
+        sequences_target = target_text.split("[SEP]")
 
         # Take the left and right instances of the pairs
         left_target = sequences_target[0].strip()
