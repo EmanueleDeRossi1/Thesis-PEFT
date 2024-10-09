@@ -1,3 +1,4 @@
+import argparse
 import os
 import yaml
 import torch
@@ -6,7 +7,6 @@ import pytorch_lightning as pl
 from pytorch_lightning.loggers import WandbLogger
 from modules.lora import LoRA_module 
 
-from modules.finetune_task import FineTuneTask
 from modules.finetune_task import FineTuneTask
 
 from dataloader.data_loader import DataModuleSourceTarget
@@ -25,6 +25,12 @@ def load_hparams(yaml_file):
     return hparams
 
 if __name__ == "__main__":
+    # Argument parsing for source and target folders
+    parser = argparse.ArgumentParser(description="Training script for domain adaptation")
+    parser.add_argument('--src', type=str, required=True, help="Source dataset folder")
+    parser.add_argument('--tgt', type=str, required=True, help="Target dataset folder")
+    args = parser.parse_args()
+
     # Load hyperparameters from config.yaml
     hparams = load_hparams('config.yaml')
 
@@ -36,12 +42,13 @@ if __name__ == "__main__":
 
 
     # Initialize the data module
-    data_module = DataModuleSourceTarget(hparams)
-    data_module.prepare_data()
+    data_module = DataModuleSourceTarget(source_folder=args.src,
+                                          target_folder=args.tgt,
+                                          hparams=hparams)
 
     # Initialize the model
     # model = LoRA_module(hparams).to(device)
-    model = FineTuneTask(hparams).to(device)
+    model = FineTuneTask(hparams)
     # model = FineTuneTaskDivergence(hparams).to(device)
 
 
@@ -58,7 +65,7 @@ if __name__ == "__main__":
     )
 
     # Start training
-    print(f"Training with source dataset: {hparams['source_folder']} and target dataset: {hparams['target_folder']}")
+    print(f"Training with source dataset: {args.src} and target dataset: {args.tgt}")
     trainer.fit(model, datamodule=data_module)
 
     # Run testing after training

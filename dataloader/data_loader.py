@@ -84,12 +84,12 @@ class SourceTargetDataset(Dataset):
 
 
 class DataModuleSourceTarget(pl.LightningDataModule):
-    def __init__(self, hparams: Dict[str, Any]):
+    def __init__(self, source_folder: str, target_folder: str, hparams: Dict[str, Any]):
         super(DataModuleSourceTarget, self).__init__()
 
         self.dataset_dir = hparams["dataset_dir"]
-        self.source_folder = hparams["source_folder"]
-        self.target_folder = hparams["target_folder"]
+        self.source_folder = source_folder
+        self.target_folder = target_folder
         self.pretrained_model_name = hparams["pretrained_model_name"]
         self.padding = hparams["padding"]
         self.max_seq_length = hparams["max_seq_length"]
@@ -140,12 +140,6 @@ class DataModuleSourceTarget(pl.LightningDataModule):
     def setup(self, stage: Optional[str] = None):
         if self.train_dataset is None:
             self.setup_datasets()
-
-        if stage == "fit":
-            self.train_dataset = self.train_dataset
-            self.val_dataset = self.val_dataset
-        elif stage == "test":
-            self.test_dataset = self.test_dataset
 
     def train_dataloader(self):
         return DataLoader(self.train_dataset, batch_size=self.batch_size, num_workers=1, shuffle=True)

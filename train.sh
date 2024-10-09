@@ -12,18 +12,17 @@ export HUGGINGFACE_TOKEN="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"
 
 # Define the source and target domains
 SRC_DOMAINS=("cameras")
-TRG_DOMAINS=("computers")
+TGT_DOMAINS=("computers")
 
 # Loop through source and target domains
 for src in "${SRC_DOMAINS[@]}"; do
-  for trg in "${TRG_DOMAINS[@]}"; do
+  for tgt in "${TGT_DOMAINS[@]}"; do
     # Skip if source and target domains are the same
-    if [ "$src" != "$trg" ]; then
-      echo "Training model with source domain: $src and target domain: $trg"
+    if [ "$src" != "$tgt" ]; then
+      echo "Training model with source domain: $src and target domain: $tgt"
 
-      # Update config.yaml with the correct source and target domains
-      sed -i "s|source_folder: .*|source_folder: \"$src\"|" config.yaml
-      sed -i "s|target_folder: .*|target_folder: \"$trg\"|" config.yaml
+      # Pass source and target folders as arguments
+      srun python train.py --src "$src" --tgt "$tgt" 
 
       # Run the training script for the current source-target domain pair
       srun python train.py

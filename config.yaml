@@ -1,11 +1,10 @@
 dataset_dir: "./data"
-source_folder: "cameras"
-target_folder: "computers"
 pretrained_model_name: "bert-base-uncased"
 padding: "max_length"
 max_seq_length: 256
-batch_size: 16
-learning_rate: 1e-05
+batch_size: 64
+# e ho cambiato anche il lr
+learning_rate: 1e-5
 lora_r: 8
 lora_alpha: 32
 lora_dropout: 0.1
@@ -14,3 +13,5 @@ accelerator: "gpu"
 devices: 1
 num_classes: 2
 random_seed: 42
+# e aggiunto un dropout al token [CLS] prima di passarlo al layer di classificazione
+dropout: 0.1

@@ -1,7 +1,7 @@
 import torch
 import pytorch_lightning as pl
 from transformers import AutoModelForSequenceClassification
-from torch.nn import CrossEntropyLoss
+from torch.nn import CrossEntropyLoss, Dropout
 from torch.optim import AdamW
 from torchmetrics import Accuracy, F1Score
 import os
@@ -10,9 +10,7 @@ import os
 class FineTuneTask(pl.LightningModule):
     def __init__(self, hparams):
         super().__init__()
-        
-        self.test_step_outputs = [] 
-        self.validation_step_outputs = [] 
+
         hf_token = os.getenv("HUGGINGFACE_TOKEN")
 
 
@@ -28,6 +26,9 @@ class FineTuneTask(pl.LightningModule):
         self.model = base_model
 
         self.criterion = CrossEntropyLoss()
+
+        # Add dropout
+        self.dropout = Dropout(p=self.hparams['dropout'])
         
         # Initialize F1 and Accuracy measures
         self.accuracy = Accuracy(task='binary')  # accuracy
@@ -42,7 +43,14 @@ class FineTuneTask(pl.LightningModule):
         # Get the last hidden state
         last_hidden_state = outputs.hidden_states[-1]  
         cls_token = last_hidden_state[:, 0, :]
+        # Apply dropout before passing it to the classifier
+        # cls_token = self.dropout(cls_token)
+
+        # Get logits from the model's classification head
+        # logits = self.model.classifier(cls_token)
+
         return cls_token, outputs.logits
+    
 
     def training_step(self, batch, batch_idx):
         # Use only target data for training
@@ -50,6 +58,7 @@ class FineTuneTask(pl.LightningModule):
         attention_mask = batch["target_attention_mask"]
         token_type_ids = batch["target_token_type_ids"]
         labels = batch["label_target"]
+        print("Labels: ",labels)
 
         # Forward pass
         cls_token, logits = self(input_ids=input_ids, attention_mask=attention_mask, token_type_ids=token_type_ids)
@@ -63,13 +72,14 @@ class FineTuneTask(pl.LightningModule):
         accuracy = self.accuracy(labels, preds)
         f1 = self.f1(labels, preds)
 
-        self.log("train/accuracy", accuracy)
-        self.log("train/f1", f1)
-        self.log("train/task_loss", task_loss)
+        # Log metrics at epoch level
+        self.log("train/loss", task_loss, on_step=False, on_epoch=True)
+        self.log("train/accuracy", accuracy, on_step=False, on_epoch=True)
+        self.log("train/f1", f1, on_step=False, on_epoch=True)
 
         return task_loss
 
-    def validation_step(self, batch):
+    def validation_step(self, batch, batch_idx):
         # Use only target data for validation
         input_ids = batch["target_input_ids"]
         attention_mask = batch["target_attention_mask"]
@@ -88,32 +98,15 @@ class FineTuneTask(pl.LightningModule):
         accuracy = self.accuracy(labels, preds)
         f1 = self.f1(labels, preds)
 
-        # Collect metrics for epoch-end logging
-        metrics = {
-            "validation/loss": task_loss,
-            "validation/accuracy": accuracy,
-            "validation/f1": f1,
-        }
+        # Log metrics at epoch level
+        self.log("validation/loss", task_loss, on_step=False, on_epoch=True)
+        self.log("validation/accuracy", accuracy, on_step=False, on_epoch=True)
+        self.log("validation/f1", f1, on_step=False, on_epoch=True)
 
-        self.validation_step_outputs.append(metrics)
-
-        return metrics    
+        return {"loss": task_loss, "accuracy": accuracy, "f1": f1}
     
-    def on_validation_epoch_end(self):
-        # Calculate the mean of the collected metrics across all validation steps
-        avg_loss = torch.tensor([x['validation/loss'] for x in self.validation_step_outputs]).mean()
-        avg_accuracy = torch.tensor([x['validation/accuracy'] for x in self.validation_step_outputs]).mean()
-        avg_f1 = torch.tensor([x['validation/f1'] for x in self.validation_step_outputs]).mean()
 
-        # Log the average metrics
-        self.log("avg_validation_loss", avg_loss)
-        self.log("avg_validation_accuracy", avg_accuracy)
-        self.log("avg_validation_f1", avg_f1)
-
-        # Clear the step outputs for memory efficiency
-        self.validation_step_outputs.clear()
-
-    def test_step(self, batch):
+    def test_step(self, batch, batch_idx):
         # Use only target data for testing
         input_ids = batch["target_input_ids"]
         attention_mask = batch["target_attention_mask"]
@@ -132,29 +125,14 @@ class FineTuneTask(pl.LightningModule):
         accuracy = self.accuracy(labels, preds)
         f1 = self.f1(labels, preds)
 
-        # Collect metrics for epoch-end logging
-        metrics = {
-            "test/loss": task_loss,
-            "test/accuracy": accuracy,
-            "test/f1": f1,
-        }
+        # Log metrics at epoch level
+        self.log("test/loss", task_loss, on_step=False, on_epoch=True)
+        self.log("test/accuracy", accuracy, on_step=False, on_epoch=True)
+        self.log("test/f1", f1, on_step=False, on_epoch=True)
 
-        self.test_step_outputs.append(metrics)
-        return metrics
+        return {"loss": task_loss, "accuracy": accuracy, "f1": f1}
 
-    def on_test_epoch_end(self):
-        """Logs overall test metrics after all batches."""
-        avg_loss = torch.tensor([x['test/loss'] for x in self.test_step_outputs]).mean()
-        avg_acc = torch.tensor([x['test/accuracy'] for x in self.test_step_outputs]).mean()
-        avg_f1 = torch.tensor([x['test/f1'] for x in self.test_step_outputs]).mean()
 
-        # Log final test metrics
-        self.log("avg_test_loss", avg_loss.item())
-        self.log("avg_test_accuracy", avg_acc.item())
-        self.log("avg_test_f1", avg_f1.item())
-
-        # Clear the test step outputs for the next epoch
-        self.test_step_outputs.clear()
 
     def configure_optimizers(self):
         # AdamW optimizer
