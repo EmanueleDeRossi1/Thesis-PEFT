@@ -1,17 +1,22 @@
 dataset_dir: "./data"
-pretrained_model_name: "bert-base-uncased"
+# try changing bert to roberta
+pretrained_model_name: "roberta-base"
 padding: "max_length"
 max_seq_length: 256
-batch_size: 64
+batch_size: 32
 # e ho cambiato anche il lr
-learning_rate: 1e-5
+learning_rate: 3e-5
 lora_r: 8
 lora_alpha: 32
 lora_dropout: 0.1
-n_epochs: 20
+n_epochs: 15
 accelerator: "gpu"
 devices: 1
 num_classes: 2
 random_seed: 42
 # e aggiunto un dropout al token [CLS] prima di passarlo al layer di classificazione
 dropout: 0.1
+# try adding a weight decay to the optimizer
+# weight_decay: 1e-2
+
+# AND REMEMBER THAT YOU SHOULD ALWAYS TRAIN ON THE SAME GPU, CHNAGE .sh FILE BEFORE CALCULATING INF & TRAINING TIME

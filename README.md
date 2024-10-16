@@ -1,12 +1,25 @@
 # Thesis-Adapters
 
 # Scheduling
+- Finetune RoBERTa with abt-buy, and send report to Matteo
+- Before Friday, check that report is all up to date and reproducible
+- With what model do you do the test? You should do the testing on the model with the higher f1 on the validation data
+- For DADER, UDAPTER and your model: save the results on a .csv file
+- An example for how to save them:
+
+``` 
+if os.path.exists('results.csv'):
+    old_results = pd.read_csv('results.csv')
+    results = pd.concat([old_results, result])
+else:
+    results = result.copy()
+    results.to_csv('results.csv', index=False)
+```
+- For next week, take 200 instances from the training set from UDAPTER and DADER and train the model only on those (remember to use stratify=True)
 
 - Check out how MK-MMD metric works. What are gaussian kernels?
 - Change the code so that it saves f1, std_dev, inference and training time
-- What hparams could you change in the hparams tuning, and why?
-- Train LoRA and save the results on overleaf. Also add a summary about the hyperparams and settings you used 
-- Template for thesis?
+
 
 # Future ideas
 - Look on the Huggingface-PEFT library for other methods beside LoRA

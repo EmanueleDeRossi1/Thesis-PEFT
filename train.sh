@@ -1,8 +1,10 @@
 #!/bin/bash
 #SBATCH --job-name=lora
-#SBATCH --gres=gpu:a100_40gb:1
+#SBATCH --gpus=1
 #SBATCH -p gpu
-#SBATCH --time=1-00:00:00
+#SBATCH --time=10:00
+
+# RICORDATI DI AGGIUNGERE DOPO SBATCH GPU A100 40GB
 
 source .venv/bin/activate
 export http_proxy=http://proxy2.uni-potsdam.de:3128
@@ -12,7 +14,7 @@ export HUGGINGFACE_TOKEN="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"
 
 # Define the source and target domains
 SRC_DOMAINS=("cameras")
-TGT_DOMAINS=("computers")
+TGT_DOMAINS=("ab")
 
 # Loop through source and target domains
 for src in "${SRC_DOMAINS[@]}"; do
@@ -23,9 +25,6 @@ for src in "${SRC_DOMAINS[@]}"; do
 
       # Pass source and target folders as arguments
       srun python train.py --src "$src" --tgt "$tgt" 
-
-      # Run the training script for the current source-target domain pair
-      srun python train.py
 
     fi
   done
