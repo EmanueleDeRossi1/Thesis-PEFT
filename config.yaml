@@ -1,15 +1,15 @@
 dataset_dir: "./data"
 # try changing bert to roberta
-pretrained_model_name: "roberta-base"
+pretrained_model_name: "bert-base-uncased"
 padding: "max_length"
 max_seq_length: 256
-batch_size: 32
+batch_size: 64
 # e ho cambiato anche il lr
 learning_rate: 3e-5
 lora_r: 8
 lora_alpha: 32
 lora_dropout: 0.1
-n_epochs: 15
+n_epochs: 10
 accelerator: "gpu"
 devices: 1
 num_classes: 2

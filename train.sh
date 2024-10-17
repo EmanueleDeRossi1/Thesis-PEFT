@@ -14,7 +14,7 @@ export HUGGINGFACE_TOKEN="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"
 
 # Define the source and target domains
 SRC_DOMAINS=("cameras")
-TGT_DOMAINS=("ab")
+TGT_DOMAINS=("computers")
 
 # Loop through source and target domains
 for src in "${SRC_DOMAINS[@]}"; do
