@@ -1,9 +1,12 @@
 # Thesis-Adapters
 
 # Scheduling
-- Finetune RoBERTa with abt-buy, and send report to Matteo
-- Before Friday, check that report is all up to date and reproducible
-- With what model do you do the test? You should do the testing on the model with the higher f1 on the validation data
+- Change the F1 on UDAPTER from 'macro' to 'binary' and re-execute udapter on all the datasets 
+- Implement sampling on x instances of training dataset
+- Check DADER: only source or also target?
+- Try LoRA on some dataset
+- Execute DADER and UDAPTER with 200 samples
+
 - For DADER, UDAPTER and your model: save the results on a .csv file
 - An example for how to save them:
 
