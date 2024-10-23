@@ -233,14 +233,34 @@ class DataModuleSourceTarget(pl.LightningDataModule):
         target_val_path = os.path.join(self.dataset_dir, self.target_folder, "valid.csv")
         target_test_path = os.path.join(self.dataset_dir, self.target_folder, "test.csv")
 
-        self.train_dataset = SourceTargetDataset(
+        # self.train_dataset = SourceTargetDataset(
+        #     source_filepath=source_train_path,
+        #     target_filepath=target_train_path,
+        #     tokenizer=self.tokenizer,
+        #     padding=self.padding,
+        #     max_seq_length=self.max_seq_length,
+        #     phase="train"
+        # )
+
+        # Separate source and target datasets for training
+        self.train_source_dataset = SourceTargetDataset(
             source_filepath=source_train_path,
-            target_filepath=target_train_path,
+            target_filepath=target_train_path,  # This can be ignored in this case
             tokenizer=self.tokenizer,
             padding=self.padding,
             max_seq_length=self.max_seq_length,
             phase="train"
         )
+
+        self.train_target_dataset = SourceTargetDataset(
+            source_filepath=target_train_path,
+            target_filepath=target_train_path,  # Use the target data here
+            tokenizer=self.tokenizer,
+            padding=self.padding,
+            max_seq_length=self.max_seq_length,
+            phase="train"
+        )
+
         self.val_dataset = SourceTargetDataset(
             source_filepath=source_val_path,
             target_filepath=target_val_path,
@@ -259,11 +279,14 @@ class DataModuleSourceTarget(pl.LightningDataModule):
         )
 
     def setup(self, stage: Optional[str] = None):
-        if self.train_dataset is None:
+        if self.train_source_dataset is None or self.train_target_dataset is None:
             self.setup_datasets()
 
     def train_dataloader(self):
-        return DataLoader(self.train_dataset, batch_size=self.batch_size, num_workers=1, shuffle=True)
+        # Create separate dataloaders for source and target during training
+        source_loader = DataLoader(self.train_source_dataset, batch_size=self.batch_size, num_workers=1, shuffle=True)
+        target_loader = DataLoader(self.train_target_dataset, batch_size=self.batch_size, num_workers=1, shuffle=True)
+        return source_loader, target_loader
 
     def val_dataloader(self):
         return DataLoader(self.val_dataset, batch_size=self.batch_size, num_workers=1)

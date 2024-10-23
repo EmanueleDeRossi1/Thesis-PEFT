@@ -72,7 +72,7 @@ if __name__ == "__main__":
         accelerator=hparams['accelerator'],  # Which accelarator to use (on hparams, gpu)
         devices=hparams['devices'],  # Number of gpus to use (on hparams, 1)
         max_epochs=hparams['n_epochs'],
-        log_every_n_steps=1000000,  # Large value to avoid logging in the middle of an epoch
+        log_every_n_steps=1, 
         callbacks=[checkpoint_callback]
     )
 

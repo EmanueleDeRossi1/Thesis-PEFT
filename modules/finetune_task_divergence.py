@@ -51,33 +51,52 @@ class FineTuneTaskDivergence(pl.LightningModule):
         return cls_token, outputs.logits
 
     def training_step(self, batch, batch_idx):
-        # Concatenate source and target data for domain adaptation
-        input_ids = torch.cat([batch["source_input_ids"], batch["target_input_ids"]], dim=0)
-        attention_mask = torch.cat([batch["source_attention_mask"], batch["target_attention_mask"]], dim=0)
-        token_type_ids = torch.cat([batch["source_token_type_ids"], batch["target_token_type_ids"]], dim=0)
-        labels = batch["label_source"]
 
-        # Compute steps for dynamic alpha calculation
-        start_steps = self.current_epoch * batch["source_input_ids"].shape[0]
-        total_steps = self.hparams["n_epochs"] * batch["source_input_ids"].shape[0]
-        p = float(batch_idx + start_steps) / total_steps
-        alpha = 2.0 / (1.0 + np.exp(-10 * p)) - 1  # Used to weigh task loss vs divergence
+        # # Concatenate source and target data for domain adaptation
+        # input_ids = torch.cat([batch["source_input_ids"], batch["target_input_ids"]], dim=0)
+        # attention_mask = torch.cat([batch["source_attention_mask"], batch["target_attention_mask"]], dim=0)
+        # token_type_ids = torch.cat([batch["source_token_type_ids"], batch["target_token_type_ids"]], dim=0)
+        # labels = batch["label_source"]
 
+        source_batch, target_batch = batch  # Unpack source and target batches
+
+        # Get source data
+        source_input_ids = source_batch["source_input_ids"]
+        source_attention_mask = source_batch["source_attention_mask"]
+        source_token_type_ids = source_batch.get("source_token_type_ids")
+        labels = source_batch["label_source"]
         
         # Forward pass using cls token
-        cls_token, logits = self(input_ids=input_ids, attention_mask=attention_mask, token_type_ids=token_type_ids)
+        # cls_token, logits = self(input_ids=input_ids, attention_mask=attention_mask, token_type_ids=token_type_ids)
+
+            # Forward pass for source
+        cls_token_source, logits_source = self(input_ids=source_input_ids, attention_mask=source_attention_mask, token_type_ids=source_token_type_ids)
+        
+
+        # logits_source = logits[:batch["source_input_ids"].shape[0]]  # Only source logits for task loss
 
         # Calculate task loss (classification loss)
-        logits_source = logits[:batch["source_input_ids"].shape[0]]  # Only source logits for task loss
         task_loss = self.criterion(logits_source, labels)
 
         # If the target data is available, calculate total loss
         if "target_input_ids" in batch:
-            # Split source and target features for divergence calculation
-            src_feature, trg_feature = torch.split(cls_token, split_size_or_sections=input_ids.shape[0] // 2, dim=0)
+            # Get target data
+            target_input_ids = target_batch["target_input_ids"]
+            target_attention_mask = target_batch["target_attention_mask"]
+            target_token_type_ids = target_batch.get("target_token_type_ids")
+
+            # Forward pass for target
+            cls_token_target, _ = self(input_ids=target_input_ids, attention_mask=target_attention_mask, token_type_ids=target_token_type_ids)
 
             # Compute MK-MMD divergence using cls token
-            divergence = self.mk_mmd_loss(src_feature, trg_feature)
+            divergence = self.mk_mmd_loss(cls_token_source, cls_token_target)
+
+            # Compute steps for dynamic alpha calculation
+            start_steps = self.current_epoch * batch["target_input_ids"].shape[0]
+            total_steps = self.hparams["n_epochs"] * batch["target_input_ids"].shape[0]
+            p = float(batch_idx + start_steps) / total_steps
+            alpha = 2.0 / (1.0 + np.exp(-10 * p)) - 1  # Used to weigh task loss vs divergence
+
 
             # Total loss: weighted combination of task loss and divergence
             loss = alpha * task_loss + (1 - alpha) * divergence
@@ -102,34 +121,31 @@ class FineTuneTaskDivergence(pl.LightningModule):
         self.log("train/f1", f1)
         self.log("train/task_loss", task_loss)
         self.log("train/loss", loss)
-        self.log("train/divergence", divergence)
 
         return loss
 
     def validation_step(self, batch, batch_idx):
-        # Concatenate source and target data for domain adaptation
-        input_ids = torch.cat([batch["source_input_ids"], batch["target_input_ids"]], dim=0)
-        attention_mask = torch.cat([batch["source_attention_mask"], batch["target_attention_mask"]], dim=0)
 
+        # Get source data
+        source_input_ids = batch["source_input_ids"]
+        source_attention_mask = batch["source_attention_mask"]
         source_token_type_ids = batch.get("source_token_type_ids")
+
+        # Get target data
+        target_input_ids = batch["target_input_ids"]
+        target_attention_mask = batch["target_attention_mask"]
         target_token_type_ids = batch.get("target_token_type_ids")
 
-        if source_token_type_ids is not None and target_token_type_ids is not None:
-            token_type_ids = torch.cat([source_token_type_ids, target_token_type_ids], dim=0)
-        source_labels = batch["label_source"]
-        target_labels = batch["label_target"]
+        source_labels = batch["label_target"]
+        target_labels = batch["label_source"]
 
-        # Forward pass using cls token
-        cls_token, logits = self(input_ids=input_ids, attention_mask=attention_mask, token_type_ids=token_type_ids)
-
-        # Split source and target features for divergence calculation
-        src_feature, trg_feature = torch.split(cls_token, split_size_or_sections=input_ids.shape[0] // 2, dim=0)
+        # Forward pass for source
+        cls_token_source, logits_source = self(input_ids=source_input_ids, attention_mask=source_attention_mask, token_type_ids=source_token_type_ids)
+        # Forward pass for target
+        cls_token_target, logits_target = self(input_ids=target_input_ids, attention_mask=target_attention_mask, token_type_ids=target_token_type_ids)
 
         # Compute MK-MMD divergence using cls token
-        divergence = self.mk_mmd_loss(src_feature, trg_feature)
-
-        # Split logits back into source and target (source and target labels)
-        logits_source, logits_target = torch.split(logits, split_size_or_sections=input_ids.shape[0] // 2, dim=0)
+        divergence = self.mk_mmd_loss(cls_token_source, cls_token_target)
 
         # Compute task-specific losses for both source and target
         source_taskclf_loss = self.criterion(logits_source, source_labels)
@@ -173,29 +189,27 @@ class FineTuneTaskDivergence(pl.LightningModule):
     
 
     def test_step(self, batch, batch_idx):
-        # Concatenate source and target data for domain adaptation
-        input_ids = torch.cat([batch["source_input_ids"], batch["target_input_ids"]], dim=0)
-        attention_mask = torch.cat([batch["source_attention_mask"], batch["target_attention_mask"]], dim=0)
+        # Get source data
+        source_input_ids = batch["source_input_ids"]
+        source_attention_mask = batch["source_attention_mask"]
         source_token_type_ids = batch.get("source_token_type_ids")
+
+        # Get target data
+        target_input_ids = batch["target_input_ids"]
+        target_attention_mask = batch["target_attention_mask"]
         target_token_type_ids = batch.get("target_token_type_ids")
 
-        if source_token_type_ids is not None and target_token_type_ids is not None:
-            token_type_ids = torch.cat([source_token_type_ids, target_token_type_ids], dim=0)
-        source_labels = batch["label_source"]
-        target_labels = batch["label_target"]
+        source_labels = batch["label_target"]
+        target_labels = batch["label_source"]
 
-        # Forward pass using cls token
-        cls_token, logits = self(input_ids=input_ids, attention_mask=attention_mask, token_type_ids=token_type_ids)
-
-        # Split source and target features for divergence calculation
-        src_feature, trg_feature = torch.split(cls_token, split_size_or_sections=input_ids.shape[0] // 2, dim=0)
+        # Forward pass for source
+        cls_token_source, logits_source = self(input_ids=source_input_ids, attention_mask=source_attention_mask, token_type_ids=source_token_type_ids)
+        # Forward pass for target
+        cls_token_target, logits_target = self(input_ids=target_input_ids, attention_mask=target_attention_mask, token_type_ids=target_token_type_ids)
 
         # Compute MK-MMD divergence using cls token
-        divergence = self.mk_mmd_loss(src_feature, trg_feature)
+        divergence = self.mk_mmd_loss(cls_token_source, cls_token_target)
         
-        # Split logits back into source and target (source and target labels)
-        logits_source, logits_target = torch.split(logits, split_size_or_sections=input_ids.shape[0] // 2, dim=0)
-
         # Compute task-specific losses for both source and target
         source_taskclf_loss = self.criterion(logits_source, source_labels)
         target_taskclf_loss = self.criterion(logits_target, target_labels)
