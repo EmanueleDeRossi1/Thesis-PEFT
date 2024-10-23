@@ -3,7 +3,7 @@ dataset_dir: "./data"
 pretrained_model_name: "bert-base-uncased"
 padding: "max_length"
 max_seq_length: 256
-batch_size: 64
+batch_size: 32
 # e ho cambiato anche il lr
 learning_rate: 3e-5
 lora_r: 8

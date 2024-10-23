@@ -9,6 +9,7 @@ from pytorch_lightning.callbacks import ModelCheckpoint
 from modules.lora import LoRA_module 
 
 from modules.finetune_task import FineTuneTask
+from modules.finetune_task_divergence import FineTuneTaskDivergence
 
 from dataloader.data_loader import DataModuleSourceTarget
 
@@ -49,8 +50,8 @@ if __name__ == "__main__":
 
     # Initialize the model
     # model = LoRA_module(hparams).to(device)
-    model = FineTuneTask(hparams)
-    # model = FineTuneTaskDivergence(hparams).to(device)
+    #model = FineTuneTask(hparams)
+    model = FineTuneTaskDivergence(hparams).to(device)
 
 
     # Initialize WandB logger
@@ -58,7 +59,7 @@ if __name__ == "__main__":
 
     # Add ModelCheckpoint callback to save the best model based on validation F1
     checkpoint_callback = ModelCheckpoint(
-        monitor='validation/f1',  # Monitor validation F1 score, change to 'validation/loss' if needed
+        monitor='source_validation/f1',  # Monitor validation F1 score of the source data (since in theory we don't have target data available)
         mode='max',  # Save the best model based on the highest F1 score
         save_top_k=1,  # Only save the best model
         filename='best_model',  # Name of the saved model file
@@ -71,7 +72,7 @@ if __name__ == "__main__":
         accelerator=hparams['accelerator'],  # Which accelarator to use (on hparams, gpu)
         devices=hparams['devices'],  # Number of gpus to use (on hparams, 1)
         max_epochs=hparams['n_epochs'],
-        log_every_n_steps=24,
+        log_every_n_steps=1000000,  # Large value to avoid logging in the middle of an epoch
         callbacks=[checkpoint_callback]
     )
 

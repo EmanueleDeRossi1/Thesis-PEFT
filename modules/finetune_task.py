@@ -14,7 +14,6 @@ class FineTuneTask(pl.LightningModule):
 
         hf_token = os.getenv("HUGGINGFACE_TOKEN")
 
-
         self.save_hyperparameters(hparams)
 
         self.base_model_name = self.hparams['pretrained_model_name']
@@ -179,7 +178,6 @@ class FineTuneTask(pl.LightningModule):
 
     def configure_optimizers(self):
         # AdamW optimizer
-        # prova a aggiungere anche un weight decay 
         optimizer = AdamW(self.model.parameters(), lr=float(self.hparams['learning_rate']))
         # , weight_decay=float(self.hparams['weight_decay']))
         total_steps= self.trainer.estimated_stepping_batches
