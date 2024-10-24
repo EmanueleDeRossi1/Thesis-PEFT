@@ -117,6 +117,11 @@ class SourceTargetDataset(Dataset):
 
         # Ensure the source and target datasets are the same length during validation or testing
         if self.phase in ["validation", "test"]:
+            # Shuffle both datasets before truncating
+            self.source_df = self.source_df.sample(frac=1).reset_index(drop=True)
+            self.target_df = self.target_df.sample(frac=1).reset_index(drop=True)
+
+            # Truncate both datasets to the same minimum length
             min_length = min(len(self.source_df), len(self.target_df))
             self.source_df = self.source_df.iloc[:min_length].reset_index(drop=True)
             self.target_df = self.target_df.iloc[:min_length].reset_index(drop=True)
