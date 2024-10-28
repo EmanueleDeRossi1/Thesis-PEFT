@@ -40,55 +40,74 @@ class FineTuneTaskDivergence(pl.LightningModule):
         cls_token = outputs.hidden_states[-1][:, 0, :]
         return cls_token, outputs.logits
 
-    def compute_loss_and_metrics(self, cls_token, logits, source_labels, target_labels=None):
+    def compute_loss_and_metrics(self, stage, cls_token, logits, source_labels, target_labels=None, is_target_batch=False, batch_idx=None):
         batch_size = source_labels.shape[0]
-        if target_labels is not None:
+        # this needs to be changed: 
+        # in training i dont have target_labels, but i still need to calculate the divergence loss
+        # but i cannot calculate the task loss of the target
+        if stage=="train":
+            if is_target_batch:
+                cls_token_source, cls_token_target = cls_token[:batch_size], cls_token[batch_size:]
+                logits_source, logits_target = logits[:batch_size], logits[batch_size:]
+
+
+                # Calculate divergence and task loss
+                divergence = self.mk_mmd_loss(cls_token_source, cls_token_target)
+                task_loss = self.criterion(logits_source, source_labels)
+                
+                # calculate alpha
+                start_steps = self.current_epoch * batch_size
+                total_steps = self.hparams["n_epochs"] * batch_size
+                p = float(batch_idx + start_steps) / total_steps
+                alpha = 2.0 / (1.0 + np.exp(-10 * p)) - 1
+                # calculate loss as trade off between task and divergence loss
+                loss = alpha * task_loss + (1 - alpha) * divergence
+            else:
+                cls_token_source, logits_source = cls_token[batch_size], logits[batch_size]
+                task_loss = self.criterion(logits_source, source_labels)
+                loss = task_loss
+                divergence=None
+        else:
             cls_token_source, cls_token_target = cls_token[:batch_size], cls_token[batch_size:]
             logits_source, logits_target = logits[:batch_size], logits[batch_size:]
-            print("LOGITS TARGET if: ", logits_target)
-            print("TARGET LABELS INSIDE COMPUTE if: ", target_labels)
-
 
             # Calculate divergence and task loss
             divergence = self.mk_mmd_loss(cls_token_source, cls_token_target)
-            task_loss = self.criterion(logits_source, source_labels) + self.criterion(logits_target, target_labels)
-            loss = 0.5 * task_loss + 0.5 * divergence
-        else:
-            # sarà che si devo fare [:batch_size] cosi?? 
-            cls_token_source, logits_source = cls_token[:batch_size], logits[:batch_size]
-            print("LOGITS SOURCE else: ", logits_source)
-            print("LABELS INSIDE COMPUTE else: ", source_labels)
-            print("LEN LOGITS SOURCE: ", logits_source.shape)
-            print("LEN LABELS SOURCE: ", source_labels.shape)
             task_loss = self.criterion(logits_source, source_labels)
-            loss = task_loss
+            loss = 0.5 * task_loss + 0.5 * divergence
+
 
         # Calculate metrics for source
         preds_source = torch.argmax(logits_source, dim=1)
-        accuracy = self.accuracy(source_labels, preds_source)
-        f1 = self.f1(source_labels, preds_source)
+        source_accuracy = self.accuracy(source_labels, preds_source)
+        source_f1 = self.f1(source_labels, preds_source)
 
-        # Log metrics and losses
-        self.log_dict({
-            "loss": loss, "task_loss": task_loss, "divergence": divergence,
-            "accuracy": accuracy, "f1": f1
-        }, on_step=False, on_epoch=True)
+        # Log metrics
+        log_dict = {f"source_{stage}/accuracy": source_accuracy, f"source_{stage}/f1": source_f1}
+        if divergence is not None:
+            log_dict[f"{stage}/divergence"] = divergence  # Only log divergence if it exists
+
+        # Calculate metrics for target
+        if target_labels is not None:
+            preds_target = torch.argmax(logits_target, dim=1)
+            target_accuracy = self.accuracy(target_labels, preds_target)
+            target_f1 = self.f1(target_labels, preds_target)
+            log_dict.update({f"target_{stage}/accuracy": target_accuracy, f"target_{stage}/f1": target_f1,})
+
+        self.log_dict(log_dict, on_step=False, on_epoch=True)
+
 
         return loss
 
     def training_step(self, batch, batch_idx):
         source_batch = batch[0]["source"]
         target_batch = batch[1]["source"] if len(batch) > 1 else None
-        print("JUST BATCH: ", batch, type(batch))
-        print("SOURCE BATCH: ", source_batch, type(source_batch))
-        print("IS BATCH THE SAME THAT SOURCE BATCH: ", source_batch==batch)
 
         # Prepare input tensors for source and target
         source_input_ids, source_attention_mask = source_batch["input_ids"], source_batch["attention_mask"]
         input_ids, attention_mask = source_input_ids, source_attention_mask
         token_type_ids = source_batch.get("token_type_ids", None)
         source_labels = source_batch["label"]
-        print("LABELS: ", source_labels, type(source_labels))
 
         if target_batch:
             # Concatenate source and target data if target_batch is present
@@ -97,10 +116,11 @@ class FineTuneTaskDivergence(pl.LightningModule):
             attention_mask = torch.cat((attention_mask, target_attention_mask), dim=0)
             if token_type_ids is not None:
                 token_type_ids = torch.cat((token_type_ids, target_batch["token_type_ids"]), dim=0)
+            target_labels = target_batch["label"]
 
         # Single forward pass for combined source and target inputs
         cls_token, logits = self(input_ids=input_ids, attention_mask=attention_mask, token_type_ids=token_type_ids)
-        return self.compute_loss_and_metrics(cls_token, logits, source_labels)
+        return self.compute_loss_and_metrics("train", cls_token, logits, source_labels, target_labels=target_labels if target_labels is not None else None, is_target_batch=bool(target_batch), batch_idx=batch_idx)
 
     def validation_step(self, batch, batch_idx):
         return self._eval_step(batch, stage="validation")
@@ -129,7 +149,7 @@ class FineTuneTaskDivergence(pl.LightningModule):
         cls_token, logits = self(input_ids=input_ids, attention_mask=attention_mask, token_type_ids=token_type_ids)
 
         # Calculate loss and metrics
-        loss = self.compute_loss_and_metrics(cls_token, logits, source_labels, target_labels)
+        loss = self.compute_loss_and_metrics(stage, cls_token, logits, source_labels, target_labels=target_labels)
         self.log(f"{stage}/loss", loss, on_step=False, on_epoch=True)
 
 
