@@ -83,6 +83,9 @@ inverted_datasets = [
 main_folder = os.getcwd()
 
 # Call functions to create datasets
-prepare_data_updater(benchmark_datasets, r"C:\Users\emanu\Documents\GitHub\Thesis-Adapters\data", r"C:\Users\emanu\Documents\GitHub\Thesis-Adapters\data for udapter\benchmark")
-prepare_data_updater(wdc_datasets, r"C:\Users\emanu\Documents\GitHub\Thesis-Adapters\data", r"C:\Users\emanu\Documents\GitHub\Thesis-Adapters\data for udapter\wdc")
-prepare_data_updater(inverted_datasets, r"C:\Users\emanu\Documents\GitHub\Thesis-Adapters\data", r"C:\Users\emanu\Documents\GitHub\Thesis-Adapters\data for udapter\inverted_datasets")
+# prepare_data_updater(benchmark_datasets, r"C:\Users\emanu\Documents\GitHub\Thesis-Adapters\data", r"C:\Users\emanu\Documents\GitHub\Thesis-Adapters\data for udapter\benchmark")
+# prepare_data_updater(wdc_datasets, r"C:\Users\emanu\Documents\GitHub\Thesis-Adapters\data", r"C:\Users\emanu\Documents\GitHub\Thesis-Adapters\data for udapter\wdc")
+# prepare_data_updater(inverted_datasets, r"C:\Users\emanu\Documents\GitHub\Thesis-Adapters\data", r"C:\Users\emanu\Documents\GitHub\Thesis-Adapters\data for udapter\inverted_datasets")
+
+
+# prepare_data_updater(wdc_datasets, "/work/derossi/Thesis-Adapters/data", "/work/derossi/domadapter/.domadapter_data_cache/wdc")
