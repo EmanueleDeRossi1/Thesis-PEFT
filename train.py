@@ -51,7 +51,8 @@ if __name__ == "__main__":
     # Initialize the model
     # model = LoRA_module(hparams).to(device)
     #model = FineTuneTask(hparams)
-    model = FineTuneTaskDivergence(hparams).to(device)
+    ModelClass = FineTuneTaskDivergence
+    model = ModelClass(hparams).to(device)
 
 
     # Initialize WandB logger
@@ -59,7 +60,7 @@ if __name__ == "__main__":
 
     # Add ModelCheckpoint callback to save the best model based on validation F1
     checkpoint_callback = ModelCheckpoint(
-        monitor='source_validation/f1',  # Monitor validation F1 score of the source data (since in theory we don't have target data available)
+        monitor='target_validation/f1',  # Monitor validation F1 score of the source data (since in theory we don't have target data available)
         mode='max',  # Save the best model based on the highest F1 score
         save_top_k=1,  # Only save the best model
         filename='best_model',  # Name of the saved model file
@@ -73,7 +74,8 @@ if __name__ == "__main__":
         devices=hparams['devices'],  # Number of gpus to use (on hparams, 1)
         max_epochs=hparams['n_epochs'],
         log_every_n_steps=10, 
-        callbacks=[checkpoint_callback]
+        callbacks=[checkpoint_callback],
+        reload_dataloaders_every_n_epochs=1, # so that I can shuffle source data at the beginning of each epoch
     )
 
     # Start training
@@ -84,7 +86,7 @@ if __name__ == "__main__":
     best_model_path = checkpoint_callback.best_model_path  # Get the path of the best model
     print(f"Loading best model from: {best_model_path}")
     
-    best_model = FineTuneTask.load_from_checkpoint(best_model_path, hparams=hparams)
+    best_model = ModelClass.load_from_checkpoint(best_model_path, hparams=hparams)
 
     # Run testing with the best model
     trainer.test(best_model, datamodule=data_module)

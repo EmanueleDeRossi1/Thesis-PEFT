@@ -13,8 +13,8 @@ export https_proxy=http://proxy2.uni-potsdam.de:3128
 export HUGGINGFACE_TOKEN="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"
 
 # Define the source and target domains
-SRC_DOMAINS=("computers")
-TGT_DOMAINS=("cameras")
+SRC_DOMAINS=("cameras")
+TGT_DOMAINS=("computers")
 
 # Loop through source and target domains
 for src in "${SRC_DOMAINS[@]}"; do

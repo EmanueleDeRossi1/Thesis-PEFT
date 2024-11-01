@@ -3,46 +3,67 @@ import os
 import torch
 import pytorch_lightning as pl
 import pandas as pd
+import random
+from itertools import zip_longest
 
 from transformers import AutoTokenizer
 from torch.utils.data import Dataset, DataLoader
 
+from torch.utils.data.dataloader import default_collate
+
 class SourceTargetDataset(Dataset):
     def __init__(
         self, 
-        source_filepath: str, 
-        target_filepath: str, 
+        source_filepath, 
+        target_filepath, 
         tokenizer: AutoTokenizer, 
         padding: bool, 
         max_seq_length: int,
-        phase: str,
-
-    ):
+        phase: str
+        ):
         self.tokenizer = tokenizer
         self.max_seq_length = max_seq_length
         self.padding = padding
         self.phase = phase
         self.uses_token_type_ids = "token_type_ids" in self.tokenizer.model_input_names
+        self.seed_counter = 0  # Initialize the seed counter for each epoch
 
         self.source_df = pd.read_csv(source_filepath)
+        self.target_df = pd.read_csv(target_filepath)
 
-        # Ensure the source and target datasets are the same length during validation or testing
-        if self.phase in ["validation", "test"]:
-            # Shuffle both datasets before truncating
-            self.source_df = self.source_df.sample(frac=1).reset_index(drop=True)
-            self.target_df = pd.read_csv(target_filepath).sample(frac=1).reset_index(drop=True)
-
-            # Truncate both datasets to the same minimum length
-            min_length = min(len(self.source_df), len(self.target_df))
-            self.source_df = self.source_df.iloc[:min_length].reset_index(drop=True)
-            self.target_df = self.target_df.iloc[:min_length].reset_index(drop=True)
+        # Define pairing based on the phase
+        if self.phase == "train":
+            print("TRAINING THE MODEL NOWWWW")
+            # Use all source data, allowing target data to be None if shorter
+            self.data_pairs = list(
+                 zip_longest(self.source_df.iterrows(), self.target_df[:len(self.source_df)].iterrows(), fillvalue=None)
+            )
         else:
-            self.target_df = pd.read_csv(target_filepath) if target_filepath else None
+            # Use all target data, allowing source data to be None if shorter
+            self.data_pairs = list(
+                zip_longest(self.source_df[:len(self.target_df)].iterrows(), self.target_df.iterrows(), fillvalue=None)
+            )
+
+
+    def shuffle_source_data(self):
+        self.source_df = self.source_df.sample(frac=1, random_state=self.seed_counter).reset_index(drop=True)
+        self.data_pairs = list(
+            zip_longest(self.source_df.iterrows(), self.target_df[:len(self.source_df)].iterrows(), fillvalue=None)
+        )
+        print("SOURCE IS ", self.data_pairs[0][0])
+        print("TARGET IS ", self.data_pairs[0][1])
+        print(f"Shuffling with seed {self.seed_counter}")
+        self.seed_counter += 1  # Increment the seed counter for the next epoch
+
 
 
     def __len__(self):
-        return len(self.source_df)
-    
+        # if self.phase == "training":
+        #     return len(self.source_df)
+        # else:
+        #     return len(self.target_df)
+            return len(self.data_pairs)
+
     def process_text(self, df, index):
         text = df.iloc[index]["pairs"]
         label = df.iloc[index]["labels"]
@@ -64,13 +85,36 @@ class SourceTargetDataset(Dataset):
     
 
     def __getitem__(self, index):
-        data = {"source": self.process_text(self.source_df, index)}
-        
-        # Process target data if available
-        if self.target_df is not None:
-            data["target"] = self.process_text(self.target_df, index)
-        
-        return data
+
+        # Get the pair from data_pairs
+        source_pair = self.data_pairs[index][0]
+        target_pair = self.data_pairs[index][1]
+
+        item = {}
+
+        # source_pair is a tuple (index, row)
+        if source_pair is not None:
+            _, source_row = source_pair
+            source_data = self.process_text(self.source_df, source_row.name)
+            item["source"] = source_data
+        else:
+            item["source"] = None
+
+        # target_pair is a tuple (index, row)
+        if target_pair is not None:
+            _, target_row = target_pair
+            target_data = self.process_text(self.target_df, target_row.name)
+            try:
+                item["target"] = target_data
+            except Exception as e:
+                print(e, "in __getitem__: index n. ", self.data_pairs[index][0])
+        else:
+            item["target"] = None
+            
+        return item
+
+
+
 
 class DataModuleSourceTarget(pl.LightningDataModule):
     def __init__(self, source_folder: str, target_folder: str, hparams: Dict[str, Any]):
@@ -84,40 +128,64 @@ class DataModuleSourceTarget(pl.LightningDataModule):
         self.max_seq_length = hparams["max_seq_length"]
         self.batch_size = hparams["batch_size"]
 
-        # self.train_dataset = None
-        # self.val_dataset = None
-        # self.test_dataset = None
+    def setup(self, stage: Optional[str] = None):
+        source_train = os.path.join(self.dataset_dir, self.source_folder, "train.csv")
+        target_train = os.path.join(self.dataset_dir, self.target_folder, "train.csv")
+        source_val = os.path.join(self.dataset_dir, self.source_folder, "valid.csv")
+        target_val = os.path.join(self.dataset_dir, self.target_folder, "valid.csv")
+        source_test = os.path.join(self.dataset_dir, self.source_folder, "test.csv")
+        target_test = os.path.join(self.dataset_dir, self.target_folder, "test.csv")
+
+        # Load datasets for different phases
+        if stage == "fit" or stage is None:
+            self.train_dataset = SourceTargetDataset(
+            source_filepath=source_train, target_filepath=target_train, tokenizer=self.tokenizer, 
+            padding=self.padding, max_seq_length=self.max_seq_length, phase="train"
+            )
+            self.val_dataset = SourceTargetDataset(
+            source_filepath=source_val, target_filepath=target_val, tokenizer=self.tokenizer, 
+            padding=self.padding, max_seq_length=self.max_seq_length, phase="validation"
+            )
+        if stage == "test" or stage is None:
+            self.test_dataset = SourceTargetDataset(
+            source_filepath=source_test, target_filepath=target_test, tokenizer=self.tokenizer, 
+            padding=self.padding, max_seq_length=self.max_seq_length, phase="test"
+            )
 
 
     def train_dataloader(self):
-        # Directly load datasets here for training
-        source_train = os.path.join(self.dataset_dir, self.source_folder, "train.csv")
-        target_train = os.path.join(self.dataset_dir, self.target_folder, "train.csv")
-        source_dataset = SourceTargetDataset(source_filepath=source_train, target_filepath=None, 
-                                             tokenizer=self.tokenizer, padding=self.padding, 
-                                             max_seq_length=self.max_seq_length, phase="train")
-        target_dataset = SourceTargetDataset(source_filepath=target_train, target_filepath=target_train,
-                                             tokenizer=self.tokenizer, padding=self.padding, 
-                                             max_seq_length=self.max_seq_length, phase="train")
-        return DataLoader(source_dataset, batch_size=self.batch_size, num_workers=1, shuffle=True),\
-              DataLoader(target_dataset, batch_size=self.batch_size, num_workers=1, shuffle=True)
+        self.train_dataset.shuffle_source_data()
+        # set just for a moment num workers to 0 to see the print sttment inside custom_collate_fn
+        return DataLoader(self.train_dataset, batch_size=self.batch_size, num_workers=0, shuffle=False, collate_fn=custom_collate_fn)
 
     def val_dataloader(self):
-        # Directly load datasets here for validation
-        source_val = os.path.join(self.dataset_dir, self.source_folder, "valid.csv")
-        target_val = os.path.join(self.dataset_dir, self.target_folder, "valid.csv")
-        val_dataset = SourceTargetDataset(
-            source_filepath=source_val, target_filepath=target_val, tokenizer=self.tokenizer,
-            padding=self.padding, max_seq_length=self.max_seq_length, phase="validation"
-        )
-        return DataLoader(val_dataset, batch_size=self.batch_size, num_workers=1)
+        return DataLoader(self.val_dataset, batch_size=self.batch_size, num_workers=1, shuffle=False, collate_fn=custom_collate_fn)
 
     def test_dataloader(self):
-        # Directly load datasets here for testing
-        source_test = os.path.join(self.dataset_dir, self.source_folder, "test.csv")
-        target_test = os.path.join(self.dataset_dir, self.target_folder, "test.csv")
-        test_dataset = SourceTargetDataset(
-            source_filepath=source_test, target_filepath=target_test, tokenizer=self.tokenizer,
-            padding=self.padding, max_seq_length=self.max_seq_length, phase="test"
-        )
-        return DataLoader(test_dataset, batch_size=self.batch_size, num_workers=1)
+        return DataLoader(self.test_dataset, batch_size=self.batch_size, num_workers=1, shuffle=False, collate_fn=custom_collate_fn)
+
+
+def custom_collate_fn(batch):
+    # Separate source and target data
+    sources = [item["source"] for item in batch]
+    targets = [item["target"] for item in batch]
+        
+    collated_batch = {}
+
+    if any(source is None for source in sources):
+        collated_batch["source"] = None
+        print("all sources in collate batch are None!")
+    else:
+        collated_batch["source"] = default_collate(sources)
+        print("default collated for source!")
+        
+    if any(target is None for target in targets):
+        collated_batch["target"] = None
+        print("all targets in collate batch are None!")
+    else:
+        collated_batch["target"] = default_collate(targets)
+        print("default collated for target!")    
+    
+    return collated_batch
+
+
