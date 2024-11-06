@@ -156,13 +156,13 @@ class DataModuleSourceTarget(pl.LightningDataModule):
     def train_dataloader(self):
         self.train_dataset.shuffle_source_data()
         # set just for a moment num workers to 0 to see the print sttment inside custom_collate_fn
-        return DataLoader(self.train_dataset, batch_size=self.batch_size, num_workers=0, shuffle=False, collate_fn=custom_collate_fn)
+        return DataLoader(self.train_dataset, batch_size=self.batch_size, num_workers=8, shuffle=False, collate_fn=custom_collate_fn)
 
     def val_dataloader(self):
-        return DataLoader(self.val_dataset, batch_size=self.batch_size, num_workers=1, shuffle=False, collate_fn=custom_collate_fn)
+        return DataLoader(self.val_dataset, batch_size=self.batch_size, num_workers=8, shuffle=False, collate_fn=custom_collate_fn)
 
     def test_dataloader(self):
-        return DataLoader(self.test_dataset, batch_size=self.batch_size, num_workers=1, shuffle=False, collate_fn=custom_collate_fn)
+        return DataLoader(self.test_dataset, batch_size=self.batch_size, num_workers=8, shuffle=False, collate_fn=custom_collate_fn)
 
 
 def custom_collate_fn(batch):
