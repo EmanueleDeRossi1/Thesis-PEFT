@@ -190,8 +190,7 @@ class FineTuneTaskDivergence(pl.LightningModule):
 
     def configure_optimizers(self):
         # AdamW optimizer
-        optimizer = AdamW(self.model.parameters(), lr=float(self.hparams['learning_rate']))
-        # , weight_decay=float(self.hparams['weight_decay']))
+        optimizer = AdamW(self.model.parameters(), lr=float(self.hparams['learning_rate']), weight_decay=float(self.hparams['weight_decay']))
         total_steps= self.trainer.estimated_stepping_batches
         scheduler = get_linear_schedule_with_warmup(optimizer,
                                                 num_warmup_steps=0,
