@@ -33,7 +33,6 @@ class SourceTargetDataset(Dataset):
 
         # Define pairing based on the phase
         if self.phase == "train":
-            print("TRAINING THE MODEL NOWWWW")
             # Use all source data, allowing target data to be None if shorter
             self.data_pairs = list(
                  zip_longest(self.source_df.iterrows(), self.target_df[:len(self.source_df)].iterrows(), fillvalue=None)
@@ -50,18 +49,11 @@ class SourceTargetDataset(Dataset):
         self.data_pairs = list(
             zip_longest(self.source_df.iterrows(), self.target_df[:len(self.source_df)].iterrows(), fillvalue=None)
         )
-        print("SOURCE IS ", self.data_pairs[0][0])
-        print("TARGET IS ", self.data_pairs[0][1])
-        print(f"Shuffling with seed {self.seed_counter}")
         self.seed_counter += 1  # Increment the seed counter for the next epoch
 
 
 
     def __len__(self):
-        # if self.phase == "training":
-        #     return len(self.source_df)
-        # else:
-        #     return len(self.target_df)
             return len(self.data_pairs)
 
     def process_text(self, df, index):
@@ -104,10 +96,7 @@ class SourceTargetDataset(Dataset):
         if target_pair is not None:
             _, target_row = target_pair
             target_data = self.process_text(self.target_df, target_row.name)
-            try:
-                item["target"] = target_data
-            except Exception as e:
-                print(e, "in __getitem__: index n. ", self.data_pairs[index][0])
+            item["target"] = target_data
         else:
             item["target"] = None
             
@@ -155,7 +144,6 @@ class DataModuleSourceTarget(pl.LightningDataModule):
 
     def train_dataloader(self):
         self.train_dataset.shuffle_source_data()
-        # set just for a moment num workers to 0 to see the print sttment inside custom_collate_fn
         return DataLoader(self.train_dataset, batch_size=self.batch_size, num_workers=8, shuffle=False, collate_fn=custom_collate_fn)
 
     def val_dataloader(self):
@@ -174,17 +162,13 @@ def custom_collate_fn(batch):
 
     if any(source is None for source in sources):
         collated_batch["source"] = None
-        print("all sources in collate batch are None!")
     else:
         collated_batch["source"] = default_collate(sources)
-        print("default collated for source!")
         
     if any(target is None for target in targets):
         collated_batch["target"] = None
-        print("all targets in collate batch are None!")
     else:
         collated_batch["target"] = default_collate(targets)
-        print("default collated for target!")    
     
     return collated_batch
 

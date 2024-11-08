@@ -47,10 +47,7 @@ class FineTuneTaskDivergence(pl.LightningModule):
             # Separate source and target portions
             source_cls_token, target_cls_token = cls_token[:len(source_labels)], cls_token[len(source_labels):]
             source_logits, target_logits = logits[:len(source_labels)], logits[len(source_labels):]
-            
-            # Calculate source loss
-            source_task_loss = self.criterion(source_logits, source_labels)
-            
+                        
             # Calculate divergence
             divergence_loss = self.mk_mmd_loss(source_cls_token, target_cls_token)
 
@@ -100,8 +97,6 @@ class FineTuneTaskDivergence(pl.LightningModule):
             
             # Calculate divergence
             divergence_loss = self.mk_mmd_loss(source_cls_token, target_cls_token)
-
-            target_task_loss = self.criterion(target_logits, target_labels)
             
             # Combine task and divergence losses
             total_loss =  0.5 * target_task_loss + 0.5 * divergence_loss
@@ -137,20 +132,7 @@ class FineTuneTaskDivergence(pl.LightningModule):
 
     def training_step(self, batch, batch_idx):
         source_batch = batch["source"]
-        try:
-            target_batch = batch["target"] if "target" in batch else None
-        except Exception as e:
-            print(e, " in training_step, batch_idx ", batch_idx)
-
-        if "target" not in batch:
-            print("there is no target in batch n. ", batch_idx)
-        else:
-            print("there is target in batch n. ", batch_idx)
-        # Print the first element of source and target batches to see if shuffle_pairs() actually shuffles
-        # print("First element of source_batch:", {key: val[0] for key, val in source_batch.items()})
-        # if target_batch:
-            # print("First element of target_batch:", {key: val[0] for key, val in target_batch.items()})
-
+        target_batch = batch["target"] if "target" in batch else None
 
         # Prepare input tensors for source and target
         source_input_ids, source_attention_mask = source_batch["input_ids"], source_batch["attention_mask"]
@@ -160,7 +142,6 @@ class FineTuneTaskDivergence(pl.LightningModule):
         target_labels = None
 
         if target_batch:
-            print("BOTH SOURCE AND TARGET IN TRAINING!")
             # Concatenate source and target data if target_batch is present
             target_input_ids, target_attention_mask = target_batch["input_ids"], target_batch["attention_mask"]
             input_ids = torch.cat((input_ids, target_input_ids), dim=0)
@@ -168,8 +149,6 @@ class FineTuneTaskDivergence(pl.LightningModule):
             if token_type_ids is not None:
                 token_type_ids = torch.cat((token_type_ids, target_batch["token_type_ids"]), dim=0)
             target_labels = target_batch["label"]
-        else:
-            print("ONLY SOURCE IN TRAINING!")
 
         # Single forward pass for combined source and target inputs
         cls_token, logits = self(input_ids=input_ids, attention_mask=attention_mask, token_type_ids=token_type_ids)
@@ -183,10 +162,7 @@ class FineTuneTaskDivergence(pl.LightningModule):
 
     def _eval_step(self, batch, stage):
         source_batch = batch["source"] if "source" in batch else None
-        try:
-            target_batch = batch["target"]
-        except Exception as e:
-            print(e, "in _eval_step")
+        target_batch = batch["target"]
 
         target_input_ids, target_attention_mask = target_batch["input_ids"], target_batch["attention_mask"]
         input_ids, attention_mask = target_input_ids, target_attention_mask
@@ -195,7 +171,6 @@ class FineTuneTaskDivergence(pl.LightningModule):
         source_labels = None
 
         if source_batch:
-            print("BOTH SOURCE AND TARGET IN EVALUATION!")
             # Concatenate source and target data if source_batch is present
             source_input_ids, source_attention_mask = source_batch["input_ids"], source_batch["attention_mask"]
             input_ids = torch.cat((source_input_ids, input_ids), dim=0)
@@ -203,8 +178,6 @@ class FineTuneTaskDivergence(pl.LightningModule):
             if token_type_ids is not None:
                 token_type_ids = torch.cat((source_batch["token_type_ids"], token_type_ids), dim=0)
             source_labels = source_batch["label"]
-        else:
-            print("NOW ONLY TARGET IN EVALUATION")
         
         # Single forward pass for combined source and target data
         cls_token, logits = self(input_ids=input_ids, attention_mask=attention_mask, token_type_ids=token_type_ids)
