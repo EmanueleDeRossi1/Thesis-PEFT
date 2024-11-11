@@ -2,7 +2,7 @@
 #SBATCH --job-name=lora
 #SBATCH --gpus=1
 #SBATCH -p gpu
-#SBATCH --time=10:00
+#SBATCH --time=10:00:00
 
 # RICORDATI DI AGGIUNGERE DOPO SBATCH GPU A100 40GB
 
@@ -23,9 +23,8 @@ for src in "${SRC_DOMAINS[@]}"; do
     if [ "$src" != "$tgt" ]; then
       echo "Training model with source domain: $src and target domain: $tgt"
 
-      # Pass source and target folders as arguments
-      srun python train.py --src "$src" --tgt "$tgt" 
-
+      # Pass source and target folders as arguments, if --haparam_tuning is passed, hyperparameter tuning will be performed
+      srun python train.py --src "$src" --tgt "$tgt" #--hparam_tuning 
     fi
   done
 done

@@ -19,7 +19,8 @@ class SourceTargetDataset(Dataset):
         tokenizer: AutoTokenizer, 
         padding: bool, 
         max_seq_length: int,
-        phase: str
+        phase: str,
+        num_instances: Optional[int] = None
         ):
         self.tokenizer = tokenizer
         self.max_seq_length = max_seq_length
@@ -30,6 +31,10 @@ class SourceTargetDataset(Dataset):
 
         self.source_df = pd.read_csv(source_filepath)
         self.target_df = pd.read_csv(target_filepath)
+
+        # Limit the number of instances if num_instances is specified and phase is "train"
+        if phase == "train" and num_instances is not None:
+            self.source_df = self.source_df.head(num_instances)
 
         # Define pairing based on the phase
         if self.phase == "train":
@@ -42,7 +47,7 @@ class SourceTargetDataset(Dataset):
             self.data_pairs = list(
                 zip_longest(self.source_df[:len(self.target_df)].iterrows(), self.target_df.iterrows(), fillvalue=None)
             )
-
+        
 
     def shuffle_source_data(self):
         self.source_df = self.source_df.sample(frac=1, random_state=self.seed_counter).reset_index(drop=True)
@@ -111,6 +116,7 @@ class DataModuleSourceTarget(pl.LightningDataModule):
         self.dataset_dir = hparams["dataset_dir"]
         self.source_folder = source_folder
         self.target_folder = target_folder
+        self.num_instances = hparams["num_instances"]
         self.pretrained_model_name = hparams["pretrained_model_name"]
         self.tokenizer = AutoTokenizer.from_pretrained(self.pretrained_model_name, use_fast=True)
         self.padding = hparams["padding"]
@@ -129,7 +135,7 @@ class DataModuleSourceTarget(pl.LightningDataModule):
         if stage == "fit" or stage is None:
             self.train_dataset = SourceTargetDataset(
             source_filepath=source_train, target_filepath=target_train, tokenizer=self.tokenizer, 
-            padding=self.padding, max_seq_length=self.max_seq_length, phase="train"
+            padding=self.padding, max_seq_length=self.max_seq_length, phase="train", num_instances=self.num_instances
             )
             self.val_dataset = SourceTargetDataset(
             source_filepath=source_val, target_filepath=target_val, tokenizer=self.tokenizer, 
@@ -144,6 +150,7 @@ class DataModuleSourceTarget(pl.LightningDataModule):
 
     def train_dataloader(self):
         self.train_dataset.shuffle_source_data()
+        print("The lenght of the train dataset is: ", len(self.train_dataset))
         return DataLoader(self.train_dataset, batch_size=self.batch_size, num_workers=8, shuffle=False, collate_fn=custom_collate_fn)
 
     def val_dataloader(self):

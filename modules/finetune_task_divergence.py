@@ -8,17 +8,31 @@ import numpy as np
 from divergences.mkmmd import MultipleKernelMaximumMeanDiscrepancy, GaussianKernel
 from torchmetrics import Accuracy, F1Score
 import os
+import wandb
 
 
 class FineTuneTaskDivergence(pl.LightningModule):
     def __init__(self, hparams):
         super().__init__()
         
-        hf_token = os.getenv("HUGGINGFACE_TOKEN")
         self.save_hyperparameters(hparams)
+        # add hparams for hparams tuning
+        if wandb.run:
+            self.learning_rate = wandb.config.learning_rate
+            self.weight_decay = wandb.config.weight_decay
+            self.batch_size = wandb.config.batch_size
+            self.n_epochs = wandb.config.n_epochs
+        else:
+            self.learning_rate = self.hparams['learning_rate']
+            self.weight_decay = self.hparams['weight_decay']
+            self.batch_size = self.hparams['batch_size']
+            self.n_epochs = self.hparams['n_epochs']
+        hf_token = os.getenv("HUGGINGFACE_TOKEN")
         self.base_model_name = self.hparams['pretrained_model_name']
         self.num_classes = self.hparams['num_classes']
         base_model = AutoModelForSequenceClassification.from_pretrained(self.base_model_name, token=hf_token)
+        self.num_classes = self.hparams['num_classes']
+
         # Instead of using LoRA, finetune the full model
         self.model = base_model
         self.criterion = CrossEntropyLoss()
@@ -51,9 +65,11 @@ class FineTuneTaskDivergence(pl.LightningModule):
             # Calculate divergence
             divergence_loss = self.mk_mmd_loss(source_cls_token, target_cls_token)
 
+            source_task_loss = self.criterion(source_logits, source_labels)
+
             # calculate alpha dinamically
             start_steps = self.current_epoch * batch_size
-            total_steps = self.hparams["n_epochs"] * batch_size
+            total_steps = self.n_epochs * batch_size
             p = float(batch_idx + start_steps) / total_steps
             alpha = 2.0 / (1.0 + np.exp(-10 * p)) - 1
             # calculate loss as trade off between task and divergence loss
@@ -97,6 +113,8 @@ class FineTuneTaskDivergence(pl.LightningModule):
             
             # Calculate divergence
             divergence_loss = self.mk_mmd_loss(source_cls_token, target_cls_token)
+
+            target_task_loss = self.criterion(target_logits, target_labels)
             
             # Combine task and divergence losses
             total_loss =  0.5 * target_task_loss + 0.5 * divergence_loss
@@ -190,7 +208,7 @@ class FineTuneTaskDivergence(pl.LightningModule):
 
     def configure_optimizers(self):
         # AdamW optimizer
-        optimizer = AdamW(self.model.parameters(), lr=float(self.hparams['learning_rate']), weight_decay=float(self.hparams['weight_decay']))
+        optimizer = AdamW(self.model.parameters(), lr=float(self.learning_rate), weight_decay=float(self.weight_decay))
         total_steps= self.trainer.estimated_stepping_batches
         scheduler = get_linear_schedule_with_warmup(optimizer,
                                                 num_warmup_steps=0,

@@ -3,6 +3,7 @@ import os
 import yaml
 import torch
 import random
+import wandb
 import pytorch_lightning as pl
 from pytorch_lightning.loggers import WandbLogger
 from pytorch_lightning.callbacks import ModelCheckpoint
@@ -23,25 +24,46 @@ def set_seed(seed):
 def load_hparams(yaml_file):
     """Load hyperparameters from a YAML file."""
     with open(yaml_file, 'r') as stream:
-        hparams = yaml.safe_load(stream)
-    return hparams
+        config = yaml.safe_load(stream)
+    common_hparams = config['common_parameters']
+    model_name = config['model_name']
+    model_hparams = config['models'][model_name]
+    return common_hparams, model_name, model_hparams
 
-if __name__ == "__main__":
-    # Argument parsing for source and target folders
-    parser = argparse.ArgumentParser(description="Training script for domain adaptation")
-    parser.add_argument('--src', type=str, required=True, help="Source dataset folder")
-    parser.add_argument('--tgt', type=str, required=True, help="Target dataset folder")
-    args = parser.parse_args()
+def get_model_class(model_name):
+    """Return the appropriate model based on the model name."""
+    if model_name == 'finetune_task_divergence':
+        return FineTuneTaskDivergence
+    elif model_name == 'lora':
+        return LoRA_module
+    else:
+        raise ValueError(f"Unknown model name: {model_name}")
 
-    # Load hyperparameters from config.yaml
-    hparams = load_hparams('config.yaml')
 
-    # set random seed
-    set_seed(hparams['random_seed'])
+def train(args):
+
+    common_hparams, model_name, model_hparams = load_hparams('config.yaml')
+
+    # Set random seed
+    set_seed(common_hparams['random_seed'])
+
+
+    # Merge parameters with wandb.config if running a sweep
+    if args.hparam_tuning:
+        print("Loading hparams from wandb.config")
+        wandb.init()
+        hparams = {**common_hparams, **model_hparams['default_parameters'], **wandb.config}
+    else:
+        print("NOT loading hparams from wandb.config")
+        hparams = {**common_hparams, **model_hparams['default_parameters']}
+
+    # Override dataset directories with command-line arguments
+    hparams['source_folder'] = args.src
+    hparams['target_folder'] = args.tgt
+
 
     # Set the device
     device = torch.device('cuda')
-
 
     # Initialize the data module
     data_module = DataModuleSourceTarget(source_folder=args.src,
@@ -49,14 +71,12 @@ if __name__ == "__main__":
                                           hparams=hparams)
 
     # Initialize the model
-    # model = LoRA_module(hparams).to(device)
-    #model = FineTuneTask(hparams)
-    ModelClass = FineTuneTaskDivergence
-    model = ModelClass(hparams).to(device)
+    ModelClass = get_model_class(model_name)
+    model = ModelClass(hparams=hparams).to(device)
 
 
     # Initialize WandB logger
-    wandb_logger = WandbLogger(project="LoRA_model_training", config=hparams)
+    wandb_logger = WandbLogger(project=model_name, config=hparams)
 
     # Add ModelCheckpoint callback to save the best model based on validation F1
     checkpoint_callback = ModelCheckpoint(
@@ -90,3 +110,30 @@ if __name__ == "__main__":
 
     # Run testing with the best model
     trainer.test(best_model, datamodule=data_module)
+
+def main():
+
+    parser = argparse.ArgumentParser(description="Training script for domain adaptation")
+    parser.add_argument('--src', type=str, required=True, help="Source dataset folder")
+    parser.add_argument('--tgt', type=str, required=True, help="Target dataset folder")
+    parser.add_argument('--hparam_tuning', action='store_true', help="If set, hyperparameter tuning is being performed")
+    args = parser.parse_args()
+
+    if args.hparam_tuning:
+        print("Hyperparameter tuning is enabled")
+        # Load the sweep configuration from the YAML file
+        with open('sweep_config.yaml', 'r') as file:
+            sweep_config = yaml.safe_load(file)
+
+        # Initialize the sweep
+        sweep_id = wandb.sweep(sweep_config, project='LoRA_model_training')
+
+        # Run the sweep agent
+        wandb.agent(sweep_id, function=lambda: train(args))
+    else:
+        print("Hyperparameter tuning is disabled")
+        train(args)
+
+
+if __name__ == "__main__":
+    main()
