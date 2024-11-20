@@ -25,14 +25,11 @@ def load_hparams(yaml_file):
     """Load hyperparameters from a YAML file."""
     with open(yaml_file, 'r') as stream:
         config = yaml.safe_load(stream)
-    common_hparams = config['common_parameters']
-    model_name = config['model_name']
-    model_hparams = config['models'][model_name]
-    return common_hparams, model_name, model_hparams
+    return config
 
 def get_model_class(model_name):
     """Return the appropriate model based on the model name."""
-    if model_name == 'finetune_task_divergence':
+    if model_name == 'finetune':
         return FineTuneTaskDivergence
     elif model_name == 'lora':
         return LoRA_module
@@ -42,31 +39,27 @@ def get_model_class(model_name):
 
 def train(args):
 
-    common_hparams, model_name, model_hparams = load_hparams('config.yaml')
+    hparams = load_hparams('config.yaml')
+    model_name = args.model
 
     # Set random seed
-    set_seed(common_hparams['random_seed'])
+    set_seed(hparams['random_seed'])
 
+    # Override dataset directories with command-line arguments
+    hparams['source_folder'] = args.src
+    hparams['target_folder'] = args.tgt
+    hparams['model_name'] = args.model
 
     # Merge parameters with wandb.config if running a sweep
     if args.hparam_tuning:
         print("Loading hparams from wandb.config")
         wandb.init()
-        hparams = {**common_hparams, **model_hparams['default_parameters'], **wandb.config}
-    else:
-        print("NOT loading hparams from wandb.config")
-        hparams = {**common_hparams, **model_hparams['default_parameters']}
-
-    # Override dataset directories with command-line arguments
-    hparams['source_folder'] = args.src
-    hparams['target_folder'] = args.tgt
-
-
+        hparams.update(wandb.config)
     # Set the device
     device = torch.device('cuda')
 
     # Initialize the data module
-    data_module = DataModuleSourceTarget(source_folder=args.src,
+    datamodule = DataModuleSourceTarget(source_folder=args.src,
                                           target_folder=args.tgt,
                                           hparams=hparams)
 
@@ -80,7 +73,7 @@ def train(args):
 
     # Add ModelCheckpoint callback to save the best model based on validation F1
     checkpoint_callback = ModelCheckpoint(
-        monitor='target_validation/f1',  # Monitor validation F1 score of the source data (since in theory we don't have target data available)
+        monitor='target_validation/f1',  # Monitor validation F1 score of the target domain
         mode='max',  # Save the best model based on the highest F1 score
         save_top_k=1,  # Only save the best model
         filename='best_model',  # Name of the saved model file
@@ -100,7 +93,7 @@ def train(args):
 
     # Start training
     print(f"Training with source dataset: {args.src} and target dataset: {args.tgt}")
-    trainer.fit(model, datamodule=data_module)
+    trainer.fit(model, datamodule=datamodule)
 
     # After training, load the best model (highest f1) based on validation performance
     best_model_path = checkpoint_callback.best_model_path  # Get the path of the best model
@@ -109,21 +102,27 @@ def train(args):
     best_model = ModelClass.load_from_checkpoint(best_model_path, hparams=hparams)
 
     # Run testing with the best model
-    trainer.test(best_model, datamodule=data_module)
+    trainer.test(best_model, datamodule=datamodule)
 
 def main():
 
     parser = argparse.ArgumentParser(description="Training script for domain adaptation")
     parser.add_argument('--src', type=str, required=True, help="Source dataset folder")
     parser.add_argument('--tgt', type=str, required=True, help="Target dataset folder")
+    parser.add_argument('--model', type=str, required=True, help="PEFT model")
     parser.add_argument('--hparam_tuning', action='store_true', help="If set, hyperparameter tuning is being performed")
     args = parser.parse_args()
 
     if args.hparam_tuning:
         print("Hyperparameter tuning is enabled")
-        # Load the sweep configuration from the YAML file
-        with open('sweep_config.yaml', 'r') as file:
-            sweep_config = yaml.safe_load(file)
+        if args.model == 'lora':
+            # Load the sweep configuration from LoRA YAML file
+            with open('lora_sweep_config.yaml', 'r') as file:
+                sweep_config = yaml.safe_load(file)
+        elif args.model == 'finetune':
+            # Load the sweep configuration from finetuning YAML file
+            with open('finetune_sweep_config.yaml', 'r') as file:
+                sweep_config = yaml.safe_load(file)
 
         # Initialize the sweep
         sweep_id = wandb.sweep(sweep_config, project='LoRA_model_training')

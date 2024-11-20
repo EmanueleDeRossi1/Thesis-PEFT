@@ -33,7 +33,11 @@ class SourceTargetDataset(Dataset):
         self.target_df = pd.read_csv(target_filepath)
 
         # Limit the number of instances if num_instances is specified and phase is "train"
+        print("The phase is: ", phase)
+        print("The number of instances is: ", num_instances, type(num_instances))
         if phase == "train" and num_instances is not None:
+            print("The phase inside if is: ", phase)
+            print("The number of instances inside if is: ", num_instances, type(num_instances))
             self.source_df = self.source_df.head(num_instances)
 
         # Define pairing based on the phase
@@ -157,7 +161,7 @@ class DataModuleSourceTarget(pl.LightningDataModule):
         return DataLoader(self.val_dataset, batch_size=self.batch_size, num_workers=8, shuffle=False, collate_fn=custom_collate_fn)
 
     def test_dataloader(self):
-        return DataLoader(self.test_dataset, batch_size=self.batch_size, num_workers=8, shuffle=False, collate_fn=custom_collate_fn)
+        return DataLoader(self.test_dataset, batch_size=self.batch_size, num_workers=1, shuffle=False, collate_fn=custom_collate_fn)
 
 
 def custom_collate_fn(batch):

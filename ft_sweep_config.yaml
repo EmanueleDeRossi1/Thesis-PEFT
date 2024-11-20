@@ -1,0 +1,15 @@
+program: train.py
+project: fine-tuning
+method: random
+metric: 
+    name: target_test/f1
+    goal: maximize
+
+
+parameters:
+    learning_rate:
+        values: [1e-5, 3e-5, 5e-5]
+    weight_decay:
+        values: [0.001, 0.01, 0.1]
+    batch_size:
+        values: [16, 32]

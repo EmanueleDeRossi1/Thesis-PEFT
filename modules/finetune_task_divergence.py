@@ -1,7 +1,6 @@
 import torch
 import pytorch_lightning as pl
 from transformers import AutoModelForSequenceClassification, get_linear_schedule_with_warmup
-from peft import get_peft_model, LoraConfig, TaskType
 from torch.nn import CrossEntropyLoss
 from torch.optim import AdamW
 import numpy as np
@@ -21,12 +20,13 @@ class FineTuneTaskDivergence(pl.LightningModule):
             self.learning_rate = wandb.config.learning_rate
             self.weight_decay = wandb.config.weight_decay
             self.batch_size = wandb.config.batch_size
-            self.n_epochs = wandb.config.n_epochs
+
         else:
             self.learning_rate = self.hparams['learning_rate']
             self.weight_decay = self.hparams['weight_decay']
             self.batch_size = self.hparams['batch_size']
             self.n_epochs = self.hparams['n_epochs']
+            
         hf_token = os.getenv("HUGGINGFACE_TOKEN")
         self.base_model_name = self.hparams['pretrained_model_name']
         self.num_classes = self.hparams['num_classes']
@@ -42,7 +42,10 @@ class FineTuneTaskDivergence(pl.LightningModule):
         # Initialize MK-MMD with Gaussian Kernels
         self.kernels = [GaussianKernel(alpha=0.5), GaussianKernel(alpha=1.0), GaussianKernel(alpha=2.0)]
         self.mk_mmd_loss = MultipleKernelMaximumMeanDiscrepancy(self.kernels, linear=False)
-    
+
+        # for debugging
+        self.model.print_trainable_parameters()
+
     def forward(self, input_ids, attention_mask, token_type_ids=None):
         # Forward pass
         outputs = self.model(
