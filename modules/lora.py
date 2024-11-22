@@ -19,7 +19,7 @@ class LoRA_module(pl.LightningModule):
 
         if wandb.run:
             self.learning_rate = wandb.config.learning_rate
-            self.weight_decay = wandb.config.weight_decay
+            # self.weight_decay = wandb.config.weight_decay
             # out of memory :(
             #self.batch_size = wandb.config.batch_size
             self.lora_alpha = wandb.config.lora_alpha
@@ -29,7 +29,7 @@ class LoRA_module(pl.LightningModule):
 
         else:
             self.learning_rate = self.hparams['learning_rate']
-            self.weight_decay = self.hparams['weight_decay']
+            # self.weight_decay = self.hparams['weight_decay']
             self.lora_alpha = self.hparams['lora_alpha']
             self.lora_r = self.hparams['lora_r']
             self.lora_dropout = self.hparams['lora_dropout']
@@ -95,7 +95,8 @@ class LoRA_module(pl.LightningModule):
             alpha = 2.0 / (1.0 + np.exp(-10 * p)) - 1
             # calculate loss as trade off between task and divergence loss
             total_loss = alpha * source_task_loss + (1 - alpha) * divergence_loss
-   
+
+            print("alpha: ", alpha)
             # Log individual losses
             self.log("train/source_task_loss", source_task_loss, on_step=True, on_epoch=True) 
             self.log("train/divergence_loss", divergence_loss, on_step=True, on_epoch=True)
@@ -109,9 +110,8 @@ class LoRA_module(pl.LightningModule):
         else:
             source_cls_token = cls_token
             source_logits = logits
-
-        source_task_loss = self.criterion(source_logits, source_labels)
-        total_loss = source_task_loss
+            source_task_loss = self.criterion(source_logits, source_labels)
+            total_loss = source_task_loss
 
         # Log the task loss
         self.log("train/source_task_loss", source_task_loss, on_step=True, on_epoch=True)
@@ -229,7 +229,7 @@ class LoRA_module(pl.LightningModule):
 
     def configure_optimizers(self):
         # AdamW optimizer
-        optimizer = AdamW(self.model.parameters(), lr=float(self.learning_rate), weight_decay=float(self.weight_decay))
+        optimizer = AdamW(self.model.parameters(), lr=float(self.learning_rate))
         total_steps= self.trainer.estimated_stepping_batches
         scheduler = get_linear_schedule_with_warmup(optimizer,
                                                 num_warmup_steps=0,

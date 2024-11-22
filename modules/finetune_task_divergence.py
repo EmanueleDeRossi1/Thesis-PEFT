@@ -136,8 +136,8 @@ class FineTuneTaskDivergence(pl.LightningModule):
             target_cls_token = cls_token
             target_logits = logits
 
-        target_task_loss = self.criterion(target_logits, target_labels)
-        total_loss = target_task_loss
+            target_task_loss = self.criterion(target_logits, target_labels)
+            total_loss = target_task_loss
 
         preds_target = torch.argmax(target_logits, dim=1)
         target_accuracy = self.accuracy(target_labels, preds_target)
