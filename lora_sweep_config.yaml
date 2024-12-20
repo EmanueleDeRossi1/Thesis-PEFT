@@ -1,43 +1,62 @@
 program: train.py
 project: lora
-method: random
+##### CHANGE TO RANDOM #######
+##############################
+method: grid
+##### CHANGE TO RANDOM #######
+##############################
 metric: 
-    name: target_test/f1
+    name: target_test/real_f1
     goal: maximize
 
 # These are the hyparameters you selected with Matteo
 # parameters:
 #     learning_rate:
 #         values: [1e-3, 1e-4, 1e-5]
-#     weight_decay:
-#         values: [0.1]
 #     # out of memory :(
 #     batch_size:
 #         values: [16]
 
 #     lora_alpha:
-#         values: [8, 32]
+#         values: [4, 32]
 #     lora_r: 
-#         values: [8, 32]
+#         values: [4, 32]
 #     lora_dropout:
 #         values: [0.1, 0.3]
 
-# boh prova con ancora piu parametri
+# Prova con altri parametri
 parameters:
     learning_rate:
-        values: [1e-3]
-    weight_decay:
-        values: [0.01]
+        values: [1e-4]
     # out of memory :(
     batch_size:
-        values: [16]
+        values: [32]
 
     lora_alpha:
-        values: [4, 64]
+        values: [32]
     lora_r: 
-        values: [4, 64]
+        values: [1,4]
     lora_dropout:
-        values: [0.01, 0.1]
+        values: [0.1]
+    shuffle:
+        values: [False]
+
+# boh prova con ancora piu parametri
+# parameters:
+#     learning_rate:
+#         values: [1e-3]
+#     weight_decay:
+#         values: [0.01]
+#     # out of memory :(
+#     batch_size:
+#         values: [16]
+
+#     lora_alpha:
+#         values: [4, 64]
+#     lora_r: 
+#         values: [4, 64]
+#     lora_dropout:
+#         values: [0.01, 0.1]
 
 
 

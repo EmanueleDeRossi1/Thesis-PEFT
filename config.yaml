@@ -7,18 +7,17 @@ max_seq_length: 256
 accelerator: "gpu"
 devices: 1
 num_classes: 2
-random_seed: 42
+random_seed: null # This will be overwritten by the parser argument
 n_epochs: 20
 source_folder: null # This will be overwritten by the parser argument
 target_folder: null  # This will be overwritten by the parser argument
 num_instances: null # Change to null (None) to train on all source data
-learning_rate: 3e-5
-weight_decay: 1e-2
-batch_size: 16
+learning_rate: 1e-4
+batch_size: 32
 # LoRA 
 lora_alpha: 32
-lora_r: 8
+lora_r: 16
 lora_dropout: 0.1
-
+shuffle: False
 
 # AND REMEMBER THAT YOU SHOULD ALWAYS TRAIN ON THE SAME GPU, CHNAGE .sh FILE BEFORE CALCULATING INF & TRAINING TIME

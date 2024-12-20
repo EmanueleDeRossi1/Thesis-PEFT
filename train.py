@@ -2,12 +2,14 @@ import argparse
 import os
 import yaml
 import torch
+import time
 import random
 import wandb
 import pytorch_lightning as pl
 from pytorch_lightning.loggers import WandbLogger
 from pytorch_lightning.callbacks import ModelCheckpoint
 from modules.lora import LoRA_module 
+from modules.lora_task import LoRA_module_task
 
 from modules.finetune_task import FineTuneTask
 from modules.finetune_task_divergence import FineTuneTaskDivergence
@@ -33,8 +35,39 @@ def get_model_class(model_name):
         return FineTuneTaskDivergence
     elif model_name == 'lora':
         return LoRA_module
+    elif model_name == 'lora_task':
+        return LoRA_module_task
     else:
         raise ValueError(f"Unknown model name: {model_name}")
+    
+
+def measure_inference_time(model, data_loader, device='cuda'):
+    # Measure the inference time for a single batch
+    model.to(device)
+    print("\n using device: ", device)
+    model.eval()  # Set the model to evaluation mode
+
+    with torch.no_grad():
+        # get the first (and only) batch from dataloader
+        batch = next(iter(data_loader))
+        input_ids = batch['target']['input_ids'].to(device)
+        attention_mask = batch['target']['attention_mask'].to(device)
+        if 'token_type_ids' in batch['target']:
+            token_type_ids = batch['target']['token_type_ids'].to(device)
+            inputs = (input_ids, attention_mask, token_type_ids)
+        else:
+            inputs = (input_ids, attention_mask)
+
+        start_time = time.time()
+
+        outputs = model(*inputs)
+
+        end_time = time.time()
+
+        total_time = end_time - start_time
+
+    # number of instances in a batch
+    return total_time
 
 
 def train(args):
@@ -43,12 +76,15 @@ def train(args):
     model_name = args.model
 
     # Set random seed
-    set_seed(hparams['random_seed'])
+    
 
     # Override dataset directories with command-line arguments
     hparams['source_folder'] = args.src
     hparams['target_folder'] = args.tgt
     hparams['model_name'] = args.model
+    hparams['random_seed'] = args.seed
+    
+    set_seed(hparams['random_seed'])
 
     # Merge parameters with wandb.config if running a sweep
     if args.hparam_tuning:
@@ -72,8 +108,14 @@ def train(args):
     wandb_logger = WandbLogger(project=model_name, config=hparams)
 
     # Add ModelCheckpoint callback to save the best model based on validation F1
+    if model_name == 'lora_task':
+        monitor_metric = 'validation/f1'
+    else:
+        # try with different metrics to monitor
+        monitor_metric = "target_validation/f1"
+
     checkpoint_callback = ModelCheckpoint(
-        monitor='target_validation/f1',  # Monitor validation F1 score of the target domain
+        monitor=monitor_metric,  # Monitor validation F1 score
         mode='max',  # Save the best model based on the highest F1 score
         save_top_k=1,  # Only save the best model
         filename='best_model',  # Name of the saved model file
@@ -92,8 +134,11 @@ def train(args):
     )
 
     # Start training
+    start_time = time.time()
     print(f"Training with source dataset: {args.src} and target dataset: {args.tgt}")
     trainer.fit(model, datamodule=datamodule)
+
+    training_time = time.time() - start_time
 
     # After training, load the best model (highest f1) based on validation performance
     best_model_path = checkpoint_callback.best_model_path  # Get the path of the best model
@@ -104,11 +149,28 @@ def train(args):
     # Run testing with the best model
     trainer.test(best_model, datamodule=datamodule)
 
+    test_loader = datamodule.test_dataloader()
+
+    inference_time = measure_inference_time(model, test_loader, device=device)
+
+    target_test_f1 = trainer.logged_metrics['target_test/real_f1']
+
+    print("########## RESULTS ##########")
+    print(f"{args.src}_{args.tgt},{args.seed},{target_test_f1},{training_time},{inference_time}\n")
+
+    csv_file = "/work/derossi/Thesis-Adapters/results_qv.csv"
+    # Save the results on a .csv file
+    with open(csv_file, "a") as f:
+        f.write(f"{args.src}_{args.tgt},{args.seed},{hparams['lora_r']},{target_test_f1},{training_time},{inference_time}\n")
+        print("Write successful")
+
+
 def main():
 
     parser = argparse.ArgumentParser(description="Training script for domain adaptation")
     parser.add_argument('--src', type=str, required=True, help="Source dataset folder")
     parser.add_argument('--tgt', type=str, required=True, help="Target dataset folder")
+    parser.add_argument('--seed', type=int, required=True, help="Random seed")
     parser.add_argument('--model', type=str, required=True, help="PEFT model")
     parser.add_argument('--hparam_tuning', action='store_true', help="If set, hyperparameter tuning is being performed")
     args = parser.parse_args()
@@ -123,6 +185,10 @@ def main():
             # Load the sweep configuration from finetuning YAML file
             with open('finetune_sweep_config.yaml', 'r') as file:
                 sweep_config = yaml.safe_load(file)
+        elif args.model == 'lora_task':
+            with open('lora_task_sweep_config.yaml', 'r') as file:
+                sweep_config = yaml.safe_load(file)
+
 
         # Initialize the sweep
         sweep_id = wandb.sweep(sweep_config, project='LoRA_model_training')

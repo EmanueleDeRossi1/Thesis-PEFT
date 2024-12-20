@@ -7,6 +7,7 @@ from torch.optim import AdamW
 import numpy as np
 from divergences.mkmmd import MultipleKernelMaximumMeanDiscrepancy, GaussianKernel
 from torchmetrics import Accuracy, F1Score
+from torchmetrics import StatScores
 import os
 import wandb
 
@@ -17,15 +18,18 @@ class LoRA_module(pl.LightningModule):
         
         self.save_hyperparameters(hparams)
 
+        self.test_target_labels = []
+        self.test_target_preds = []
+
         if wandb.run:
             self.learning_rate = wandb.config.learning_rate
             # self.weight_decay = wandb.config.weight_decay
             # out of memory :(
-            #self.batch_size = wandb.config.batch_size
             self.lora_alpha = wandb.config.lora_alpha
             self.lora_r = wandb.config.lora_r
             self.lora_dropout = wandb.config.lora_dropout
             self.batch_size = wandb.config.batch_size
+            self.shuffle = wandb.config.shuffle
 
         else:
             self.learning_rate = self.hparams['learning_rate']
@@ -33,6 +37,8 @@ class LoRA_module(pl.LightningModule):
             self.lora_alpha = self.hparams['lora_alpha']
             self.lora_r = self.hparams['lora_r']
             self.lora_dropout = self.hparams['lora_dropout']
+            self.shuffle = self.hparams['shuffle']
+            self.batch_size = self.hparams['batch_size']
 
         hf_token = os.getenv("HUGGINGFACE_TOKEN")
         self.base_model_name = self.hparams['pretrained_model_name']
@@ -57,6 +63,7 @@ class LoRA_module(pl.LightningModule):
         # Initialize F1 and Accuracy measures
         self.accuracy = Accuracy(task='binary', num_classes=self.num_classes)  # accuracy
         self.f1 = F1Score(task='binary', num_classes=self.num_classes)  # F1
+        self.stat_scores = StatScores(task='binary', num_classes=self.num_classes)
         # Initialize MK-MMD with Gaussian Kernels
         self.kernels = [GaussianKernel(alpha=0.5), GaussianKernel(alpha=1.0), GaussianKernel(alpha=2.0)]
         self.mk_mmd_loss = MultipleKernelMaximumMeanDiscrepancy(self.kernels, linear=False)
@@ -96,17 +103,16 @@ class LoRA_module(pl.LightningModule):
             # calculate loss as trade off between task and divergence loss
             total_loss = alpha * source_task_loss + (1 - alpha) * divergence_loss
 
-            print("alpha: ", alpha)
             # Log individual losses
-            self.log("train/source_task_loss", source_task_loss, on_step=True, on_epoch=True) 
-            self.log("train/divergence_loss", divergence_loss, on_step=True, on_epoch=True)
+            self.log("train/source_task_loss", source_task_loss, on_step=True, on_epoch=True, batch_size=batch_size) 
+            self.log("train/divergence_loss", divergence_loss, on_step=True, on_epoch=True, batch_size=batch_size)
 
             preds_target = torch.argmax(target_logits, dim=1)
             target_accuracy = self.accuracy(target_labels, preds_target)
             target_f1 = self.f1(target_labels, preds_target)
             # Log the accuracy and f1 at the end of the epoch
-            self.log("target_train/accuracy",  target_accuracy, on_step=False, on_epoch=True) 
-            self.log("target_train/f1", target_f1, on_step=False, on_epoch=True)
+            self.log("target_train/accuracy",  target_accuracy, on_step=False, on_epoch=True, batch_size=batch_size) 
+            self.log("target_train/f1", target_f1, on_step=False, on_epoch=True, batch_size=batch_size)
         else:
             source_cls_token = cls_token
             source_logits = logits
@@ -114,13 +120,13 @@ class LoRA_module(pl.LightningModule):
             total_loss = source_task_loss
 
         # Log the task loss
-        self.log("train/source_task_loss", source_task_loss, on_step=True, on_epoch=True)
+        self.log("train/source_task_loss", source_task_loss, on_step=True, on_epoch=True, batch_size=batch_size)
         
         preds_source = torch.argmax(source_logits, dim=1)
         source_accuracy = self.accuracy(source_labels, preds_source)
         source_f1 = self.f1(source_labels, preds_source)
-        self.log("source_train/accuracy",  source_accuracy, on_step=False, on_epoch=True) 
-        self.log("source_train/f1", source_f1, on_step=False, on_epoch=True)
+        self.log("source_train/accuracy",  source_accuracy, on_step=False, on_epoch=True, batch_size=batch_size) 
+        self.log("source_train/f1", source_f1, on_step=False, on_epoch=True, batch_size=batch_size)
 
     
         return total_loss
@@ -133,22 +139,25 @@ class LoRA_module(pl.LightningModule):
             source_logits, target_logits = logits[:batch_size], logits[batch_size:]
             
             # Calculate divergence
-            divergence_loss = self.mk_mmd_loss(source_cls_token, target_cls_token)
+            if batch_size > 1:
+                divergence_loss = self.mk_mmd_loss(source_cls_token, target_cls_token)
 
             target_task_loss = self.criterion(target_logits, target_labels)
             
             # Combine task and divergence losses
-            total_loss =  0.5 * target_task_loss + 0.5 * divergence_loss
+            if batch_size > 1:
+                total_loss =  0.5 * target_task_loss + 0.5 * divergence_loss
 
             # Log divergence loss
-            self.log(f"{stage}/divergence_loss", divergence_loss, on_step=True, on_epoch=True)
+            if batch_size > 1:
+                self.log(f"{stage}/divergence_loss", divergence_loss, on_step=True, on_epoch=True, batch_size=batch_size)
 
             # Calculate accuracy and f1 for source dataset
             preds_source = torch.argmax(source_logits, dim=1)
             source_accuracy = self.accuracy(source_labels, preds_source)
             source_f1 = self.f1(source_labels, preds_source)
-            self.log(f"source_{stage}/accuracy",  source_accuracy, on_step=False, on_epoch=True)
-            self.log(f"source_{stage}/f1", source_f1, on_step=False, on_epoch=True)
+            self.log(f"source_{stage}/accuracy",  source_accuracy, on_step=False, on_epoch=True, batch_size=batch_size)
+            self.log(f"source_{stage}/f1", source_f1, on_step=False, on_epoch=True, batch_size=batch_size)
         
         else:
             target_cls_token = cls_token
@@ -160,16 +169,54 @@ class LoRA_module(pl.LightningModule):
         preds_target = torch.argmax(target_logits, dim=1)
         target_accuracy = self.accuracy(target_labels, preds_target)
         target_f1 = self.f1(target_labels, preds_target)
-        self.log(f"target_{stage}/task_loss", target_task_loss, on_step=True, on_epoch=True)
+        self.log(f"target_{stage}/task_loss", target_task_loss, on_step=True, on_epoch=True, batch_size=batch_size)
 
         # Calculate f1 and accuracy for target dataset
-        self.log(f"target_{stage}/accuracy",  target_accuracy, on_step=False, on_epoch=True)
-        self.log(f"target_{stage}/f1", target_f1, on_step=False, on_epoch=True)
+        self.log(f"target_{stage}/accuracy",  target_accuracy, on_step=False, on_epoch=True, batch_size=batch_size)
+        self.log(f"target_{stage}/f1", target_f1, on_step=False, on_epoch=True, batch_size=batch_size)
+        if stage =="test":
+            print("target f1 is: ", target_f1)
+
+        stat_scores = self.stat_scores(preds_target, target_labels)
+        # Extract individual components (the shape is (5,))
+        tp = stat_scores[0]  # True Positives
+        fp = stat_scores[1]  # False Positives
+        tn = stat_scores[2]  # True Negatives
+        fn = stat_scores[3]  # False Negatives
+        sup = stat_scores[4] # Support
+
+        # Ensure the metric is of type float32 before logging
+        # tp = tp.float()  # Convert tp to a floating point tensor
+        # fp = fp.float()  # Convert fp to a floating point tensor
+        # tn = tn.float()  # Convert tn to a floating point tensor
+        # fn = fn.float()  # Convert fn to a floating point tensor
+        # sup = sup.float()  # Convert sup to a floating point tensor
+
+        # Log each component
+        self.log(f"{stage}/tp", tp.float(), reduce_fx="sum", on_step=False, on_epoch=True, sync_dist=False)
+        self.log(f"{stage}/fp", fp.float(), reduce_fx="sum", on_step=False, on_epoch=True, sync_dist=False)
+        self.log(f"{stage}/tn", tn.float(), reduce_fx="sum", on_step=False, on_epoch=True, sync_dist=False)
+        self.log(f"{stage}/fn", fn.float(), reduce_fx="sum", on_step=False, on_epoch=True, sync_dist=False)
+        self.log(f"{stage}/sup", sup.float(), reduce_fx="sum", on_step=False, on_epoch=True, sync_dist=False)
+
+        self.test_target_labels.extend(target_labels.cpu().numpy())
+        self.test_target_preds.extend(preds_target.cpu().numpy())
+
+        target_test_f1_total = self.f1(torch.tensor(self.test_target_labels), torch.tensor(self.test_target_preds))
+
+        self.log("target_test/real_f1", target_test_f1_total, on_step=False, on_epoch=True)
+
+        print("target test f1 total is: ", target_test_f1_total)
 
         return total_loss
 
 
     def training_step(self, batch, batch_idx):
+        # In diversion/mmkmmd.py, the line:
+        # loss = (kernel_matrix * self.index_matrix).sum() + 2. / float(batch_size - 1)
+        # throw ZeroDivisionError: float division by zero when batch_size is 1
+        # if batch["source"]["input_ids"].size(0) == 1:
+        #     return None
         source_batch = batch["source"]
         target_batch = batch["target"] if "target" in batch else None
 

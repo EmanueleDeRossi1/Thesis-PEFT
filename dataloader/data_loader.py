@@ -126,6 +126,7 @@ class DataModuleSourceTarget(pl.LightningDataModule):
         self.padding = hparams["padding"]
         self.max_seq_length = hparams["max_seq_length"]
         self.batch_size = hparams["batch_size"]
+        self.shuffle = hparams["shuffle"]
 
     def setup(self, stage: Optional[str] = None):
         source_train = os.path.join(self.dataset_dir, self.source_folder, "train.csv")
@@ -153,7 +154,8 @@ class DataModuleSourceTarget(pl.LightningDataModule):
 
 
     def train_dataloader(self):
-        self.train_dataset.shuffle_source_data()
+        if self.shuffle == True:
+            self.train_dataset.shuffle_source_data()
         print("The lenght of the train dataset is: ", len(self.train_dataset))
         return DataLoader(self.train_dataset, batch_size=self.batch_size, num_workers=8, shuffle=False, collate_fn=custom_collate_fn)
 
@@ -161,7 +163,7 @@ class DataModuleSourceTarget(pl.LightningDataModule):
         return DataLoader(self.val_dataset, batch_size=self.batch_size, num_workers=8, shuffle=False, collate_fn=custom_collate_fn)
 
     def test_dataloader(self):
-        return DataLoader(self.test_dataset, batch_size=self.batch_size, num_workers=1, shuffle=False, collate_fn=custom_collate_fn)
+        return DataLoader(self.test_dataset, batch_size=1, num_workers=1, shuffle=False, collate_fn=custom_collate_fn)
 
 
 def custom_collate_fn(batch):
