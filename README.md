@@ -10,11 +10,39 @@ The script:
 
 ## Steps to Train the Model
 
-1. **Set Up Your Environment**:
+- **Set Up The Environment**:
 
-...to-do...
+To set up your environment for training the models:
 
-2. **Run the train.sh script using the SLURM scheduler**
+1. Use Python's venv module to create an isoletaed virtual environment:
+
+```
+python -m venv .env
+```
+
+2. Activate the virtual environment:
+
+- On Linux/MacOS:
+
+```
+source .env/bin/activate
+```
+
+- On Windows:
+
+```
+.env\Scripts\activate
+```
+
+
+3. Install Dependencies:
+
+```
+pip install -r requirements.txt
+```
+
+
+- **Run the train.sh script using the SLURM scheduler**
 
 ```
 sbatch train.sh
