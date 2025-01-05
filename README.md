@@ -1,3 +1,6 @@
+This repository is part of my master's thesis on Entity Matching (EM). In my project, a parameter-efficient approach - Low-Rank Adaptation (LoRA) - is used to adapt pre-trained transformers for EM tasks. By updating only a small subset of parameters, this method achieves strong performance on unlabeled target datasets by aligning feature distributions between labeled source and unlabeled target datasets.
+
+
 # Training the Model
 
 The `train.sh` script is used to train models for domain adaptation tasks using various source and target domain pairs. It supports both LoRA-based fine-tuning and full-model fine-tuning, allowing you to experiment with parameter-efficient techniques or traditional methods.
@@ -14,7 +17,7 @@ The script:
 
 To set up your environment for training the models:
 
-1. Use Python's venv module to create an isoletaed virtual environment:
+1. Use Python's venv module to create an isolated virtual environment:
 
 ```
 python -m venv .env
