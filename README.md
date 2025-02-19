@@ -16,7 +16,7 @@ This repository is part of my master's thesis on Entity Matching (EM). In my pro
 ---
 
 ## 📂 Project Structure
-Thesis-PEFT/
+```Thesis-PEFT/
 │── config/                # YAML config files for training & hyperparameter tuning
 │── dataset/               # Data processing and dataloaders
 │── src/
@@ -31,6 +31,8 @@ Thesis-PEFT/
 │── requirements.txt       # Required Python dependencies
 │── setup.sh               # Setup script for dependencies (CUDA support included)
 │── README.md              # Project documentation
+```
+
 The script:
 1. Loops through source and target dataset experimented in the paper, using 3 random seeds 
 4. Use the `--hparam_tuning` flag to enable hyperparameter tuning.
