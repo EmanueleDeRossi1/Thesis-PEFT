@@ -12,90 +12,60 @@ else
     RUN_CMD="python3"
 fi
 
+# Default values
+ENABLE_HPARAM_TUNING="false"
+MODEL="lora"  # Default model
+
+# Parse command-line arguments
+while [[ "$#" -gt 0 ]]; do
+    case $1 in
+        --hparam-tuning) ENABLE_HPARAM_TUNING="true";;
+        --model) MODEL="$2"; shift;;  # Assign the model name from argument
+        *) echo "Unknown parameter: $1"; exit 1;;
+    esac
+    shift
+done
+
+
+declare -A DATASETS
+
 # Similar and Different Domains
+DATASETS["similar_different"]="wa1:ab ab:wa1 ds:da da:ds dzy:fz fz:dzy ri:ab ab:ri ri:wa1 wa1:ri ia:da da:ia ia:ds ds:ia b2:fz fz:b2 b2:dzy dzy:b2"
 
-# Define the source and target domains
-SRC_DOMAINS=("wa1" "ab" "ds" "da" "dzy" "fz" "ri" "ab" "ri" "wa1" "ia" "da" "ia" "ds" "b2"  "fz" "b2" "dzy")
-TRG_DOMAINS=("ab" "wa1" "da" "ds" "fz" "dzy" "ab" "ri" "wa1" "ri" "da" "ia" "ds" "ia" "fz"  "b2" "dzy" "b2")
+# WDC Datasets (bidirectional)
+DATASETS["wdc"]="computers:watches watches:computers cameras:shoes shoes:cameras computers:cameras cameras:computers"
 
 
-MODEL="lora" # or "finetune" to finetune the full model or lora
+# Function to run training
+run_training() {
+    local src=$1
+    local tgt=$2
+    local seed=$3
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] Training model: $MODEL | Source: $src | Target: $tgt | Seed: $seed"
 
-# Loop through source and target domains
-for seed in 3000 1000 42; do
-  for i in $(seq 0 $((${#SRC_DOMAINS[@]} - 1))); do
-    src=${SRC_DOMAINS[$i]}
-    tgt=${TRG_DOMAINS[$i]}
-    # Skip if source and target domains are the same
-    if [ "$src" != "$tgt" ]; then
-      echo "Training model: $MODEL with source domain: $src and target domain: $tgt"
-      # Pass source and target folders as arguments, if --haparam_tuning is passed, hyperparameter tuning will be performed
-      $RUN_CMD  src/training/trainer.py --src "$src" --tgt "$tgt" --seed $seed --model "$MODEL" #--hparam_tuning 
-      if grep -q -- '--hparam_tuning' <<< "$@"; then
-        echo "Hyperparameter tuning enabled"
-      else
-        echo "Hyperparameter tuning disabled"
-      fi
+    CMD="$RUN_CMD src/training/trainer.py --src \"$src\" --tgt \"$tgt\" --seed $seed --model \"$MODEL\""
+    
+    if [ "$ENABLE_HPARAM_TUNING" = "true" ]; then
+        CMD="$CMD --hparam_tuning"
     fi
-  done
+
+    echo "Executing: $CMD"
+    $CMD &> logs/${src}_${tgt}_${seed}.log 2>&1
+}
+
+# Loop through datasets
+for dataset in "${!DATASETS[@]}"; do
+    echo "Processing dataset group: $dataset"
+    for pair in ${DATASETS[$dataset]}; do
+        src=${pair%%:*}
+        tgt=${pair##*:}
+
+        for seed in 3000 1000 42; do
+            if [ "$src" != "$tgt" ]; then
+                run_training "$src" "$tgt" "$seed"
+            fi
+        done
+    done
 done
 
-
-##############
-# WDC Datasets
-##############
-
-# Define the source and target domains
-SRC_DOMAINS=(computers cameras shoes computers cameras computers)
-TRG_DOMAINS=(watches watches watches shoes shoes cameras)
-
-
-MODEL="lora" # or "finetune" to finetune the full model or lora
-
-# Loop through source and target domains
-for seed in 3000 1000 42; do
-  for i in $(seq 0 $((${#SRC_DOMAINS[@]} - 1))); do
-    src=${SRC_DOMAINS[$i]}
-    tgt=${TRG_DOMAINS[$i]}
-    # Skip if source and target domains are the same
-    if [ "$src" != "$tgt" ]; then
-      echo "Training model: $MODEL with source domain: $src and target domain: $tgt"
-      # Pass source and target folders as arguments, if --haparam_tuning is passed, hyperparameter tuning will be performed
-      $RUN_CMD  src/training/trainer.py --src "$src" --tgt "$tgt" --seed $seed --model "$MODEL" #--hparam_tuning 
-      # Now invert source and target domains to train also this combination
-      src=${TRG_DOMAINS[$i]}
-      tgt=${SRC_DOMAINS[$i]}
-      $RUN_CMD  src/training/trainer.py --src "$src" --tgt "$tgt" --seed $seed --model "$MODEL" --hparam_tuning 
-      if grep -q -- '--hparam_tuning' <<< "$@"; then
-        echo "Hyperparameter tuning enabled"
-      else
-        echo "Hyperparameter tuning disabled"
-      fi
-    fi
-  done
-done
-
-
-
-
-# FOR DOING HYPERPARAMETER TUNING
-
-# SRC_DOMAINS=("computers")
-# TGT_DOMAINS=("watches")
-
-# MODEL="lora" # or "finetune" to finetune the full model or lora
-# seed=42
-# for src in "${SRC_DOMAINS[@]}"; do
-#   for tgt in "${TGT_DOMAINS[@]}"; do
-#     # Skip if source and target domains are the same
-#     if [ "$src" != "$tgt" ]; then
-#       echo "Training model: $MODEL with source domain: $src and target domain: $tgt"
-#       # Pass source and target folders as arguments, if --haparam_tuning is passed, hyperparameter tuning will be performed
-#       $RUN_CMD  src/training/trainer.py --src "$src" --tgt "$tgt" --seed $seed --model "$MODEL" --hparam_tuning 
-#       if grep -q -- '--hparam_tuning' <<< "$@"; then
-#         echo "Hyperparameter tuning enabled"
-#       fi
-#     fi
-#   done
-# done
-
+echo "All training jobs completed!"
