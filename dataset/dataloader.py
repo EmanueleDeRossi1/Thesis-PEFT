@@ -16,28 +16,28 @@ class SourceTargetDataset(Dataset):
         self, 
         source_filepath, 
         target_filepath, 
-        tokenizer: AutoTokenizer, 
+        tokenizer_name: str, 
         padding: bool, 
         max_seq_length: int,
         phase: str,
         num_instances: Optional[int] = None
         ):
-        self.tokenizer = tokenizer
         self.max_seq_length = max_seq_length
         self.padding = padding
         self.phase = phase
-        self.uses_token_type_ids = "token_type_ids" in self.tokenizer.model_input_names
         self.seed_counter = 0  # Initialize the seed counter for each epoch
+
+        # Define local path to store tokenizer
+        self.tokenizer_path = f"hf_model/{tokenizer_name}"
+
+        # Load tokenizer from local storage or download it
+        self.tokenizer = AutoTokenizer.from_pretrained(self.tokenizer_path, use_fast=True)
 
         self.source_df = pd.read_csv(source_filepath)
         self.target_df = pd.read_csv(target_filepath)
 
         # Limit the number of instances if num_instances is specified and phase is "train"
-        print("The phase is: ", phase)
-        print("The number of instances is: ", num_instances, type(num_instances))
         if phase == "train" and num_instances is not None:
-            print("The phase inside if is: ", phase)
-            print("The number of instances inside if is: ", num_instances, type(num_instances))
             self.source_df = self.source_df.head(num_instances)
 
         # Define pairing based on the phase
@@ -139,16 +139,16 @@ class DataModuleSourceTarget(pl.LightningDataModule):
         # Load datasets for different phases
         if stage == "fit" or stage is None:
             self.train_dataset = SourceTargetDataset(
-            source_filepath=source_train, target_filepath=target_train, tokenizer=self.tokenizer, 
+            source_filepath=source_train, target_filepath=target_train, tokenizer_name=self.tokenizer, 
             padding=self.padding, max_seq_length=self.max_seq_length, phase="train", num_instances=self.num_instances
             )
             self.val_dataset = SourceTargetDataset(
-            source_filepath=source_val, target_filepath=target_val, tokenizer=self.tokenizer, 
+            source_filepath=source_val, target_filepath=target_val, tokenizer_name=self.tokenizer, 
             padding=self.padding, max_seq_length=self.max_seq_length, phase="validation"
             )
         if stage == "test" or stage is None:
             self.test_dataset = SourceTargetDataset(
-            source_filepath=source_test, target_filepath=target_test, tokenizer=self.tokenizer, 
+            source_filepath=source_test, target_filepath=target_test, tokenizer_name=self.tokenizer, 
             padding=self.padding, max_seq_length=self.max_seq_length, phase="test"
             )
 

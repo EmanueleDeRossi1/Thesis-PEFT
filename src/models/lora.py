@@ -5,7 +5,7 @@ from peft import get_peft_model, LoraConfig, TaskType
 from torch.nn import CrossEntropyLoss
 from torch.optim import AdamW
 import numpy as np
-from divergences.mkmmd import MultipleKernelMaximumMeanDiscrepancy, GaussianKernel
+from src.divergences.mkmmd import MultipleKernelMaximumMeanDiscrepancy, GaussianKernel
 from torchmetrics import Accuracy, F1Score
 from torchmetrics import StatScores
 import os

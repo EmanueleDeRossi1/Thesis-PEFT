@@ -5,17 +5,11 @@
 #SBATCH --gres=gpu:a100_40gb:1
 
 
-echo change to random 
-
-source .venv/bin/activate
-export http_proxy=http://proxy2.uni-potsdam.de:3128
-export https_proxy=http://proxy2.uni-potsdam.de:3128
-
 # Check if Slurm (srun) is available
 if command -v srun &> /dev/null; then
-    RUN_CMD="srun python"
+    RUN_CMD="srun python3"
 else
-    RUN_CMD="python"
+    RUN_CMD="python3"
 fi
 
 # Similar and Different Domains
@@ -36,7 +30,7 @@ for seed in 3000 1000 42; do
     if [ "$src" != "$tgt" ]; then
       echo "Training model: $MODEL with source domain: $src and target domain: $tgt"
       # Pass source and target folders as arguments, if --haparam_tuning is passed, hyperparameter tuning will be performed
-      $RUN_CMD  train.py --src "$src" --tgt "$tgt" --seed $seed --model "$MODEL" #--hparam_tuning 
+      $RUN_CMD  src/training/trainer.py --src "$src" --tgt "$tgt" --seed $seed --model "$MODEL" #--hparam_tuning 
       if grep -q -- '--hparam_tuning' <<< "$@"; then
         echo "Hyperparameter tuning enabled"
       else
@@ -67,11 +61,11 @@ for seed in 3000 1000 42; do
     if [ "$src" != "$tgt" ]; then
       echo "Training model: $MODEL with source domain: $src and target domain: $tgt"
       # Pass source and target folders as arguments, if --haparam_tuning is passed, hyperparameter tuning will be performed
-      $RUN_CMD  train.py --src "$src" --tgt "$tgt" --seed $seed --model "$MODEL" #--hparam_tuning 
+      $RUN_CMD  src/training/trainer.py --src "$src" --tgt "$tgt" --seed $seed --model "$MODEL" #--hparam_tuning 
       # Now invert source and target domains to train also this combination
       src=${TRG_DOMAINS[$i]}
       tgt=${SRC_DOMAINS[$i]}
-      $RUN_CMD  train.py --src "$src" --tgt "$tgt" --seed $seed --model "$MODEL" --hparam_tuning 
+      $RUN_CMD  src/training/trainer.py --src "$src" --tgt "$tgt" --seed $seed --model "$MODEL" --hparam_tuning 
       if grep -q -- '--hparam_tuning' <<< "$@"; then
         echo "Hyperparameter tuning enabled"
       else
@@ -97,7 +91,7 @@ done
 #     if [ "$src" != "$tgt" ]; then
 #       echo "Training model: $MODEL with source domain: $src and target domain: $tgt"
 #       # Pass source and target folders as arguments, if --haparam_tuning is passed, hyperparameter tuning will be performed
-#       $RUN_CMD  train.py --src "$src" --tgt "$tgt" --seed $seed --model "$MODEL" --hparam_tuning 
+#       $RUN_CMD  src/training/trainer.py --src "$src" --tgt "$tgt" --seed $seed --model "$MODEL" --hparam_tuning 
 #       if grep -q -- '--hparam_tuning' <<< "$@"; then
 #         echo "Hyperparameter tuning enabled"
 #       fi

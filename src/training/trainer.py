@@ -8,13 +8,11 @@ import wandb
 import pytorch_lightning as pl
 from pytorch_lightning.loggers import WandbLogger
 from pytorch_lightning.callbacks import ModelCheckpoint
-from modules.lora import LoRA_module 
-from modules.lora_task import LoRA_module_task
+from src.models.lora import LoRA_module 
 
-from modules.finetune_task import FineTuneTask
-from modules.finetune_task_divergence import FineTuneTaskDivergence
+from src.models.finetune import FineTune
 
-from dataloader.data_loader import DataModuleSourceTarget
+from dataset.dataloader import DataModuleSourceTarget
 
 def set_seed(seed):
     random.seed(seed)
@@ -32,11 +30,9 @@ def load_hparams(yaml_file):
 def get_model_class(model_name):
     """Return the appropriate model based on the model name."""
     if model_name == 'finetune':
-        return FineTuneTaskDivergence
+        return FineTune
     elif model_name == 'lora':
         return LoRA_module
-    elif model_name == 'lora_task':
-        return LoRA_module_task
     else:
         raise ValueError(f"Unknown model name: {model_name}")
     
@@ -72,7 +68,7 @@ def measure_inference_time(model, data_loader, device='cuda'):
 
 def train(args):
 
-    hparams = load_hparams('config.yaml')
+    hparams = load_hparams('config/config.yaml')
     model_name = args.model
 
     # Set random seed
@@ -92,7 +88,7 @@ def train(args):
         wandb.init()
         hparams.update(wandb.config)
     # Set the device
-    device = torch.device('cuda')
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     # Initialize the data module
     datamodule = DataModuleSourceTarget(source_folder=args.src,

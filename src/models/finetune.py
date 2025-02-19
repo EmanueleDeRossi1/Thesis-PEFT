@@ -4,13 +4,13 @@ from transformers import AutoModelForSequenceClassification, get_linear_schedule
 from torch.nn import CrossEntropyLoss
 from torch.optim import AdamW
 import numpy as np
-from divergences.mkmmd import MultipleKernelMaximumMeanDiscrepancy, GaussianKernel
+from src.divergences.mkmmd import MultipleKernelMaximumMeanDiscrepancy, GaussianKernel
 from torchmetrics import Accuracy, F1Score
 import os
 import wandb
 
 
-class FineTuneTaskDivergence(pl.LightningModule):
+class FineTune(pl.LightningModule):
     def __init__(self, hparams):
         super().__init__()
         

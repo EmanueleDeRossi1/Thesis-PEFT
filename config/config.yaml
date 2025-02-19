@@ -4,7 +4,7 @@ dataset_dir: "./data"
 pretrained_model_name: "roberta-base"
 padding: "max_length"
 max_seq_length: 256
-accelerator: "gpu"
+accelerator: "auto" # Automatically selects cuda if available, else gpu
 devices: 1
 num_classes: 2
 random_seed: null # This will be overwritten by the parser argument
@@ -19,5 +19,3 @@ lora_alpha: 32
 lora_r: 16
 lora_dropout: 0.1
 shuffle: False
-
-# AND REMEMBER THAT YOU SHOULD ALWAYS TRAIN ON THE SAME GPU, CHNAGE .sh FILE BEFORE CALCULATING INF & TRAINING TIME
