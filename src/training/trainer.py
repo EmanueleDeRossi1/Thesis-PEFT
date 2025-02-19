@@ -175,16 +175,12 @@ def main():
         print("Hyperparameter tuning is enabled")
         if args.model == 'lora':
             # Load the sweep configuration from LoRA YAML file
-            with open('lora_sweep_config.yaml', 'r') as file:
+            with open('config/lora_sweep_config.yaml', 'r') as file:
                 sweep_config = yaml.safe_load(file)
         elif args.model == 'finetune':
             # Load the sweep configuration from finetuning YAML file
-            with open('finetune_sweep_config.yaml', 'r') as file:
+            with open('config/finetune_sweep_config.yaml', 'r') as file:
                 sweep_config = yaml.safe_load(file)
-        elif args.model == 'lora_task':
-            with open('lora_task_sweep_config.yaml', 'r') as file:
-                sweep_config = yaml.safe_load(file)
-
 
         # Initialize the sweep
         sweep_id = wandb.sweep(sweep_config, project='LoRA_model_training')
