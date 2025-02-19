@@ -1,71 +1,57 @@
+# Thesis-PEFT: Parameter-Efficient Domain Adaptation for Entity Matching
+
 This repository is part of my master's thesis on Entity Matching (EM). In my project, a parameter-efficient approach - Low-Rank Adaptation (LoRA) - is used to adapt pre-trained transformers for EM tasks. By updating only a small subset of parameters, this method achieves strong performance on unlabeled target datasets by aligning feature distributions between labeled source and unlabeled target datasets.
 
+---
 
-# Training the Model
+## Project Overview
 
-The `train.sh` script is used to train models for domain adaptation tasks using various source and target domain pairs. It supports both LoRA-based fine-tuning and full-model fine-tuning, allowing you to experiment with parameter-efficient techniques or traditional methods.
+- **🔍 Problem:** Entity Matching (EM) requires labeled training data, which is expensive to obtain. This project explores **domain adaptation** to transfer knowledge from labeled source datasets to unlabeled target datasets.
+- **💡 Solution:** Uses **LoRA** (Low-Rank Adaptation) for efficient fine-tuning and **MK-MMD** (Multiple Kernel Maximum Mean Discrepancy) for domain alignment.
+- **✨ Key Features:**
+  - ✅ Efficient fine-tuning with **LoRA** (only 1% additional parameters).
+  - ✅ **Domain adaptation** to align source and target feature distributions.
+  - ✅ **Task learning and domain adaptation trade-off**, controlled by a dynamic **α** function.
 
-## How It Works
+---
 
+## 📂 Project Structure
+Thesis-PEFT/
+│── config/                # YAML config files for training & hyperparameter tuning
+│── dataset/               # Data processing and dataloaders
+│── src/
+│   ├── models/            # LoRA and Fine-Tuning models
+│   ├── divergences/       # Domain adaptation losses (MK-MMD, Gaussian Kernels)
+│   ├── training/          # Training scripts
+│   ├── evaluation/        # Evaluation metrics and scripts
+│── scripts/
+│   ├── train.sh           # Training script
+│   ├── run_experiments.sh # Batch execution for different datasets
+│── Dockerfile             # Docker setup for containerized execution
+│── requirements.txt       # Required Python dependencies
+│── setup.sh               # Setup script for dependencies (CUDA support included)
+│── README.md              # Project documentation
 The script:
 1. Loops through source and target dataset experimented in the paper, using 3 random seeds 
 4. Use the `--hparam_tuning` flag to enable hyperparameter tuning.
 
-## Steps to Train the Model
+---
 
-- **Set Up The Environment**:
+## 🏗️ Setup & Installation
 
-To set up your environment for training the models:
+### **1️⃣ Using Docker (Recommended)**
+This project is containerized using **Docker** for consistency and reproducibility.  
+To set up and run the model inside a Docker container:
 
-1. Use Python's venv module to create an isolated virtual environment:
-
-```
-python -m venv .env
-```
-
-2. Activate the virtual environment:
-
-- On Linux/MacOS:
-
-```
-source .env/bin/activate
+#### **🔹 Build the Docker Image**
+```bash
+docker build -t thesis-peft .
 ```
 
-- On Windows:
+#### **🔹 Run Training Inside a Container**
+```docker run --gpus all --rm -v $(pwd):/app thesis-peft bash train.sh --src <source_dataset> --tgt <target_dataset> --model lora```
 
-```
-.env\Scripts\activate
-```
+#### **🔹 Run Hyperparameter Tuning**
 
+```docker run --gpus all --rm -v $(pwd):/app thesis-peft bash train.sh --src <source_dataset> --tgt <target_dataset> --model lora --hparam-tuning```
 
-3. Install Dependencies:
-
-```
-pip install -r requirements.txt
-```
-
-
-- **Run the train.sh script using the SLURM scheduler**
-
-```
-sbatch train.sh
-```
-
-
-## Repository Structure
-
-### Folders
-- **data preparation**: Scripts used for preparing and cleaning the datasets
-- **data**: Contains preprocessed datasets used for experiments.
-- **dataloader**: dataloader for training.
-- **divergences**: Contains the code from https://github.com/declare-lab/domadapter/tree/main/domadapter to measure MK-MMD loss.
-- **modules**: Lora and Fine-Tune on the whole model.
-- **paper summaries**: Summaries of related research papers, for personal use.
-- **results**: Stores results from LoRA experiments (f1, training and inference time).
-
-### Files
-- **config.yaml**: Configuration file for training when hparam tuning flag is **not** activated. 
-- **ft_sweep_config.yaml**: Configuration for sweeps (hparam tuning) for full fine-tune model.
-- **lora_sweep_config.yaml**: Configuration for sweeps (hparam tuning) for Lora.
-- **train.py**: Main training script for running the experiments.
-- **train.sh**: Bash script for submitting jobs to a SLURM cluster for training across various domain pairs.
